@@ -1,8 +1,8 @@
-import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import './local_data/home.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -45,9 +45,340 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // 我的设备
+  Widget MyDeviceComm() {
+    return Container(
+      margin: EdgeInsets.only(top: 15, bottom: 15),
+      padding: EdgeInsets.only(top: 15, bottom: 10, left: 15, right: 15),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("我的设备",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14)),
+              InkWell(
+                  child: Container(
+                    // 点击事件
+                      child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text("更多设备",
+                                style: TextStyle(
+                                    color: Color.fromRGBO(120, 120, 120, 1),
+                                    fontSize: 12)),
+                            SizedBox(width: 5),
+                            Icon(IconData(0xeb8a, fontFamily: 'sunfont'),
+                                size: 10,
+                                color: Color.fromRGBO(120, 120, 120, 1))
+                          ])),
+                  onTap: () {
+                    print("跳转更多设备");
+                  })
+            ],
+          ),
+          Container(
+              width: double.infinity,
+              height: 75,
+              margin: EdgeInsets.only(top: 14, bottom: 12),
+              child: ListView(
+                  shrinkWrap: true,
+                  physics: AlwaysScrollableScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  children: deviceList.map((item) {
+                    return InkWell(
+                      child: Container(
+                          margin:
+                          EdgeInsets.only(right: item['id'] != 4 ? 50 : 0),
+                          child: Column(
+                            children: [
+                              Container(
+                                  width: 46,
+                                  height: 46,
+                                  margin: EdgeInsets.only(bottom: 7),
+                                  child: Align(
+                                      child: Image.asset(item['image'],
+                                          fit: BoxFit.cover))),
+                              SizedBox(height: 4),
+                              Text(
+                                item['title'],
+                                style: TextStyle(fontSize: 12),
+                              )
+                            ],
+                          )),
+                      onTap: () {
+                        print(item);
+                      },
+                    );
+                  }).toList()))
+        ],
+      ),
+    );
+  }
+
+  // 人气动态
+  Widget MyPopTrendComm() {
+    return Container(
+      margin: EdgeInsets.only(bottom: 15),
+      padding: EdgeInsets.only(top: 15, bottom: 10),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: 15, right: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("人气动态",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 14)),
+                InkWell(
+                    child: Container(
+                        child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text("更多动态",
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(120, 120, 120, 1),
+                                      fontSize: 12)),
+                              SizedBox(width: 5),
+                              Icon(IconData(0xeb8a, fontFamily: 'sunfont'),
+                                  size: 10,
+                                  color: Color.fromRGBO(120, 120, 120, 1))
+                            ])),
+                    onTap: () {})
+              ],
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            height: 200,
+            margin: EdgeInsets.only(top: 18),
+            child: ListView(
+              shrinkWrap: true,
+              physics: AlwaysScrollableScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              children: popTrendList.map((item) {
+                return InkWell(
+                  child: Container(
+                      margin: EdgeInsets.only(left: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Stack(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Stack(
+                                  children: [
+                                    Image.network(item['fileList'][0]['url'],
+                                        fit: BoxFit.cover,
+                                        width: 120,
+                                        height: 120)
+                                  ],
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 10,
+                                left: 10,
+                                child: Align(
+                                  child: Container(
+                                      padding: EdgeInsets.only(
+                                          left: 8, right: 8, top: 3, bottom: 3),
+                                      decoration: BoxDecoration(
+                                          color: Color.fromRGBO(0, 0, 0, 0.5),
+                                          borderRadius: BorderRadius.circular(3)),
+                                      child: Text(
+                                          item["tagsNum"].toString() + "人点赞",
+                                          style: TextStyle(
+                                              fontSize: 10,
+                                              color: Colors.white))),
+                                ),
+                              )
+                            ],
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(top: 10),
+                            width: 120,
+                            height: 34,
+                            child: Text(item["textShow"],
+                                maxLines: 2,
+                                softWrap: false,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                )),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(top: 10),
+                            child: Row(
+                              children: [
+                                Container(
+                                    margin: EdgeInsets.only(right: 5),
+                                    width: 20,
+                                    height: 20,
+                                    clipBehavior: Clip.hardEdge,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(30)),
+                                    child: Image.network(item["avatar"],
+                                        fit: BoxFit.cover)),
+                                Container(
+                                  width: 80,
+                                  child: Text(item["nickName"],
+                                      textAlign: TextAlign.left,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color:
+                                          Color.fromRGBO(108, 107, 113, 1))),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      )),
+                  onTap: (){}
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 知识精选
+  Widget MyKnowLedgeComm() {
+    return Container(
+      padding: EdgeInsets.only(top: 15, bottom: 10),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: 15, right: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("知识精选",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 14)),
+                InkWell(
+                    child: Container(
+                        child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text("更多知识",
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(120, 120, 120, 1),
+                                      fontSize: 12)),
+                              SizedBox(width: 5),
+                              Icon(IconData(0xeb8a, fontFamily: 'sunfont'),
+                                  size: 10,
+                                  color: Color.fromRGBO(120, 120, 120, 1))
+                            ])),
+                    onTap: () {})
+              ],
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            height: 140,
+            margin: EdgeInsets.only(top: 18),
+            child: ListView(
+                shrinkWrap: true,
+                physics: AlwaysScrollableScrollPhysics(),
+                // 根据不同的平台切换不同的物理效果
+                scrollDirection: Axis.horizontal,
+                children: knowLedgeList.map((item) {
+                  return InkWell(
+                    child: Container(
+                        margin: EdgeInsets.only(left: 15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Stack(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Stack(
+                                    children: [
+                                      Image.network(item["coverUrl"],
+                                          fit: BoxFit.cover,
+                                          width: 120,
+                                          height: 94)
+                                    ],
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 10,
+                                  left: 10,
+                                  child: Align(
+                                    child: Container(
+                                        padding: EdgeInsets.only(
+                                            left: 8, right: 8, top: 3, bottom: 3),
+                                        decoration: BoxDecoration(
+                                            color: Color.fromRGBO(0, 0, 0, 0.5),
+                                            borderRadius: BorderRadius.circular(
+                                                3)),
+                                        child: Text(
+                                            item["collectNum"].toString()+"人收藏",
+                                            style: TextStyle(
+                                                fontSize: 10,
+                                                color: Colors.white))),
+                                  ),
+                                )
+                              ],
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(top: 10),
+                              width: 120,
+                              child: Text(item["title"],
+                                  maxLines: 2,
+                                  softWrap: false,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                  )),
+                            )
+                          ],
+                        )),
+                    onTap: (){},
+                  );
+                }).toList()
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    double topBarHeight = MediaQueryData.fromWindow(window).padding.top;
+    double topBarHeight = MediaQueryData
+        .fromWindow(window)
+        .padding
+        .top;
     return Scaffold(
       backgroundColor: Color.fromRGBO(246, 247, 251, 1),
       body: Container(
@@ -102,7 +433,7 @@ class _HomePageState extends State<HomePage> {
             ]),
             Expanded(
               child: MediaQuery.removePadding(
-                  // 去除顶部留白
+                // 去除顶部留白
                   context: context,
                   removeTop: true,
                   removeBottom: true,
@@ -144,7 +475,7 @@ class _HomePageState extends State<HomePage> {
                                                 color: Color.fromRGBO(
                                                     46, 202, 129, 1)),
                                             borderRadius:
-                                                BorderRadius.circular(50)),
+                                            BorderRadius.circular(50)),
                                         child: Icon(
                                             IconData(0xe62c,
                                                 fontFamily: 'sunfont'),
@@ -164,9 +495,9 @@ class _HomePageState extends State<HomePage> {
                                       height: 20,
                                       decoration: BoxDecoration(
                                           borderRadius:
-                                              BorderRadius.circular(4),
+                                          BorderRadius.circular(4),
                                           color:
-                                              Color.fromRGBO(246, 247, 251, 1)),
+                                          Color.fromRGBO(246, 247, 251, 1)),
                                       child: Icon(
                                           IconData(0xeb8a,
                                               fontFamily: 'sunfont'),
@@ -190,7 +521,7 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                     children: [
                                       Container(
                                           margin: EdgeInsets.only(right: 30),
@@ -200,25 +531,25 @@ class _HomePageState extends State<HomePage> {
                                                 width: 46,
                                                 height: 46,
                                                 margin:
-                                                    EdgeInsets.only(bottom: 7),
+                                                EdgeInsets.only(bottom: 7),
                                                 child: Align(
                                                     child: Icon(
                                                         IconData(0xe636,
                                                             fontFamily:
-                                                                'sunfont'),
+                                                            'sunfont'),
                                                         size: 24,
                                                         color: Colors.white)),
                                                 decoration: BoxDecoration(
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            18),
+                                                    BorderRadius.circular(
+                                                        18),
                                                     boxShadow: [
                                                       BoxShadow(
                                                         color: Color.fromRGBO(
-                                                                130,
-                                                                169,
-                                                                248,
-                                                                1)
+                                                            130,
+                                                            169,
+                                                            248,
+                                                            1)
                                                             .withOpacity(0.2),
                                                         // 阴影的颜色
                                                         offset: Offset(-1, 10),
@@ -226,12 +557,12 @@ class _HomePageState extends State<HomePage> {
                                                         blurRadius: 10.0,
                                                         // 高斯的标准偏差与盒子的形状卷积。
                                                         spreadRadius:
-                                                            0.0, // 在应用模糊之前，框应该膨胀的量。
+                                                        0.0, // 在应用模糊之前，框应该膨胀的量。
                                                       ),
                                                     ],
                                                     gradient: LinearGradient(
                                                         begin:
-                                                            Alignment.topRight,
+                                                        Alignment.topRight,
                                                         //右上
                                                         end: Alignment
                                                             .bottomLeft,
@@ -261,22 +592,22 @@ class _HomePageState extends State<HomePage> {
                                                 width: 46,
                                                 height: 46,
                                                 margin:
-                                                    EdgeInsets.only(bottom: 7),
+                                                EdgeInsets.only(bottom: 7),
                                                 child: Align(
                                                     child: Icon(
                                                         IconData(0xe644,
                                                             fontFamily:
-                                                                'sunfont'),
+                                                            'sunfont'),
                                                         size: 24,
                                                         color: Colors.white)),
                                                 decoration: BoxDecoration(
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            18),
+                                                    BorderRadius.circular(
+                                                        18),
                                                     boxShadow: [
                                                       BoxShadow(
                                                         color: Color.fromRGBO(
-                                                                251, 173, 91, 1)
+                                                            251, 173, 91, 1)
                                                             .withOpacity(0.2),
                                                         // 阴影的颜色
                                                         offset: Offset(-1, 10),
@@ -284,12 +615,12 @@ class _HomePageState extends State<HomePage> {
                                                         blurRadius: 10.0,
                                                         // 高斯的标准偏差与盒子的形状卷积。
                                                         spreadRadius:
-                                                            0.0, // 在应用模糊之前，框应该膨胀的量。
+                                                        0.0, // 在应用模糊之前，框应该膨胀的量。
                                                       ),
                                                     ],
                                                     gradient: LinearGradient(
                                                         begin:
-                                                            Alignment.topRight,
+                                                        Alignment.topRight,
                                                         //右上
                                                         end: Alignment
                                                             .bottomLeft,
@@ -319,22 +650,22 @@ class _HomePageState extends State<HomePage> {
                                                 width: 46,
                                                 height: 46,
                                                 margin:
-                                                    EdgeInsets.only(bottom: 7),
+                                                EdgeInsets.only(bottom: 7),
                                                 child: Align(
                                                     child: Icon(
                                                         IconData(0xe606,
                                                             fontFamily:
-                                                                'sunfont'),
+                                                            'sunfont'),
                                                         size: 24,
                                                         color: Colors.white)),
                                                 decoration: BoxDecoration(
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            18),
+                                                    BorderRadius.circular(
+                                                        18),
                                                     boxShadow: [
                                                       BoxShadow(
                                                         color: Color.fromRGBO(
-                                                                239, 140, 85, 1)
+                                                            239, 140, 85, 1)
                                                             .withOpacity(0.2),
                                                         // 阴影的颜色
                                                         offset: Offset(-1, 10),
@@ -342,12 +673,12 @@ class _HomePageState extends State<HomePage> {
                                                         blurRadius: 10.0,
                                                         // 高斯的标准偏差与盒子的形状卷积。
                                                         spreadRadius:
-                                                            0.0, // 在应用模糊之前，框应该膨胀的量。
+                                                        0.0, // 在应用模糊之前，框应该膨胀的量。
                                                       ),
                                                     ],
                                                     gradient: LinearGradient(
                                                         begin:
-                                                            Alignment.topRight,
+                                                        Alignment.topRight,
                                                         //右上
                                                         end: Alignment
                                                             .bottomLeft,
@@ -377,25 +708,25 @@ class _HomePageState extends State<HomePage> {
                                                 width: 46,
                                                 height: 46,
                                                 margin:
-                                                    EdgeInsets.only(bottom: 7),
+                                                EdgeInsets.only(bottom: 7),
                                                 child: Align(
                                                     child: Icon(
                                                         IconData(0xe60b,
                                                             fontFamily:
-                                                                'sunfont'),
+                                                            'sunfont'),
                                                         size: 24,
                                                         color: Colors.white)),
                                                 decoration: BoxDecoration(
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            18),
+                                                    BorderRadius.circular(
+                                                        18),
                                                     boxShadow: [
                                                       BoxShadow(
                                                         color: Color.fromRGBO(
-                                                                198,
-                                                                116,
-                                                                252,
-                                                                1)
+                                                            198,
+                                                            116,
+                                                            252,
+                                                            1)
                                                             .withOpacity(0.2),
                                                         // 阴影的颜色
                                                         offset: Offset(-1, 10),
@@ -403,12 +734,12 @@ class _HomePageState extends State<HomePage> {
                                                         blurRadius: 10.0,
                                                         // 高斯的标准偏差与盒子的形状卷积。
                                                         spreadRadius:
-                                                            0.0, // 在应用模糊之前，框应该膨胀的量。
+                                                        0.0, // 在应用模糊之前，框应该膨胀的量。
                                                       ),
                                                     ],
                                                     gradient: LinearGradient(
                                                         begin:
-                                                            Alignment.topRight,
+                                                        Alignment.topRight,
                                                         //右上
                                                         end: Alignment
                                                             .bottomLeft,
@@ -438,25 +769,25 @@ class _HomePageState extends State<HomePage> {
                                                 width: 46,
                                                 height: 46,
                                                 margin:
-                                                    EdgeInsets.only(bottom: 7),
+                                                EdgeInsets.only(bottom: 7),
                                                 child: Align(
                                                     child: Icon(
                                                         IconData(0xe608,
                                                             fontFamily:
-                                                                'sunfont'),
+                                                            'sunfont'),
                                                         size: 24,
                                                         color: Colors.white)),
                                                 decoration: BoxDecoration(
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            18),
+                                                    BorderRadius.circular(
+                                                        18),
                                                     boxShadow: [
                                                       BoxShadow(
                                                         color: Color.fromRGBO(
-                                                                120,
-                                                                236,
-                                                                139,
-                                                                1)
+                                                            120,
+                                                            236,
+                                                            139,
+                                                            1)
                                                             .withOpacity(0.2),
                                                         // 阴影的颜色
                                                         offset: Offset(-1, 10),
@@ -464,12 +795,12 @@ class _HomePageState extends State<HomePage> {
                                                         blurRadius: 10.0,
                                                         // 高斯的标准偏差与盒子的形状卷积。
                                                         spreadRadius:
-                                                            0.0, // 在应用模糊之前，框应该膨胀的量。
+                                                        0.0, // 在应用模糊之前，框应该膨胀的量。
                                                       ),
                                                     ],
                                                     gradient: LinearGradient(
                                                         begin:
-                                                            Alignment.topRight,
+                                                        Alignment.topRight,
                                                         //右上
                                                         end: Alignment
                                                             .bottomLeft,
@@ -493,56 +824,59 @@ class _HomePageState extends State<HomePage> {
                                           )),
                                       Container(
                                           child: Column(
-                                        children: [
-                                          Container(
-                                            width: 46,
-                                            height: 46,
-                                            margin: EdgeInsets.only(bottom: 7),
-                                            child: Align(
-                                                child: Icon(
-                                                    IconData(0xe601,
-                                                        fontFamily: 'sunfont'),
-                                                    size: 24,
-                                                    color: Colors.white)),
-                                            decoration: BoxDecoration(
-                                                borderRadius:
+                                            children: [
+                                              Container(
+                                                width: 46,
+                                                height: 46,
+                                                margin: EdgeInsets.only(
+                                                    bottom: 7),
+                                                child: Align(
+                                                    child: Icon(
+                                                        IconData(0xe601,
+                                                            fontFamily: 'sunfont'),
+                                                        size: 24,
+                                                        color: Colors.white)),
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
                                                     BorderRadius.circular(18),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Color.fromRGBO(
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Color.fromRGBO(
                                                             92, 208, 195, 1)
-                                                        .withOpacity(0.2),
-                                                    // 阴影的颜色
-                                                    offset: Offset(-1, 10),
-                                                    // 阴影与容器的距离
-                                                    blurRadius: 10.0,
-                                                    // 高斯的标准偏差与盒子的形状卷积。
-                                                    spreadRadius:
+                                                            .withOpacity(0.2),
+                                                        // 阴影的颜色
+                                                        offset: Offset(-1, 10),
+                                                        // 阴影与容器的距离
+                                                        blurRadius: 10.0,
+                                                        // 高斯的标准偏差与盒子的形状卷积。
+                                                        spreadRadius:
                                                         0.0, // 在应用模糊之前，框应该膨胀的量。
-                                                  ),
-                                                ],
-                                                gradient: LinearGradient(
-                                                    begin: Alignment.topRight,
-                                                    //右上
-                                                    end: Alignment.bottomLeft,
-                                                    //左下
-                                                    stops: [
-                                                      0.0,
-                                                      1.0
+                                                      ),
                                                     ],
-                                                    colors: [
-                                                      Color.fromRGBO(
-                                                          92, 208, 195, 1),
-                                                      Color.fromRGBO(
-                                                          117, 228, 212, 1),
-                                                    ])),
-                                          ),
-                                          Text(
-                                            "周报",
-                                            style: TextStyle(fontSize: 12),
-                                          )
-                                        ],
-                                      ))
+                                                    gradient: LinearGradient(
+                                                        begin: Alignment
+                                                            .topRight,
+                                                        //右上
+                                                        end: Alignment
+                                                            .bottomLeft,
+                                                        //左下
+                                                        stops: [
+                                                          0.0,
+                                                          1.0
+                                                        ],
+                                                        colors: [
+                                                          Color.fromRGBO(
+                                                              92, 208, 195, 1),
+                                                          Color.fromRGBO(
+                                                              117, 228, 212, 1),
+                                                        ])),
+                                              ),
+                                              Text(
+                                                "周报",
+                                                style: TextStyle(fontSize: 12),
+                                              )
+                                            ],
+                                          ))
                                     ],
                                   )
                                 ],
@@ -559,7 +893,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             child: Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
                                       width: 140,
@@ -581,9 +915,9 @@ class _HomePageState extends State<HomePage> {
                                         margin: EdgeInsets.only(top: 10),
                                         decoration: BoxDecoration(
                                             color:
-                                                Color.fromRGBO(34, 212, 126, 1),
+                                            Color.fromRGBO(34, 212, 126, 1),
                                             borderRadius:
-                                                BorderRadius.circular(16)),
+                                            BorderRadius.circular(16)),
                                         child: Align(
                                             child: Text("开始计划",
                                                 style: TextStyle(
@@ -614,7 +948,7 @@ class _HomePageState extends State<HomePage> {
                                       children: [
                                         Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text("饮食&运动记录",
                                                 style: TextStyle(
@@ -622,39 +956,41 @@ class _HomePageState extends State<HomePage> {
                                                     fontWeight: FontWeight.w800,
                                                     fontSize: 14)),
                                             Container(
-                                                // 点击事件
+                                              // 点击事件
                                                 child: Row(
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
+                                                    CrossAxisAlignment
+                                                        .center,
                                                     children: [
-                                                  Text("更多食谱",
-                                                      style: TextStyle(
-                                                          color: Color.fromRGBO(
-                                                              120, 120, 120, 1),
-                                                          fontSize: 12)),
-                                                  SizedBox(width: 5),
-                                                  Icon(
-                                                      IconData(0xeb8a,
-                                                          fontFamily:
+                                                      Text("更多食谱",
+                                                          style: TextStyle(
+                                                              color: Color
+                                                                  .fromRGBO(
+                                                                  120, 120, 120,
+                                                                  1),
+                                                              fontSize: 12)),
+                                                      SizedBox(width: 5),
+                                                      Icon(
+                                                          IconData(0xeb8a,
+                                                              fontFamily:
                                                               'sunfont'),
-                                                      size: 10,
-                                                      color: Color.fromRGBO(
-                                                          120, 120, 120, 1))
-                                                ]))
+                                                          size: 10,
+                                                          color: Color.fromRGBO(
+                                                              120, 120, 120, 1))
+                                                    ]))
                                           ],
                                         ),
                                         Container(
                                           margin: EdgeInsets.only(top: 10),
                                           child: Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.center,
+                                            CrossAxisAlignment.center,
                                             children: [
                                               Column(
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                                 children: [
                                                   Row(children: [
                                                     Text("还可以吃",
@@ -664,7 +1000,7 @@ class _HomePageState extends State<HomePage> {
                                                     Icon(
                                                         IconData(0xeb8a,
                                                             fontFamily:
-                                                                'sunfont'),
+                                                            'sunfont'),
                                                         size: 10,
                                                         color: Colors.black)
                                                   ]),
@@ -673,16 +1009,16 @@ class _HomePageState extends State<HomePage> {
                                                     Text("1998",
                                                         style: TextStyle(
                                                             color:
-                                                                Colors.black87,
+                                                            Colors.black87,
                                                             fontWeight:
-                                                                FontWeight.bold,
+                                                            FontWeight.bold,
                                                             fontSize: 25,
                                                             fontFamily:
-                                                                "PingFang SC")),
+                                                            "PingFang SC")),
                                                     Text("千卡",
                                                         style: TextStyle(
                                                             color:
-                                                                Colors.black38,
+                                                            Colors.black38,
                                                             fontSize: 10,
                                                             height: 2.6))
                                                   ]),
@@ -695,9 +1031,9 @@ class _HomePageState extends State<HomePage> {
                                                           color: Color.fromRGBO(
                                                               237, 236, 242, 1),
                                                           borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      15))),
+                                                          BorderRadius
+                                                              .circular(
+                                                              15))),
                                                   Text("推荐摄入1998千卡",
                                                       style: TextStyle(
                                                           fontSize: 12,
@@ -733,9 +1069,10 @@ class _HomePageState extends State<HomePage> {
                                             bottomRight: Radius.circular(10))),
                                     child: Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
+                                      MainAxisAlignment.spaceBetween,
+                                      children: mealsList.map((item){
+                                        return InkWell(
+                                            child:Container(
                                           padding: EdgeInsets.only(
                                               left: 10,
                                               right: 10,
@@ -745,127 +1082,24 @@ class _HomePageState extends State<HomePage> {
                                               color: Color.fromRGBO(
                                                   246, 247, 251, 1),
                                               borderRadius:
-                                                  BorderRadius.circular(8)),
+                                              BorderRadius.circular(8)),
                                           child: Column(
                                             children: [
                                               Icon(
-                                                  IconData(0xe635,
+                                                  IconData(item['icon'],
                                                       fontFamily: 'sunfont'),
                                                   size: 20,
                                                   color: Colors.black),
                                               SizedBox(height: 5),
-                                              Text("早餐",
+                                              Text(item['title'],
                                                   style: TextStyle(
                                                       fontSize: 12,
                                                       color: Colors.black))
                                             ],
                                           ),
                                         ),
-                                        Container(
-                                          padding: EdgeInsets.only(
-                                              left: 10,
-                                              right: 10,
-                                              top: 8,
-                                              bottom: 8),
-                                          decoration: BoxDecoration(
-                                              color: Color.fromRGBO(
-                                                  246, 247, 251, 1),
-                                              borderRadius:
-                                                  BorderRadius.circular(8)),
-                                          child: Column(
-                                            children: [
-                                              Icon(
-                                                  IconData(0xe602,
-                                                      fontFamily: 'sunfont'),
-                                                  size: 20,
-                                                  color: Colors.black),
-                                              SizedBox(height: 5),
-                                              Text("午餐",
-                                                  style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: Colors.black))
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          padding: EdgeInsets.only(
-                                              left: 10,
-                                              right: 10,
-                                              top: 8,
-                                              bottom: 8),
-                                          decoration: BoxDecoration(
-                                              color: Color.fromRGBO(
-                                                  246, 247, 251, 1),
-                                              borderRadius:
-                                                  BorderRadius.circular(8)),
-                                          child: Column(
-                                            children: [
-                                              Icon(
-                                                  IconData(0xe627,
-                                                      fontFamily: 'sunfont'),
-                                                  size: 20,
-                                                  color: Colors.black),
-                                              SizedBox(height: 5),
-                                              Text("晚餐",
-                                                  style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: Colors.black))
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          padding: EdgeInsets.only(
-                                              left: 10,
-                                              right: 10,
-                                              top: 8,
-                                              bottom: 8),
-                                          decoration: BoxDecoration(
-                                              color: Color.fromRGBO(
-                                                  246, 247, 251, 1),
-                                              borderRadius:
-                                                  BorderRadius.circular(8)),
-                                          child: Column(
-                                            children: [
-                                              Icon(
-                                                  IconData(0xe60c,
-                                                      fontFamily: 'sunfont'),
-                                                  size: 20,
-                                                  color: Colors.black),
-                                              SizedBox(height: 5),
-                                              Text("加餐",
-                                                  style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: Colors.black))
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          padding: EdgeInsets.only(
-                                              left: 10,
-                                              right: 10,
-                                              top: 8,
-                                              bottom: 8),
-                                          decoration: BoxDecoration(
-                                              color: Color.fromRGBO(
-                                                  246, 247, 251, 1),
-                                              borderRadius:
-                                                  BorderRadius.circular(8)),
-                                          child: Column(
-                                            children: [
-                                              Icon(
-                                                  IconData(0xe719,
-                                                      fontFamily: 'sunfont'),
-                                                  size: 20,
-                                                  color: Colors.black),
-                                              SizedBox(height: 5),
-                                              Text("运动",
-                                                  style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: Colors.black))
-                                            ],
-                                          ),
-                                        ),
-                                      ],
+                                            onTap: (){});
+                                      }).toList()
                                     ),
                                   ),
                                   Container(
@@ -875,682 +1109,12 @@ class _HomePageState extends State<HomePage> {
                                     decoration: BoxDecoration(
                                         color: Colors.grey[300],
                                         borderRadius:
-                                            BorderRadius.circular(10)),
+                                        BorderRadius.circular(10)),
                                   ),
-                                  Container(
-                                    margin:
-                                        EdgeInsets.only(top: 15, bottom: 15),
-                                    padding: EdgeInsets.only(
-                                        top: 15,
-                                        bottom: 10,
-                                        left: 15,
-                                        right: 15),
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text("我的设备",
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontWeight: FontWeight.w800,
-                                                    fontSize: 14)),
-                                            Container(
-                                                // 点击事件
-                                                child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                  Text("更多设备",
-                                                      style: TextStyle(
-                                                          color: Color.fromRGBO(
-                                                              120, 120, 120, 1),
-                                                          fontSize: 12)),
-                                                  SizedBox(width: 5),
-                                                  Icon(
-                                                      IconData(0xeb8a,
-                                                          fontFamily:
-                                                              'sunfont'),
-                                                      size: 10,
-                                                      color: Color.fromRGBO(
-                                                          120, 120, 120, 1))
-                                                ]))
-                                          ],
-                                        ),
-                                        Container(
-                                            width: double.infinity,
-                                            height: 70,
-                                            margin: EdgeInsets.only(
-                                                top: 14, bottom: 12),
-                                            child: ListView(
-                                              shrinkWrap: true,
-                                              physics:
-                                                  AlwaysScrollableScrollPhysics(),
-                                              // 根据不同的平台切换不同的物理效果
-                                              scrollDirection: Axis.horizontal,
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Container(
-                                                        margin: EdgeInsets.only(
-                                                            right: 30),
-                                                        child: Column(
-                                                          children: [
-                                                            Container(
-                                                                width: 46,
-                                                                height: 46,
-                                                                margin: EdgeInsets
-                                                                    .only(
-                                                                        bottom:
-                                                                            7),
-                                                                child: Align(
-                                                                    child: Image.asset(
-                                                                        "assets/images/01.png",
-                                                                        fit: BoxFit
-                                                                            .cover))),
-                                                            Text(
-                                                              "智能跳绳",
-                                                              style: TextStyle(
-                                                                  fontSize: 12),
-                                                            )
-                                                          ],
-                                                        )),
-                                                    Container(
-                                                        margin: EdgeInsets.only(
-                                                            right: 30),
-                                                        child: Column(
-                                                          children: [
-                                                            Container(
-                                                              width: 46,
-                                                              height: 46,
-                                                              margin: EdgeInsets
-                                                                  .only(
-                                                                      bottom:
-                                                                          7),
-                                                              child: Align(
-                                                                  child: Image.asset(
-                                                                      "assets/images/02.png",
-                                                                      fit: BoxFit
-                                                                          .cover)),
-                                                            ),
-                                                            Text(
-                                                              "温湿度计",
-                                                              style: TextStyle(
-                                                                  fontSize: 12),
-                                                            )
-                                                          ],
-                                                        )),
-                                                    Container(
-                                                        margin: EdgeInsets.only(
-                                                            right: 30),
-                                                        child: Column(
-                                                          children: [
-                                                            Container(
-                                                              width: 46,
-                                                              height: 46,
-                                                              margin: EdgeInsets
-                                                                  .only(
-                                                                      bottom:
-                                                                          7),
-                                                              child: Align(
-                                                                  child: Image.asset(
-                                                                      "assets/images/03.png",
-                                                                      fit: BoxFit
-                                                                          .cover)),
-                                                            ),
-                                                            Text(
-                                                              "灭蚊灯",
-                                                              style: TextStyle(
-                                                                  fontSize: 12),
-                                                            )
-                                                          ],
-                                                        )),
-                                                    Container(
-                                                        margin: EdgeInsets.only(
-                                                            right: 30),
-                                                        child: Column(
-                                                          children: [
-                                                            Container(
-                                                                width: 46,
-                                                                height: 46,
-                                                                margin: EdgeInsets
-                                                                    .only(
-                                                                        bottom:
-                                                                            7),
-                                                                child: Align(
-                                                                    child: Image.asset(
-                                                                        "assets/images/04.png",
-                                                                        fit: BoxFit
-                                                                            .cover))),
-                                                            Text(
-                                                              "扭腰体脂秤",
-                                                              style: TextStyle(
-                                                                  fontSize: 12),
-                                                            )
-                                                          ],
-                                                        )),
-                                                    Container(
-                                                        child: Column(
-                                                      children: [
-                                                        Container(
-                                                            width: 46,
-                                                            height: 46,
-                                                            margin:
-                                                                EdgeInsets.only(
-                                                                    bottom: 7),
-                                                            child: Align(
-                                                                child: Image.asset(
-                                                                    "assets/images/05.png",
-                                                                    fit: BoxFit
-                                                                        .cover))),
-                                                        Text(
-                                                          "温湿度计网关",
-                                                          style: TextStyle(
-                                                              fontSize: 12),
-                                                        )
-                                                      ],
-                                                    ))
-                                                  ],
-                                                )
-                                              ],
-                                            ))
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(bottom: 15),
-                                    padding:
-                                        EdgeInsets.only(top: 15, bottom: 10),
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 15, right: 15),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text("人气动态",
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.w800,
-                                                      fontSize: 14)),
-                                              Container(
-                                                  // 点击事件
-                                                  child: Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                    Text("更多动态",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Color.fromRGBO(
-                                                                    120,
-                                                                    120,
-                                                                    120,
-                                                                    1),
-                                                            fontSize: 12)),
-                                                    SizedBox(width: 5),
-                                                    Icon(
-                                                        IconData(0xeb8a,
-                                                            fontFamily:
-                                                                'sunfont'),
-                                                        size: 10,
-                                                        color: Color.fromRGBO(
-                                                            120, 120, 120, 1))
-                                                  ]))
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          width: double.infinity,
-                                          height: 185,
-                                          margin: EdgeInsets.only(top: 18),
-                                          child: ListView(
-                                            shrinkWrap: true,
-                                            physics:
-                                                AlwaysScrollableScrollPhysics(),
-                                            // 根据不同的平台切换不同的物理效果
-                                            scrollDirection: Axis.horizontal,
-                                            children: [
-                                              Row(
-                                                // mainAxisAlignment:
-                                                //     MainAxisAlignment
-                                                //         .spaceBetween,
-                                                children: [
-                                                  Container(
-                                                      margin: EdgeInsets.only(
-                                                          left: 15),
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Stack(
-                                                            children: [
-                                                              ClipRRect(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10),
-                                                                child: Stack(
-                                                                  children: [
-                                                                    Image.asset(
-                                                                        "assets/images/400x400.jpg",
-                                                                        fit: BoxFit
-                                                                            .cover,
-                                                                        width:
-                                                                            120,
-                                                                        height:
-                                                                            120),
-                                                                    BackdropFilter(
-                                                                      filter: new ImageFilter
-                                                                              .blur(
-                                                                          sigmaX:
-                                                                              0.5,
-                                                                          sigmaY:
-                                                                              0.5),
-                                                                      child:
-                                                                          new Container(
-                                                                        color: Colors
-                                                                            .black
-                                                                            .withOpacity(0.5),
-                                                                      ),
-                                                                    )
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              Positioned(
-                                                                bottom: 6,
-                                                                left: 10,
-                                                                child: Align(
-                                                                  child: Container(
-                                                                      padding: EdgeInsets.only(
-                                                                          left:
-                                                                              8,
-                                                                          right:
-                                                                              8,
-                                                                          top:
-                                                                              3,
-                                                                          bottom:
-                                                                              3),
-                                                                      decoration: BoxDecoration(
-                                                                          color: Color.fromRGBO(
-                                                                              0,
-                                                                              0,
-                                                                              0,
-                                                                              0.5),
-                                                                          borderRadius: BorderRadius.circular(
-                                                                              3)),
-                                                                      child: Text(
-                                                                          "12人点赞",
-                                                                          style: TextStyle(
-                                                                              fontSize: 8,
-                                                                              color: Colors.white))),
-                                                                ),
-                                                              )
-                                                            ],
-                                                          ),
-                                                          Container(
-                                                            margin:
-                                                                EdgeInsets.only(
-                                                                    top: 4),
-                                                            // height: 24,
-                                                            width: 120,
-                                                            child: Text(
-                                                                "午餐时间午餐时间午餐时间午餐时间午餐时间时间午餐时间时间午餐时间",
-                                                                maxLines: 2,
-                                                                softWrap: false,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 10,
-                                                                )),
-                                                          ),
-                                                          Container(
-                                                            margin:
-                                                                EdgeInsets.only(
-                                                                    top: 10),
-                                                            child: Row(
-                                                              children: [
-                                                                Container(
-                                                                    margin: EdgeInsets
-                                                                        .only(
-                                                                            right:
-                                                                                5),
-                                                                    width: 20,
-                                                                    height: 20,
-                                                                    clipBehavior:
-                                                                        Clip
-                                                                            .hardEdge,
-                                                                    decoration: BoxDecoration(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(
-                                                                                30)),
-                                                                    child: Image.asset(
-                                                                        "assets/images/400x400.jpg",
-                                                                        fit: BoxFit
-                                                                            .cover)),
-                                                                Container(
-                                                                  width: 76,
-                                                                  child: Text(
-                                                                      "书本书华dillonls0409",
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                      maxLines:
-                                                                          1,
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              10,
-                                                                          color:
-                                                                              Colors.grey[800])),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          )
-                                                        ],
-                                                      )),
-                                                  Container(
-                                                      margin: EdgeInsets.only(
-                                                          left: 15),
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Stack(
-                                                            children: [
-                                                              ClipRRect(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10),
-                                                                child: Stack(
-                                                                  children: [
-                                                                    Image.asset(
-                                                                        "assets/images/400x400.jpg",
-                                                                        fit: BoxFit
-                                                                            .cover,
-                                                                        width:
-                                                                            120,
-                                                                        height:
-                                                                            120),
-                                                                    BackdropFilter(
-                                                                      filter: new ImageFilter
-                                                                              .blur(
-                                                                          sigmaX:
-                                                                              0.5,
-                                                                          sigmaY:
-                                                                              0.5),
-                                                                      child:
-                                                                          new Container(
-                                                                        color: Colors
-                                                                            .black
-                                                                            .withOpacity(0.5),
-                                                                      ),
-                                                                    )
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              Positioned(
-                                                                bottom: 6,
-                                                                left: 10,
-                                                                child: Align(
-                                                                  child: Container(
-                                                                      padding: EdgeInsets.only(
-                                                                          left:
-                                                                              8,
-                                                                          right:
-                                                                              8,
-                                                                          top:
-                                                                              3,
-                                                                          bottom:
-                                                                              3),
-                                                                      decoration: BoxDecoration(
-                                                                          color: Color.fromRGBO(
-                                                                              0,
-                                                                              0,
-                                                                              0,
-                                                                              0.5),
-                                                                          borderRadius: BorderRadius.circular(
-                                                                              3)),
-                                                                      child: Text(
-                                                                          "12人点赞",
-                                                                          style: TextStyle(
-                                                                              fontSize: 8,
-                                                                              color: Colors.white))),
-                                                                ),
-                                                              )
-                                                            ],
-                                                          ),
-                                                          Container(
-                                                            margin:
-                                                                EdgeInsets.only(
-                                                                    top: 4),
-                                                            // height: 24,
-                                                            width: 120,
-                                                            child: Text(
-                                                                "午餐时间午餐时间午餐时间午餐时间午餐时间时间午餐时间时间午餐时间",
-                                                                maxLines: 2,
-                                                                softWrap: false,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 10,
-                                                                )),
-                                                          ),
-                                                          Container(
-                                                            margin:
-                                                                EdgeInsets.only(
-                                                                    top: 10),
-                                                            child: Row(
-                                                              children: [
-                                                                Container(
-                                                                    margin: EdgeInsets
-                                                                        .only(
-                                                                            right:
-                                                                                5),
-                                                                    width: 20,
-                                                                    height: 20,
-                                                                    clipBehavior:
-                                                                        Clip
-                                                                            .hardEdge,
-                                                                    decoration: BoxDecoration(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(
-                                                                                30)),
-                                                                    child: Image.asset(
-                                                                        "assets/images/400x400.jpg",
-                                                                        fit: BoxFit
-                                                                            .cover)),
-                                                                Container(
-                                                                  width: 76,
-                                                                  child: Text(
-                                                                      "书本书华dillonls0409",
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                      maxLines:
-                                                                          1,
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              10,
-                                                                          color:
-                                                                              Colors.grey[800])),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          )
-                                                        ],
-                                                      )),
-                                                  Container(
-                                                      margin: EdgeInsets.only(
-                                                          left: 15),
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Stack(
-                                                            children: [
-                                                              ClipRRect(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10),
-                                                                child: Stack(
-                                                                  children: [
-                                                                    Image.asset(
-                                                                        "assets/images/400x400.jpg",
-                                                                        fit: BoxFit
-                                                                            .cover,
-                                                                        width:
-                                                                            120,
-                                                                        height:
-                                                                            120),
-                                                                    BackdropFilter(
-                                                                      filter: new ImageFilter
-                                                                              .blur(
-                                                                          sigmaX:
-                                                                              0.5,
-                                                                          sigmaY:
-                                                                              0.5),
-                                                                      child:
-                                                                          new Container(
-                                                                        color: Colors
-                                                                            .black
-                                                                            .withOpacity(0.5),
-                                                                      ),
-                                                                    )
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              Positioned(
-                                                                bottom: 6,
-                                                                left: 10,
-                                                                child: Align(
-                                                                  child: Container(
-                                                                      padding: EdgeInsets.only(
-                                                                          left:
-                                                                              8,
-                                                                          right:
-                                                                              8,
-                                                                          top:
-                                                                              3,
-                                                                          bottom:
-                                                                              3),
-                                                                      decoration: BoxDecoration(
-                                                                          color: Color.fromRGBO(
-                                                                              0,
-                                                                              0,
-                                                                              0,
-                                                                              0.5),
-                                                                          borderRadius: BorderRadius.circular(
-                                                                              3)),
-                                                                      child: Text(
-                                                                          "12人点赞",
-                                                                          style: TextStyle(
-                                                                              fontSize: 8,
-                                                                              color: Colors.white))),
-                                                                ),
-                                                              )
-                                                            ],
-                                                          ),
-                                                          Container(
-                                                            margin:
-                                                                EdgeInsets.only(
-                                                                    top: 4),
-                                                            // height: 24,
-                                                            width: 120,
-                                                            child: Text(
-                                                                "午餐时间午餐时间午餐时间午餐时间午餐时间时间午餐时间时间午餐时间",
-                                                                maxLines: 2,
-                                                                softWrap: false,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 10,
-                                                                )),
-                                                          ),
-                                                          Container(
-                                                            margin:
-                                                                EdgeInsets.only(
-                                                                    top: 10),
-                                                            child: Row(
-                                                              children: [
-                                                                Container(
-                                                                    margin: EdgeInsets
-                                                                        .only(
-                                                                            right:
-                                                                                5),
-                                                                    width: 20,
-                                                                    height: 20,
-                                                                    clipBehavior:
-                                                                        Clip
-                                                                            .hardEdge,
-                                                                    decoration: BoxDecoration(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(
-                                                                                30)),
-                                                                    child: Image.asset(
-                                                                        "assets/images/400x400.jpg",
-                                                                        fit: BoxFit
-                                                                            .cover)),
-                                                                Container(
-                                                                  width: 76,
-                                                                  child: Text(
-                                                                      "书本书华dillonls0409",
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                      maxLines:
-                                                                          1,
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              10,
-                                                                          color:
-                                                                              Colors.grey[800])),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          )
-                                                        ],
-                                                      )),
-                                                  SizedBox(
-                                                    width: 15,
-                                                  )
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  )
+                                  MyDeviceComm(), // 我的设备
+                                  MyPopTrendComm(), // 人气动态
+                                  MyKnowLedgeComm(), // 知识精选
+                                  SizedBox(height: 30)
                                 ],
                               ))
                         ],
