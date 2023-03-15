@@ -382,12 +382,13 @@ class _HomePageState extends State<HomePage> {
   double barScrollX = 0;
   double listViewWidth = 76.0 * navList.length; // listView宽度
   double navTrackWidth = 30; // 轨道
-  double navBarWidth = 10; // 滑块
+  double navBarWidth = 15; // 滑块
   @override
   void initState() {
     navController.addListener(() {
+      double _barScrollX = (navController.offset * navTrackWidth) / listViewWidth;
       setState(() {
-        barScrollX = (navController.offset * navTrackWidth) / listViewWidth;
+        barScrollX = _barScrollX;
       });
       print("滑动的距离>> $barScrollX");
     });
@@ -526,11 +527,11 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(height: 15),
                           Column(children: [
                             Container(
                                 width: double.infinity,
-                                height: 70,
+                                height: 78,
                                 child: ListView(
                                   shrinkWrap: true,
                                   physics: AlwaysScrollableScrollPhysics(),
@@ -545,63 +546,12 @@ class _HomePageState extends State<HomePage> {
                                           return InkWell(
                                             child: Container(
                                                 margin:
-                                                    EdgeInsets.only(right: 30),
+                                                    EdgeInsets.only(right: item['id'] == 5 ? 0 : 15),
                                                 child: Column(
                                                   children: [
                                                     Container(
-                                                      width: 46,
-                                                      height: 46,
-                                                      margin: EdgeInsets.only(
-                                                          bottom: 7),
                                                       child: Align(
-                                                          child: Icon(
-                                                              IconData(
-                                                                  item['icon'],
-                                                                  fontFamily:
-                                                                      'sunfont'),
-                                                              size: 24,
-                                                              color: Colors
-                                                                  .white)),
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(18),
-                                                          boxShadow: [
-                                                            BoxShadow(
-                                                              color: Color(item[
-                                                                      'shadow'])
-                                                                  .withOpacity(
-                                                                      0.2),
-                                                              // 阴影的颜色
-                                                              offset: Offset(
-                                                                  -1, 10),
-                                                              // 阴影与容器的距离
-                                                              blurRadius: 10.0,
-                                                              // 高斯的标准偏差与盒子的形状卷积。
-                                                              spreadRadius:
-                                                                  0.0, // 在应用模糊之前，框应该膨胀的量。
-                                                            ),
-                                                          ],
-                                                          gradient:
-                                                              LinearGradient(
-                                                                  begin: Alignment
-                                                                      .topRight,
-                                                                  //右上
-                                                                  end: Alignment
-                                                                      .bottomLeft,
-                                                                  //左下
-                                                                  stops: [
-                                                                0.0,
-                                                                1.0
-                                                              ],
-                                                                  colors: [
-                                                                Color(item[
-                                                                    'shadow']),
-                                                                // Color.fromRGBO(
-                                                                //     130, 169, 248, 1),
-                                                                Color(item[
-                                                                    'color']),
-                                                              ])),
+                                                          child: Image.asset(item["image"], width: 60))
                                                     ),
                                                     Text(
                                                       item["title"],
@@ -625,7 +575,7 @@ class _HomePageState extends State<HomePage> {
                                   height: 3,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(6),
-                                      color: Color(0xff000000)), //0xffecedf2
+                                      color: Color(0xffecedf2)),
                                 ),
                                 Positioned(
                                     left: barScrollX,

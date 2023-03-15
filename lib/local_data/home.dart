@@ -2,44 +2,32 @@ List navList = [
   {
     "id": 0,
     "title": "每日步数",
-    "icon": 0xe636,
-    "shadow": 0xff82a9f8,
-    "color": 0xff6db3f1
+    "image": "assets/images/nav/nav_1.png"
   },
   {
-    "id": 0,
+    "id": 1,
     "title": "小目标",
-    "icon": 0xe644,
-    "shadow": 0xfffbad5b,
-    "color": 0xfffbc98a
+    "image": "assets/images/nav/nav_2.png"
   },
   {
-    "id": 0,
+    "id": 2,
     "title": "食物查询",
-    "icon": 0xe606,
-    "shadow": 0xffef8c55,
-    "color": 0xfff29768
+    "image": "assets/images/nav/nav_3.png"
   },
   {
-    "id": 0,
+    "id": 3,
     "title": "历史记录",
-    "icon": 0xe60b,
-    "shadow": 0xffc674fc,
-    "color": 0xffd787fa
+    "image": "assets/images/nav/nav_4.png"
   },
   {
-    "id": 0,
+    "id": 4,
     "title": "体重趋势",
-    "icon": 0xe608,
-    "shadow": 0xff78ec8b,
-    "color": 0xff9cef95
+    "image": "assets/images/nav/nav_5.png"
   },
   {
-    "id": 0,
+    "id": 5,
     "title": "周报",
-    "icon": 0xe601,
-    "shadow": 0xff5cd0c3,
-    "color": 0xff75e4d4
+    "image": "assets/images/nav/nav_6.png"
   }
 ];
 // 饮食记录 底部
