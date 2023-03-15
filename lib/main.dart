@@ -45,6 +45,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  ScrollController navController = ScrollController();
+
   // 我的设备
   Widget MyDeviceComm() {
     return Container(
@@ -67,19 +69,18 @@ class _HomePageState extends State<HomePage> {
                       fontSize: 14)),
               InkWell(
                   child: Container(
-                    // 点击事件
+                      // 点击事件
                       child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text("更多设备",
-                                style: TextStyle(
-                                    color: Color.fromRGBO(120, 120, 120, 1),
-                                    fontSize: 12)),
-                            SizedBox(width: 5),
-                            Icon(IconData(0xeb8a, fontFamily: 'sunfont'),
-                                size: 10,
-                                color: Color.fromRGBO(120, 120, 120, 1))
-                          ])),
+                        Text("更多设备",
+                            style: TextStyle(
+                                color: Color.fromRGBO(120, 120, 120, 1),
+                                fontSize: 12)),
+                        SizedBox(width: 5),
+                        Icon(IconData(0xeb8a, fontFamily: 'sunfont'),
+                            size: 10, color: Color.fromRGBO(120, 120, 120, 1))
+                      ])),
                   onTap: () {
                     print("跳转更多设备");
                   })
@@ -97,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                     return InkWell(
                       child: Container(
                           margin:
-                          EdgeInsets.only(right: item['id'] != 4 ? 50 : 0),
+                              EdgeInsets.only(right: item['id'] != 4 ? 50 : 0),
                           child: Column(
                             children: [
                               Container(
@@ -151,15 +152,14 @@ class _HomePageState extends State<HomePage> {
                         child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text("更多动态",
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(120, 120, 120, 1),
-                                      fontSize: 12)),
-                              SizedBox(width: 5),
-                              Icon(IconData(0xeb8a, fontFamily: 'sunfont'),
-                                  size: 10,
-                                  color: Color.fromRGBO(120, 120, 120, 1))
-                            ])),
+                          Text("更多动态",
+                              style: TextStyle(
+                                  color: Color.fromRGBO(120, 120, 120, 1),
+                                  fontSize: 12)),
+                          SizedBox(width: 5),
+                          Icon(IconData(0xeb8a, fontFamily: 'sunfont'),
+                              size: 10, color: Color.fromRGBO(120, 120, 120, 1))
+                        ])),
                     onTap: () {})
               ],
             ),
@@ -174,86 +174,90 @@ class _HomePageState extends State<HomePage> {
               scrollDirection: Axis.horizontal,
               children: popTrendList.map((item) {
                 return InkWell(
-                  child: Container(
-                      margin: EdgeInsets.only(left: 15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Stack(
-                                  children: [
-                                    Image.network(item['fileList'][0]['url'],
-                                        fit: BoxFit.cover,
-                                        width: 120,
-                                        height: 120)
-                                  ],
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 10,
-                                left: 10,
-                                child: Align(
-                                  child: Container(
-                                      padding: EdgeInsets.only(
-                                          left: 8, right: 8, top: 3, bottom: 3),
-                                      decoration: BoxDecoration(
-                                          color: Color.fromRGBO(0, 0, 0, 0.5),
-                                          borderRadius: BorderRadius.circular(3)),
-                                      child: Text(
-                                          item["tagsNum"].toString() + "人点赞",
-                                          style: TextStyle(
-                                              fontSize: 10,
-                                              color: Colors.white))),
-                                ),
-                              )
-                            ],
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 10),
-                            width: 120,
-                            height: 34,
-                            child: Text(item["textShow"],
-                                maxLines: 2,
-                                softWrap: false,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                )),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 10),
-                            child: Row(
+                    child: Container(
+                        margin: EdgeInsets.only(left: 15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Stack(
                               children: [
-                                Container(
-                                    margin: EdgeInsets.only(right: 5),
-                                    width: 20,
-                                    height: 20,
-                                    clipBehavior: Clip.hardEdge,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(30)),
-                                    child: Image.network(item["avatar"],
-                                        fit: BoxFit.cover)),
-                                Container(
-                                  width: 80,
-                                  child: Text(item["nickName"],
-                                      textAlign: TextAlign.left,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          color:
-                                          Color.fromRGBO(108, 107, 113, 1))),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Stack(
+                                    children: [
+                                      Image.network(item['fileList'][0]['url'],
+                                          fit: BoxFit.cover,
+                                          width: 120,
+                                          height: 120)
+                                    ],
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 10,
+                                  left: 10,
+                                  child: Align(
+                                    child: Container(
+                                        padding: EdgeInsets.only(
+                                            left: 8,
+                                            right: 8,
+                                            top: 3,
+                                            bottom: 3),
+                                        decoration: BoxDecoration(
+                                            color: Color.fromRGBO(0, 0, 0, 0.5),
+                                            borderRadius:
+                                                BorderRadius.circular(3)),
+                                        child: Text(
+                                            item["tagsNum"].toString() + "人点赞",
+                                            style: TextStyle(
+                                                fontSize: 10,
+                                                color: Colors.white))),
+                                  ),
                                 )
                               ],
                             ),
-                          )
-                        ],
-                      )),
-                  onTap: (){}
-                );
+                            Container(
+                              margin: EdgeInsets.only(top: 10),
+                              width: 120,
+                              height: 34,
+                              child: Text(item["textShow"],
+                                  maxLines: 2,
+                                  softWrap: false,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                  )),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(top: 10),
+                              child: Row(
+                                children: [
+                                  Container(
+                                      margin: EdgeInsets.only(right: 5),
+                                      width: 20,
+                                      height: 20,
+                                      clipBehavior: Clip.hardEdge,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(30)),
+                                      child: Image.network(item["avatar"],
+                                          fit: BoxFit.cover)),
+                                  Container(
+                                    width: 80,
+                                    child: Text(item["nickName"],
+                                        textAlign: TextAlign.left,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: Color.fromRGBO(
+                                                108, 107, 113, 1))),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        )),
+                    onTap: () {});
               }).toList(),
             ),
           ),
@@ -288,15 +292,14 @@ class _HomePageState extends State<HomePage> {
                         child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text("更多知识",
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(120, 120, 120, 1),
-                                      fontSize: 12)),
-                              SizedBox(width: 5),
-                              Icon(IconData(0xeb8a, fontFamily: 'sunfont'),
-                                  size: 10,
-                                  color: Color.fromRGBO(120, 120, 120, 1))
-                            ])),
+                          Text("更多知识",
+                              style: TextStyle(
+                                  color: Color.fromRGBO(120, 120, 120, 1),
+                                  fontSize: 12)),
+                          SizedBox(width: 5),
+                          Icon(IconData(0xeb8a, fontFamily: 'sunfont'),
+                              size: 10, color: Color.fromRGBO(120, 120, 120, 1))
+                        ])),
                     onTap: () {})
               ],
             ),
@@ -336,13 +339,17 @@ class _HomePageState extends State<HomePage> {
                                   child: Align(
                                     child: Container(
                                         padding: EdgeInsets.only(
-                                            left: 8, right: 8, top: 3, bottom: 3),
+                                            left: 8,
+                                            right: 8,
+                                            top: 3,
+                                            bottom: 3),
                                         decoration: BoxDecoration(
                                             color: Color.fromRGBO(0, 0, 0, 0.5),
-                                            borderRadius: BorderRadius.circular(
-                                                3)),
+                                            borderRadius:
+                                                BorderRadius.circular(3)),
                                         child: Text(
-                                            item["collectNum"].toString()+"人收藏",
+                                            item["collectNum"].toString() +
+                                                "人收藏",
                                             style: TextStyle(
                                                 fontSize: 10,
                                                 color: Colors.white))),
@@ -363,22 +370,32 @@ class _HomePageState extends State<HomePage> {
                             )
                           ],
                         )),
-                    onTap: (){},
+                    onTap: () {},
                   );
-                }).toList()
-            ),
+                }).toList()),
           ),
         ],
       ),
     );
   }
 
+  double barScrollX = 0;
+  double listViewWidth = 76.0 * navList.length; // listView宽度
+  double navTrackWidth = 30; // 轨道
+  double navBarWidth = 10; // 滑块
+  @override
+  void initState() {
+    navController.addListener(() {
+      setState(() {
+        barScrollX = (navController.offset * navTrackWidth) / listViewWidth;
+      });
+      print("滑动的距离>> $barScrollX");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    double topBarHeight = MediaQueryData
-        .fromWindow(window)
-        .padding
-        .top;
+    double topBarHeight = MediaQueryData.fromWindow(window).padding.top;
     return Scaffold(
       backgroundColor: Color.fromRGBO(246, 247, 251, 1),
       body: Container(
@@ -433,7 +450,7 @@ class _HomePageState extends State<HomePage> {
             ]),
             Expanded(
               child: MediaQuery.removePadding(
-                // 去除顶部留白
+                  // 去除顶部留白
                   context: context,
                   removeTop: true,
                   removeBottom: true,
@@ -475,7 +492,7 @@ class _HomePageState extends State<HomePage> {
                                                 color: Color.fromRGBO(
                                                     46, 202, 129, 1)),
                                             borderRadius:
-                                            BorderRadius.circular(50)),
+                                                BorderRadius.circular(50)),
                                         child: Icon(
                                             IconData(0xe62c,
                                                 fontFamily: 'sunfont'),
@@ -495,9 +512,9 @@ class _HomePageState extends State<HomePage> {
                                       height: 20,
                                       decoration: BoxDecoration(
                                           borderRadius:
-                                          BorderRadius.circular(4),
+                                              BorderRadius.circular(4),
                                           color:
-                                          Color.fromRGBO(246, 247, 251, 1)),
+                                              Color.fromRGBO(246, 247, 251, 1)),
                                       child: Icon(
                                           IconData(0xeb8a,
                                               fontFamily: 'sunfont'),
@@ -509,378 +526,121 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ],
                           ),
-                          Container(
-                              width: double.infinity,
-                              height: 70,
-                              margin: EdgeInsets.only(top: 20, bottom: 30),
-                              child: ListView(
-                                shrinkWrap: true,
-                                physics: AlwaysScrollableScrollPhysics(),
-                                // 根据不同的平台切换不同的物理效果
-                                scrollDirection: Axis.horizontal,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
-                                          margin: EdgeInsets.only(right: 30),
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                width: 46,
-                                                height: 46,
+                          SizedBox(height: 20),
+                          Column(children: [
+                            Container(
+                                width: double.infinity,
+                                height: 70,
+                                child: ListView(
+                                  shrinkWrap: true,
+                                  physics: AlwaysScrollableScrollPhysics(),
+                                  // 根据不同的平台切换不同的物理效果
+                                  scrollDirection: Axis.horizontal,
+                                  controller: navController,
+                                  children: [
+                                    Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: navList.map((item) {
+                                          return InkWell(
+                                            child: Container(
                                                 margin:
-                                                EdgeInsets.only(bottom: 7),
-                                                child: Align(
-                                                    child: Icon(
-                                                        IconData(0xe636,
-                                                            fontFamily:
-                                                            'sunfont'),
-                                                        size: 24,
-                                                        color: Colors.white)),
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        18),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Color.fromRGBO(
-                                                            130,
-                                                            169,
-                                                            248,
-                                                            1)
-                                                            .withOpacity(0.2),
-                                                        // 阴影的颜色
-                                                        offset: Offset(-1, 10),
-                                                        // 阴影与容器的距离
-                                                        blurRadius: 10.0,
-                                                        // 高斯的标准偏差与盒子的形状卷积。
-                                                        spreadRadius:
-                                                        0.0, // 在应用模糊之前，框应该膨胀的量。
-                                                      ),
-                                                    ],
-                                                    gradient: LinearGradient(
-                                                        begin:
-                                                        Alignment.topRight,
-                                                        //右上
-                                                        end: Alignment
-                                                            .bottomLeft,
-                                                        //左下
-                                                        stops: [
-                                                          0.0,
-                                                          1.0
-                                                        ],
-                                                        colors: [
-                                                          Color.fromRGBO(
-                                                              130, 169, 248, 1),
-                                                          Color.fromRGBO(
-                                                              109, 179, 241, 1),
-                                                        ])),
-                                              ),
-                                              Text(
-                                                "每日步数",
-                                                style: TextStyle(fontSize: 12),
-                                              )
-                                            ],
-                                          )),
-                                      Container(
-                                          margin: EdgeInsets.only(right: 30),
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                width: 46,
-                                                height: 46,
-                                                margin:
-                                                EdgeInsets.only(bottom: 7),
-                                                child: Align(
-                                                    child: Icon(
-                                                        IconData(0xe644,
-                                                            fontFamily:
-                                                            'sunfont'),
-                                                        size: 24,
-                                                        color: Colors.white)),
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        18),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Color.fromRGBO(
-                                                            251, 173, 91, 1)
-                                                            .withOpacity(0.2),
-                                                        // 阴影的颜色
-                                                        offset: Offset(-1, 10),
-                                                        // 阴影与容器的距离
-                                                        blurRadius: 10.0,
-                                                        // 高斯的标准偏差与盒子的形状卷积。
-                                                        spreadRadius:
-                                                        0.0, // 在应用模糊之前，框应该膨胀的量。
-                                                      ),
-                                                    ],
-                                                    gradient: LinearGradient(
-                                                        begin:
-                                                        Alignment.topRight,
-                                                        //右上
-                                                        end: Alignment
-                                                            .bottomLeft,
-                                                        //左下
-                                                        stops: [
-                                                          0.0,
-                                                          1.0
-                                                        ],
-                                                        colors: [
-                                                          Color.fromRGBO(
-                                                              251, 173, 91, 1),
-                                                          Color.fromRGBO(
-                                                              251, 201, 138, 1),
-                                                        ])),
-                                              ),
-                                              Text(
-                                                "小目标",
-                                                style: TextStyle(fontSize: 12),
-                                              )
-                                            ],
-                                          )),
-                                      Container(
-                                          margin: EdgeInsets.only(right: 30),
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                width: 46,
-                                                height: 46,
-                                                margin:
-                                                EdgeInsets.only(bottom: 7),
-                                                child: Align(
-                                                    child: Icon(
-                                                        IconData(0xe606,
-                                                            fontFamily:
-                                                            'sunfont'),
-                                                        size: 24,
-                                                        color: Colors.white)),
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        18),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Color.fromRGBO(
-                                                            239, 140, 85, 1)
-                                                            .withOpacity(0.2),
-                                                        // 阴影的颜色
-                                                        offset: Offset(-1, 10),
-                                                        // 阴影与容器的距离
-                                                        blurRadius: 10.0,
-                                                        // 高斯的标准偏差与盒子的形状卷积。
-                                                        spreadRadius:
-                                                        0.0, // 在应用模糊之前，框应该膨胀的量。
-                                                      ),
-                                                    ],
-                                                    gradient: LinearGradient(
-                                                        begin:
-                                                        Alignment.topRight,
-                                                        //右上
-                                                        end: Alignment
-                                                            .bottomLeft,
-                                                        //左下
-                                                        stops: [
-                                                          0.0,
-                                                          1.0
-                                                        ],
-                                                        colors: [
-                                                          Color.fromRGBO(
-                                                              239, 140, 85, 1),
-                                                          Color.fromRGBO(
-                                                              242, 151, 104, 1),
-                                                        ])),
-                                              ),
-                                              Text(
-                                                "食物查询",
-                                                style: TextStyle(fontSize: 12),
-                                              )
-                                            ],
-                                          )),
-                                      Container(
-                                          margin: EdgeInsets.only(right: 30),
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                width: 46,
-                                                height: 46,
-                                                margin:
-                                                EdgeInsets.only(bottom: 7),
-                                                child: Align(
-                                                    child: Icon(
-                                                        IconData(0xe60b,
-                                                            fontFamily:
-                                                            'sunfont'),
-                                                        size: 24,
-                                                        color: Colors.white)),
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        18),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Color.fromRGBO(
-                                                            198,
-                                                            116,
-                                                            252,
-                                                            1)
-                                                            .withOpacity(0.2),
-                                                        // 阴影的颜色
-                                                        offset: Offset(-1, 10),
-                                                        // 阴影与容器的距离
-                                                        blurRadius: 10.0,
-                                                        // 高斯的标准偏差与盒子的形状卷积。
-                                                        spreadRadius:
-                                                        0.0, // 在应用模糊之前，框应该膨胀的量。
-                                                      ),
-                                                    ],
-                                                    gradient: LinearGradient(
-                                                        begin:
-                                                        Alignment.topRight,
-                                                        //右上
-                                                        end: Alignment
-                                                            .bottomLeft,
-                                                        //左下
-                                                        stops: [
-                                                          0.0,
-                                                          1.0
-                                                        ],
-                                                        colors: [
-                                                          Color.fromRGBO(
-                                                              198, 116, 252, 1),
-                                                          Color.fromRGBO(
-                                                              215, 135, 250, 1),
-                                                        ])),
-                                              ),
-                                              Text(
-                                                "历史记录",
-                                                style: TextStyle(fontSize: 12),
-                                              )
-                                            ],
-                                          )),
-                                      Container(
-                                          margin: EdgeInsets.only(right: 30),
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                width: 46,
-                                                height: 46,
-                                                margin:
-                                                EdgeInsets.only(bottom: 7),
-                                                child: Align(
-                                                    child: Icon(
-                                                        IconData(0xe608,
-                                                            fontFamily:
-                                                            'sunfont'),
-                                                        size: 24,
-                                                        color: Colors.white)),
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        18),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Color.fromRGBO(
-                                                            120,
-                                                            236,
-                                                            139,
-                                                            1)
-                                                            .withOpacity(0.2),
-                                                        // 阴影的颜色
-                                                        offset: Offset(-1, 10),
-                                                        // 阴影与容器的距离
-                                                        blurRadius: 10.0,
-                                                        // 高斯的标准偏差与盒子的形状卷积。
-                                                        spreadRadius:
-                                                        0.0, // 在应用模糊之前，框应该膨胀的量。
-                                                      ),
-                                                    ],
-                                                    gradient: LinearGradient(
-                                                        begin:
-                                                        Alignment.topRight,
-                                                        //右上
-                                                        end: Alignment
-                                                            .bottomLeft,
-                                                        //左下
-                                                        stops: [
-                                                          0.0,
-                                                          1.0
-                                                        ],
-                                                        colors: [
-                                                          Color.fromRGBO(
-                                                              120, 236, 139, 1),
-                                                          Color.fromRGBO(
-                                                              156, 239, 149, 1),
-                                                        ])),
-                                              ),
-                                              Text(
-                                                "体重趋势",
-                                                style: TextStyle(fontSize: 12),
-                                              )
-                                            ],
-                                          )),
-                                      Container(
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                width: 46,
-                                                height: 46,
-                                                margin: EdgeInsets.only(
-                                                    bottom: 7),
-                                                child: Align(
-                                                    child: Icon(
-                                                        IconData(0xe601,
-                                                            fontFamily: 'sunfont'),
-                                                        size: 24,
-                                                        color: Colors.white)),
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                    BorderRadius.circular(18),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Color.fromRGBO(
-                                                            92, 208, 195, 1)
-                                                            .withOpacity(0.2),
-                                                        // 阴影的颜色
-                                                        offset: Offset(-1, 10),
-                                                        // 阴影与容器的距离
-                                                        blurRadius: 10.0,
-                                                        // 高斯的标准偏差与盒子的形状卷积。
-                                                        spreadRadius:
-                                                        0.0, // 在应用模糊之前，框应该膨胀的量。
-                                                      ),
-                                                    ],
-                                                    gradient: LinearGradient(
-                                                        begin: Alignment
-                                                            .topRight,
-                                                        //右上
-                                                        end: Alignment
-                                                            .bottomLeft,
-                                                        //左下
-                                                        stops: [
-                                                          0.0,
-                                                          1.0
-                                                        ],
-                                                        colors: [
-                                                          Color.fromRGBO(
-                                                              92, 208, 195, 1),
-                                                          Color.fromRGBO(
-                                                              117, 228, 212, 1),
-                                                        ])),
-                                              ),
-                                              Text(
-                                                "周报",
-                                                style: TextStyle(fontSize: 12),
-                                              )
-                                            ],
-                                          ))
-                                    ],
-                                  )
-                                ],
-                              )),
+                                                    EdgeInsets.only(right: 30),
+                                                child: Column(
+                                                  children: [
+                                                    Container(
+                                                      width: 46,
+                                                      height: 46,
+                                                      margin: EdgeInsets.only(
+                                                          bottom: 7),
+                                                      child: Align(
+                                                          child: Icon(
+                                                              IconData(
+                                                                  item['icon'],
+                                                                  fontFamily:
+                                                                      'sunfont'),
+                                                              size: 24,
+                                                              color: Colors
+                                                                  .white)),
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(18),
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                              color: Color(item[
+                                                                      'shadow'])
+                                                                  .withOpacity(
+                                                                      0.2),
+                                                              // 阴影的颜色
+                                                              offset: Offset(
+                                                                  -1, 10),
+                                                              // 阴影与容器的距离
+                                                              blurRadius: 10.0,
+                                                              // 高斯的标准偏差与盒子的形状卷积。
+                                                              spreadRadius:
+                                                                  0.0, // 在应用模糊之前，框应该膨胀的量。
+                                                            ),
+                                                          ],
+                                                          gradient:
+                                                              LinearGradient(
+                                                                  begin: Alignment
+                                                                      .topRight,
+                                                                  //右上
+                                                                  end: Alignment
+                                                                      .bottomLeft,
+                                                                  //左下
+                                                                  stops: [
+                                                                0.0,
+                                                                1.0
+                                                              ],
+                                                                  colors: [
+                                                                Color(item[
+                                                                    'shadow']),
+                                                                // Color.fromRGBO(
+                                                                //     130, 169, 248, 1),
+                                                                Color(item[
+                                                                    'color']),
+                                                              ])),
+                                                    ),
+                                                    Text(
+                                                      item["title"],
+                                                      style: TextStyle(
+                                                          fontSize: 12),
+                                                    )
+                                                  ],
+                                                )),
+                                            onTap: () {
+                                              print(item);
+                                            },
+                                          );
+                                        }).toList())
+                                  ],
+                                )),
+                            SizedBox(height: 10),
+                            Stack(
+                              children: [
+                                Container(
+                                  width: navTrackWidth,
+                                  height: 3,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(6),
+                                      color: Color(0xff000000)), //0xffecedf2
+                                ),
+                                Positioned(
+                                    left: barScrollX,
+                                    child: Container(
+                                      width: navBarWidth,
+                                      height: 3,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(6),
+                                          color: Color(0xff6dce87)),
+                                    ))
+                              ],
+                            )
+                          ]),
+                          SizedBox(height: 14),
                           Container(
                             width: double.infinity,
                             height: 110,
@@ -893,7 +653,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             child: Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
                                       width: 140,
@@ -915,9 +675,9 @@ class _HomePageState extends State<HomePage> {
                                         margin: EdgeInsets.only(top: 10),
                                         decoration: BoxDecoration(
                                             color:
-                                            Color.fromRGBO(34, 212, 126, 1),
+                                                Color.fromRGBO(34, 212, 126, 1),
                                             borderRadius:
-                                            BorderRadius.circular(16)),
+                                                BorderRadius.circular(16)),
                                         child: Align(
                                             child: Text("开始计划",
                                                 style: TextStyle(
@@ -948,7 +708,7 @@ class _HomePageState extends State<HomePage> {
                                       children: [
                                         Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text("饮食&运动记录",
                                                 style: TextStyle(
@@ -956,41 +716,39 @@ class _HomePageState extends State<HomePage> {
                                                     fontWeight: FontWeight.w800,
                                                     fontSize: 14)),
                                             Container(
-                                              // 点击事件
+                                                // 点击事件
                                                 child: Row(
                                                     crossAxisAlignment:
-                                                    CrossAxisAlignment
-                                                        .center,
+                                                        CrossAxisAlignment
+                                                            .center,
                                                     children: [
-                                                      Text("更多食谱",
-                                                          style: TextStyle(
-                                                              color: Color
-                                                                  .fromRGBO(
-                                                                  120, 120, 120,
-                                                                  1),
-                                                              fontSize: 12)),
-                                                      SizedBox(width: 5),
-                                                      Icon(
-                                                          IconData(0xeb8a,
-                                                              fontFamily:
-                                                              'sunfont'),
-                                                          size: 10,
+                                                  Text("更多食谱",
+                                                      style: TextStyle(
                                                           color: Color.fromRGBO(
-                                                              120, 120, 120, 1))
-                                                    ]))
+                                                              120, 120, 120, 1),
+                                                          fontSize: 12)),
+                                                  SizedBox(width: 5),
+                                                  Icon(
+                                                      IconData(0xeb8a,
+                                                          fontFamily:
+                                                              'sunfont'),
+                                                      size: 10,
+                                                      color: Color.fromRGBO(
+                                                          120, 120, 120, 1))
+                                                ]))
                                           ],
                                         ),
                                         Container(
                                           margin: EdgeInsets.only(top: 10),
                                           child: Row(
                                             mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                                MainAxisAlignment.spaceBetween,
                                             crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                                CrossAxisAlignment.center,
                                             children: [
                                               Column(
                                                 crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Row(children: [
                                                     Text("还可以吃",
@@ -1000,7 +758,7 @@ class _HomePageState extends State<HomePage> {
                                                     Icon(
                                                         IconData(0xeb8a,
                                                             fontFamily:
-                                                            'sunfont'),
+                                                                'sunfont'),
                                                         size: 10,
                                                         color: Colors.black)
                                                   ]),
@@ -1009,16 +767,16 @@ class _HomePageState extends State<HomePage> {
                                                     Text("1998",
                                                         style: TextStyle(
                                                             color:
-                                                            Colors.black87,
+                                                                Colors.black87,
                                                             fontWeight:
-                                                            FontWeight.bold,
+                                                                FontWeight.bold,
                                                             fontSize: 25,
                                                             fontFamily:
-                                                            "PingFang SC")),
+                                                                "PingFang SC")),
                                                     Text("千卡",
                                                         style: TextStyle(
                                                             color:
-                                                            Colors.black38,
+                                                                Colors.black38,
                                                             fontSize: 10,
                                                             height: 2.6))
                                                   ]),
@@ -1031,9 +789,9 @@ class _HomePageState extends State<HomePage> {
                                                           color: Color.fromRGBO(
                                                               237, 236, 242, 1),
                                                           borderRadius:
-                                                          BorderRadius
-                                                              .circular(
-                                                              15))),
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      15))),
                                                   Text("推荐摄入1998千卡",
                                                       style: TextStyle(
                                                           fontSize: 12,
@@ -1068,39 +826,41 @@ class _HomePageState extends State<HomePage> {
                                             bottomLeft: Radius.circular(10),
                                             bottomRight: Radius.circular(10))),
                                     child: Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                      children: mealsList.map((item){
-                                        return InkWell(
-                                            child:Container(
-                                          padding: EdgeInsets.only(
-                                              left: 10,
-                                              right: 10,
-                                              top: 8,
-                                              bottom: 8),
-                                          decoration: BoxDecoration(
-                                              color: Color.fromRGBO(
-                                                  246, 247, 251, 1),
-                                              borderRadius:
-                                              BorderRadius.circular(8)),
-                                          child: Column(
-                                            children: [
-                                              Icon(
-                                                  IconData(item['icon'],
-                                                      fontFamily: 'sunfont'),
-                                                  size: 20,
-                                                  color: Colors.black),
-                                              SizedBox(height: 5),
-                                              Text(item['title'],
-                                                  style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: Colors.black))
-                                            ],
-                                          ),
-                                        ),
-                                            onTap: (){});
-                                      }).toList()
-                                    ),
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: mealsList.map((item) {
+                                          return InkWell(
+                                              child: Container(
+                                                padding: EdgeInsets.only(
+                                                    left: 10,
+                                                    right: 10,
+                                                    top: 8,
+                                                    bottom: 8),
+                                                decoration: BoxDecoration(
+                                                    color: Color.fromRGBO(
+                                                        246, 247, 251, 1),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8)),
+                                                child: Column(
+                                                  children: [
+                                                    Icon(
+                                                        IconData(item['icon'],
+                                                            fontFamily:
+                                                                'sunfont'),
+                                                        size: 20,
+                                                        color: Colors.black),
+                                                    SizedBox(height: 5),
+                                                    Text(item['title'],
+                                                        style: TextStyle(
+                                                            fontSize: 12,
+                                                            color:
+                                                                Colors.black))
+                                                  ],
+                                                ),
+                                              ),
+                                              onTap: () {});
+                                        }).toList()),
                                   ),
                                   Container(
                                     width: double.infinity,
@@ -1109,7 +869,7 @@ class _HomePageState extends State<HomePage> {
                                     decoration: BoxDecoration(
                                         color: Colors.grey[300],
                                         borderRadius:
-                                        BorderRadius.circular(10)),
+                                            BorderRadius.circular(10)),
                                   ),
                                   MyDeviceComm(), // 我的设备
                                   MyPopTrendComm(), // 人气动态
