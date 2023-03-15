@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import './local_data/home.dart';
 
 void main() {
@@ -386,7 +387,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     navController.addListener(() {
-      double _barScrollX = (navController.offset * navTrackWidth) / listViewWidth;
+      double _barScrollX =
+          (navController.offset * navTrackWidth) / listViewWidth;
       setState(() {
         barScrollX = _barScrollX;
       });
@@ -545,14 +547,17 @@ class _HomePageState extends State<HomePage> {
                                         children: navList.map((item) {
                                           return InkWell(
                                             child: Container(
-                                                margin:
-                                                    EdgeInsets.only(right: item['id'] == 5 ? 0 : 15),
+                                                margin: EdgeInsets.only(
+                                                    right: item['id'] == 5
+                                                        ? 0
+                                                        : 15),
                                                 child: Column(
                                                   children: [
                                                     Container(
-                                                      child: Align(
-                                                          child: Image.asset(item["image"], width: 60))
-                                                    ),
+                                                        child: Align(
+                                                            child: Image.asset(
+                                                                item["image"],
+                                                                width: 60))),
                                                     Text(
                                                       item["title"],
                                                       style: TextStyle(
@@ -813,14 +818,47 @@ class _HomePageState extends State<HomePage> {
                                         }).toList()),
                                   ),
                                   Container(
-                                    width: double.infinity,
-                                    height: 130,
-                                    margin: EdgeInsets.only(top: 14),
-                                    decoration: BoxDecoration(
-                                        color: Colors.grey[300],
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                  ),
+                                      width: double.infinity,
+                                      height: 130,
+                                      margin: EdgeInsets.only(top: 14),
+                                      decoration: BoxDecoration(
+                                          color: Colors.grey[300],
+                                          borderRadius:
+                                          BorderRadius.circular(10)),
+                                      child: Swiper(
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return ClipRRect(
+                                            borderRadius: BorderRadius.circular(10),
+                                            child: new Image.asset(
+                                              bannerList[index]["image"],
+                                              fit: BoxFit.fill,
+                                            ),
+                                          );
+                                        },
+                                        // 图片数量
+                                        itemCount: bannerList.length,
+                                        // 分页器
+                                        pagination: new SwiperPagination(
+                                          builder: DotSwiperPaginationBuilder(
+                                            size: 7,// 未选中点大小
+                                            activeSize: 8,// 选中点大小
+                                            color: Color.fromRGBO(255, 255, 255, 0.7), // 未选中点颜色
+                                            activeColor: Color.fromRGBO(
+                                                102, 101, 78,0.8), // 选中点颜色
+                                              space:3,
+                                          ),
+                                        ),
+                                        // 左右箭头
+                                        control: null,
+                                        // new SwiperControl(),
+                                        // 无限循环
+                                        loop: true,
+                                        // 自动轮播
+                                        autoplay: true,
+                                        // 动画时间
+                                        duration: 500,
+                                      )),
                                   MyDeviceComm(), // 我的设备
                                   MyPopTrendComm(), // 人气动态
                                   MyKnowLedgeComm(), // 知识精选
