@@ -3,8 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+/* 底部导航对应的页面 */
 import './nav_page/home.dart';
-
+import './nav_page/community.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -41,7 +42,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   int currentIndex = 0;
-
+  List<Widget> pages = [Home(),Community()];
   // 更改底部导航栏索引
   void changeNavBar(int index) {
     setState(() {
@@ -98,7 +99,7 @@ class _HomePageState extends State<HomePage> {
                   label: "我的",
                 )
               ]),
-          body: Home(),
+          body: pages[currentIndex],
         ));
   }
 }
