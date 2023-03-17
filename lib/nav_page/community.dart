@@ -11,16 +11,47 @@ class Community extends StatefulWidget {
   State<Community> createState() => _CommunityState();
 }
 
-class _CommunityState extends State<Community> {
+class _CommunityState extends State<Community> with TickerProviderStateMixin {
   double topBarHeight = MediaQueryData.fromWindow(window).padding.top;
   List tabBar = ["最新", "精选", "关注"];
   List list = ['', '', '', ''];
   int activeBar = 0;
   double tranBar = 75; // 初始值为头像宽度+右边距
+
+  late AnimationController _controller;
+  late Animation<Offset> offsetAnimation;
+  double sx = 2.7;
+  double ex = 2.7;
+
+  @override
+  void initState() {
+    super.initState();
+    changeTabBarAn(0);
+  }
+
+  @override
+  void changeTabBarAn(int index) {
+    if (index == 0) {
+      sx = 2.7;
+      ex = 2.7;
+    }else if(index == 1){
+      sx = 2.7;
+      ex = 6.1;
+    }else{
+      sx = 6.1;
+      ex = 9.6;
+    }
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 160),
+      vsync: this,
+    );
+    offsetAnimation = Tween<Offset>(begin: Offset(sx, 0), end: Offset(ex, 0))
+        .animate(_controller);
+    _controller.forward();
+  }
+
   Widget build(BuildContext context) {
-    double mWidth = MediaQuery.of(context).size.width;
-    // print(MediaQuery.of(context).size.width/2);
-    print(MediaQuery.of(context).size.width - 44 - 50);
+    double mWidth = MediaQuery.of(context).size.width; // 屏幕宽度
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -95,6 +126,7 @@ class _CommunityState extends State<Community> {
                                                 20; // 55：左边头像宽度+左边距  44：右边铃铛宽度+右边距  10：字体的宽度取半 粗略估计
                                           }
                                         });
+                                        changeTabBarAn(activeBar);
                                       }));
                             }).toList()),
                       )),
@@ -128,13 +160,23 @@ class _CommunityState extends State<Community> {
                       )
                     ],
                   ),
-                  Transform(
-                      alignment: Alignment.bottomRight,
-                      transform: Matrix4.translationValues(tranBar, -6, 0),
+                  // Transform(
+                  //     alignment: Alignment.bottomRight,
+                  //     transform: Matrix4.translationValues(tranBar, -6, 0),
+                  //     child: Container(
+                  //       width: 28,
+                  //       height: 6,
+                  //       margin: EdgeInsets.only(top: 4),
+                  //       decoration: BoxDecoration(
+                  //           color: Color(0xff22d47e),
+                  //           borderRadius: BorderRadius.circular(4)),
+                  //     ))
+                  SlideTransition(
+                      position: offsetAnimation,
                       child: Container(
                         width: 28,
                         height: 6,
-                        margin: EdgeInsets.only(top: 4),
+                        // margin: EdgeInsets.only(top: 4),
                         decoration: BoxDecoration(
                             color: Color(0xff22d47e),
                             borderRadius: BorderRadius.circular(4)),
