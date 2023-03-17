@@ -620,7 +620,7 @@ class _HomeState extends State<Home> {
           Column(children: [
             Container(
               height: topBarHeight,
-              color: Color.fromRGBO(246, 247, 251, 1),
+              color: Color.fromRGBO(246, 247, 251, 1.0),
             ),
             Container(
               padding: EdgeInsets.only(left: 15, right: 15),
