@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
     return (Icon(IconData(icon, fontFamily: 'sunfont'), color: Color(color)));
   }
 
-  int currentIndex = 0;
+  int currentIndex = 1; // 导航索引
   List<Widget> pages = [Home(),Community()];
   // 更改底部导航栏索引
   void changeNavBar(int index) {

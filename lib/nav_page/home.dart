@@ -243,7 +243,6 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-
   // 我的设备
   Widget MyDeviceComm() {
     return Container(

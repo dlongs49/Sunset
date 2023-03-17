@@ -12,13 +12,15 @@ class Community extends StatefulWidget {
 }
 
 class _CommunityState extends State<Community> {
-  @override
+  double topBarHeight = MediaQueryData.fromWindow(window).padding.top;
+  List tabBar = ["最新", "精选", "关注"];
+  List list = ['', '', '', ''];
+  int activeBar = 0;
+  double tranBar = 75; // 初始值为头像宽度+右边距
   Widget build(BuildContext context) {
-    double topBarHeight = MediaQueryData.fromWindow(window).padding.top;
-    List tabBar = ["最新", "精选", "关注"];
-    List list = ['', '', '', ''];
-    int activeBar = 0;
-    double tranBar = 55;
+    double mWidth = MediaQuery.of(context).size.width;
+    // print(MediaQuery.of(context).size.width/2);
+    print(MediaQuery.of(context).size.width - 44 - 50);
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -32,6 +34,7 @@ class _CommunityState extends State<Community> {
               height: 46.0,
               color: Color(0xffffffff),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
@@ -41,7 +44,7 @@ class _CommunityState extends State<Community> {
                       Container(
                         width: 30,
                         height: 30,
-                        margin: EdgeInsets.only(right: 20),
+                        margin: EdgeInsets.only(right: 40),
                         clipBehavior: Clip.hardEdge,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(30)),
@@ -56,28 +59,47 @@ class _CommunityState extends State<Community> {
                             children: tabBar.asMap().entries.map((entry) {
                               int index = entry.key;
                               String item = entry.value;
-                              return Container(
+                              return Expanded(
                                   child: InkWell(
-                                      child: Text(item,
-                                          style: TextStyle(
-                                              color: Color(activeBar == index
-                                                  ? 0xff000000
-                                                  : 0xffc2c2c2),
-                                              fontSize:
-                                                  activeBar == index ? 20 : 14,
-                                              fontWeight: FontWeight.w800)),
+                                      child: Container(
+                                          alignment: index == 0
+                                              ? Alignment.centerLeft
+                                              : index == 1
+                                                  ? Alignment.center
+                                                  : Alignment.centerRight,
+                                          height: 34,
+                                          child: Text(item,
+                                              style: TextStyle(
+                                                  color: Color(
+                                                      activeBar == index
+                                                          ? 0xff000000
+                                                          : 0xffc2c2c2),
+                                                  fontSize: activeBar == index
+                                                      ? 20
+                                                      : 16,
+                                                  fontWeight:
+                                                      FontWeight.w800))),
                                       onTap: () {
                                         setState(() {
                                           activeBar = index;
-                                          tranBar = index * tranBar;
+                                          if (index == 0) {
+                                            tranBar = 75; // 初始值为头像宽度+右边距
+                                          } else if (index == 1) {
+                                            tranBar = (mWidth / 2) -
+                                                26; // 26：变粗字体的宽度，粗略估计
+                                          } else if (index == 2) {
+                                            tranBar = mWidth -
+                                                55 -
+                                                44 -
+                                                8 -
+                                                20; // 55：左边头像宽度+左边距  44：右边铃铛宽度+右边距  10：字体的宽度取半 粗略估计
+                                          }
                                         });
-                                        print(activeBar);
-                                        print(tranBar);
                                       }));
                             }).toList()),
                       )),
                       Container(
-                        margin: EdgeInsets.only(left: 20),
+                        margin: EdgeInsets.only(left: 40),
                         width: 24,
                         height: 28,
                         child: Stack(
@@ -87,19 +109,19 @@ class _CommunityState extends State<Community> {
                                 child: Icon(
                                     IconData(0xe60a, fontFamily: 'sunfont'),
                                     color: Colors.black,
-                                    size: 19.0)),
+                                    size: 20.0)),
                             Positioned(
-                                top: 0,
-                                right: 6,
+                                top: 3,
+                                right: 4,
                                 child: Container(
                                   padding: EdgeInsets.only(
-                                      left: 5, right: 5, top: 1, bottom: 1),
+                                      left: 4, right: 4, top: 0, bottom: 0),
                                   decoration: BoxDecoration(
                                       color: Color(0xffff5c5c),
-                                      borderRadius: BorderRadius.circular(4)),
-                                  child: Text("1",
+                                      borderRadius: BorderRadius.circular(6)),
+                                  child: Text("2",
                                       style: TextStyle(
-                                          fontSize: 7, color: Colors.white)),
+                                          fontSize: 6, color: Colors.white)),
                                 ))
                           ],
                         ),
@@ -108,10 +130,10 @@ class _CommunityState extends State<Community> {
                   ),
                   Transform(
                       alignment: Alignment.bottomRight,
-                      transform: Matrix4.translationValues(55, 0, 0),
+                      transform: Matrix4.translationValues(tranBar, -6, 0),
                       child: Container(
                         width: 28,
-                        height: 4,
+                        height: 6,
                         margin: EdgeInsets.only(top: 4),
                         decoration: BoxDecoration(
                             color: Color(0xff22d47e),
@@ -121,191 +143,242 @@ class _CommunityState extends State<Community> {
               )),
         ]),
         Expanded(
-            child: MediaQuery.removePadding(
-                // 去除顶部留白
-                context: context,
-                removeTop: true,
-                removeBottom: true,
-                child: ListView(
-                    physics: ClampingScrollPhysics(),
-                    children: list.asMap().entries.map((entry) {
-                      int index = entry.key;
-                      String item = entry.value;
-                      return Container(
-                          width: double.infinity,
-                          color: Colors.white,
-                          margin: EdgeInsets.only(bottom: 8),
-                          padding: EdgeInsets.symmetric(
-                              vertical: 15, horizontal: 15),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(children: [
-                                  Container(
-                                      width: 34,
-                                      height: 34,
-                                      margin: EdgeInsets.only(right: 8),
-                                      child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(34),
-                                          child: Image.asset(
-                                              "assets/images/400x400.jpg",
-                                              fit: BoxFit.cover))),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text("书本书华",
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w800)),
-                                      Text("2023.03.21",
-                                          style: TextStyle(
-                                              fontSize: 10,
-                                              color: Color(0xffd9d9d9)))
-                                    ],
-                                  ),
-                                  Spacer(flex: 1),
-                                  Container(
-                                    width: 50,
-                                    height: 22,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            width: 1.0,
-                                            color: Color(0xff22d47e)),
-                                        borderRadius:
-                                            BorderRadius.circular(22)),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                            IconData(0xe727,
-                                                fontFamily: 'sunfont'),
-                                            size: 8,
-                                            color: Color(0xff22d47e)),
-                                        SizedBox(width: 2),
-                                        Text("关注",
-                                            style: TextStyle(
-                                                fontSize: 9,
-                                                color: Color(0xff22d47e)))
-                                      ],
-                                    ),
-                                  )
-                                ]),
-                                SizedBox(height: 10),
-                                Text(
-                                    "浔阳江头夜送客，枫叶荻花秋瑟瑟，主人下马客在船，举酒欲饮无管弦。醉不成欢惨将别，别时茫茫江浸月。忽闻水上琵琶声，主人忘归客不发。寻声暗问弹者谁？琵琶声停欲语迟。",
-                                    style: TextStyle(fontSize: 12)),
+            child: Stack(children: [
+          MediaQuery.removePadding(
+              // 去除顶部留白
+              context: context,
+              removeTop: true,
+              removeBottom: true,
+              child: ListView(
+                  physics: ClampingScrollPhysics(),
+                  children: list.asMap().entries.map((entry) {
+                    int index = entry.key;
+                    String item = entry.value;
+                    return Container(
+                        width: double.infinity,
+                        color: Colors.white,
+                        margin: EdgeInsets.only(bottom: 8),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(children: [
                                 Container(
-                                    margin:
-                                        EdgeInsets.only(top: 12, bottom: 10),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 3),
-                                    decoration: BoxDecoration(
-                                        color: Color(0xfff3f3f3),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    child: Text("#运动就是坚持#",
-                                        style: TextStyle(
-                                            color: Color(0xff22d47e),
-                                            fontSize: 10))),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                    width: 38,
+                                    height: 38,
+                                    margin: EdgeInsets.only(right: 8),
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(38),
+                                        child: Image.asset(
+                                            "assets/images/400x400.jpg",
+                                            fit: BoxFit.cover))),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                            IconData(0xec7f,
-                                                fontFamily: 'sunfont'),
-                                            size: 15,
-                                            color: Color(0xffbbbbbb)),
-                                        SizedBox(width: 6),
-                                        Text("赞",
-                                            style: TextStyle(
-                                                color: Color(0xffbbbbbb),
-                                                fontSize: 12)),
-                                        SizedBox(width: 3),
-                                        Text("2",
-                                            style: TextStyle(
-                                                color: Color(0xffbbbbbb),
-                                                height: 1.5,
-                                                fontSize: 12))
-                                      ],
-                                    ),
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                            IconData(0xe600,
-                                                fontFamily: 'sunfont'),
-                                            size: 15,
-                                            color: Color(0xffbbbbbb)),
-                                        SizedBox(width: 6),
-                                        Text("评论",
-                                            style: TextStyle(
-                                                color: Color(0xffbbbbbb),
-                                                fontSize: 12)),
-                                        SizedBox(width: 3),
-                                        Text("2",
-                                            style: TextStyle(
-                                                color: Color(0xffbbbbbb),
-                                                height: 1.5,
-                                                fontSize: 12))
-                                      ],
-                                    ),
-                                    Icon(
-                                        IconData(0xe617, fontFamily: 'sunfont'),
-                                        size: 18,
-                                        color: Color(0xffbbbbbb)),
+                                    Text("书本书华",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w800)),
+                                    SizedBox(height: 2),
+                                    Text("2023.03.21",
+                                        style: TextStyle(
+                                            fontSize: 11,
+                                            color: Color(0xffc1c1c1)))
                                   ],
                                 ),
+                                Spacer(flex: 1),
                                 Container(
-                                  width: double.infinity,
-                                  margin:EdgeInsets.only(top:14),
-                                  constraints: BoxConstraints(minHeight: 50),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 4, vertical: 10),
+                                  width: 60,
+                                  height: 26,
                                   decoration: BoxDecoration(
-                                      color: Color(0xfff3f3f3),
-                                      borderRadius: BorderRadius.circular(8)),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                      border: Border.all(
+                                          width: 1.0, color: Color(0xff22d47e)),
+                                      borderRadius: BorderRadius.circular(22)),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      RichText(
-                                          text: TextSpan(
-                                              text: '书本书华：',
-                                              style: TextStyle(
-                                                  color: Color(0xff22d47e),fontSize: 10),
-                                              children: <TextSpan>[
-                                                TextSpan(
-                                                    text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
-                                                    style: TextStyle(
-                                                        color: Colors.black,fontSize:10)),
-                                              ])),
-                                      SizedBox(height: 4),
-                                      RichText(
-                                          text: TextSpan(
-                                              text: '书本书华：',
-                                              style: TextStyle(
-                                                  color: Color(0xff22d47e),fontSize: 10),
-                                              children: <TextSpan>[
-                                                TextSpan(
-                                                    text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
-                                                    style: TextStyle(
-                                                        color: Colors.black,fontSize:10)),
-                                              ])),
-                                      Text("查看全部评论",style:TextStyle(fontSize: 10,color:Color(
-                                          0xff9e9e9e)))
+                                      Icon(
+                                          IconData(0xeaf3,
+                                              fontFamily: 'sunfont'),
+                                          size: 10,
+                                          color: Color(0xff22d47e)),
+                                      Text("关注",
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: Color(0xff22d47e)))
                                     ],
                                   ),
                                 )
-                              ]));
-                    }).toList())))
+                              ]),
+                              SizedBox(height: 10),
+                              Text(
+                                  "浔阳江头夜送客，枫叶荻花秋瑟瑟，主人下马客在船，举酒欲饮无管弦。醉不成欢惨将别，别时茫茫江浸月。忽闻水上琵琶声，主人忘归客不发。寻声暗问弹者谁？琵琶声停欲语迟。",
+                                  style: TextStyle(fontSize: 14, height: 1.7)),
+                              Container(
+                                  margin: EdgeInsets.only(top: 20),
+                                  child: GridView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: 6,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3, // 主轴一行的数量
+                                        mainAxisSpacing: 6, // 主轴每行间距
+                                        crossAxisSpacing: 6, // 交叉轴每行间距
+                                        childAspectRatio: 1, // item的宽高比
+                                      ),
+                                      itemBuilder: (context, index) {
+                                        return (Container(
+                                            decoration: ShapeDecoration(
+                                                image: DecorationImage(
+                                                    image: AssetImage(
+                                                        "assets/images/400x400.jpg"),
+                                                    fit: BoxFit.fitWidth),
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadiusDirectional
+                                                            .circular(6)))));
+                                      })),
+                              Container(
+                                  margin: EdgeInsets.only(top: 12, bottom: 10),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5),
+                                  decoration: BoxDecoration(
+                                      color: Color(0xfff3f3f3),
+                                      borderRadius: BorderRadius.circular(12)),
+                                  child: Text("#运动就是坚持#",
+                                      style: TextStyle(
+                                          color: Color(0xff22d47e),
+                                          fontSize: 12))),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                          IconData(0xec7f,
+                                              fontFamily: 'sunfont'),
+                                          size: 18,
+                                          color: Color(0xffbbbbbb)),
+                                      SizedBox(width: 6),
+                                      Text("赞",
+                                          style: TextStyle(
+                                              color: Color(0xffbbbbbb),
+                                              height: 1.5,
+                                              fontSize: 14)),
+                                      SizedBox(width: 4),
+                                      Text("2",
+                                          style: TextStyle(
+                                              color: Color(0xffbbbbbb),
+                                              height: 1.7,
+                                              fontSize: 14))
+                                    ],
+                                  ),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                          IconData(0xe600,
+                                              fontFamily: 'sunfont'),
+                                          size: 20,
+                                          color: Color(0xffbbbbbb)),
+                                      SizedBox(width: 6),
+                                      Text("评论",
+                                          style: TextStyle(
+                                              color: Color(0xffbbbbbb),
+                                              height: 1.4,
+                                              fontSize: 14)),
+                                      SizedBox(width: 4),
+                                      Text("2",
+                                          style: TextStyle(
+                                              color: Color(0xffbbbbbb),
+                                              height: 1.4,
+                                              fontSize: 14))
+                                    ],
+                                  ),
+                                  Icon(IconData(0xe617, fontFamily: 'sunfont'),
+                                      size: 18, color: Color(0xffbbbbbb)),
+                                ],
+                              ),
+                              Container(
+                                width: double.infinity,
+                                margin: EdgeInsets.only(top: 14),
+                                constraints: BoxConstraints(minHeight: 50),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 10),
+                                decoration: BoxDecoration(
+                                    color: Color(0xfff3f3f3),
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    RichText(
+                                        text: TextSpan(
+                                            text: '书本书华：',
+                                            style: TextStyle(
+                                                color: Color(0xff22d47e),
+                                                fontSize: 12),
+                                            children: <TextSpan>[
+                                          TextSpan(
+                                              text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 12)),
+                                        ])),
+                                    SizedBox(height: 8),
+                                    RichText(
+                                        text: TextSpan(
+                                            text: '书本书华：',
+                                            style: TextStyle(
+                                                color: Color(0xff22d47e),
+                                                fontSize: 12),
+                                            children: <TextSpan>[
+                                          TextSpan(
+                                              text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 12)),
+                                        ])),
+                                    SizedBox(height: 8),
+                                    Text("查看全部评论",
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: Color(0xff7b7b7b)))
+                                  ],
+                                ),
+                              )
+                            ]));
+                  }).toList())),
+          Positioned(
+              bottom: 50,
+              right: 30,
+              child: InkWell(
+                  child: Container(
+                      width: 70,
+                      height: 70,
+                      decoration: BoxDecoration(
+                          color: Color(0xff22d47e),
+                          borderRadius: BorderRadius.circular(70),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.5), // 阴影颜色
+                              offset: Offset(10, 20), // 阴影与容器的距离 x,y
+                              blurRadius: 40.0, // 高斯模糊值。
+                              spreadRadius: 2.0, // 阴影范围量
+                            ),
+                          ]),
+                      child: Align(
+                          child: Icon(IconData(0xe609, fontFamily: 'sunfont'),
+                              size: 34, color: Colors.white))),
+                  onTap: () {
+                    print("发布");
+                  }))
+        ]))
       ],
     );
   }
