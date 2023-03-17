@@ -30,6 +30,10 @@ List navList = [
     "image": "assets/images/nav/nav_6.png"
   }
 ];
+List annBanner = [
+  {"id":0,"title":"您的周报已生成，请查看！"},
+  {"id":1,"title":"三月福利活动已经上线，点击参加抽好礼！"}
+];
 Map infoData = {
   "id": 841039246025293935,
   "userId": 8741451,
