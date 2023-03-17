@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import '../local_data/home.dart';
 
@@ -592,7 +590,7 @@ class _HomeState extends State<Home> {
       });
       print("滑动的距离>> $barScrollX");
     });
-    startTimer();
+    // startTimer();
   }
   // 公告滚动 [待修正]
   late  PageController pageController;
@@ -718,7 +716,7 @@ class _HomeState extends State<Home> {
                                       margin: EdgeInsets.only(left: 8),
                                       child: PageView.builder(
                                           scrollDirection:Axis.vertical,
-                                          controller: pageController,
+                                          // controller: pageController,
                                           itemCount: annBanner.length,
                                           itemBuilder:(bubuildContext,index){
                                             return (Text(annBanner[index]['title'],style: TextStyle(
