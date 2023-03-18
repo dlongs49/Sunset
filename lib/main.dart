@@ -16,6 +16,7 @@ import './my/bind_device.dart';
 import './my/theme_skin.dart';
 import './my/family.dart';
 import './my/setting.dart';
+import './my/myinfo.dart';
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
@@ -113,7 +114,7 @@ class _HomePageState extends State<HomePage> {
                 )
               ]),
           // body: pages[currentIndex],
-          body: Setting(),
+          body: MyInfo(),
         ));
   }
 }
