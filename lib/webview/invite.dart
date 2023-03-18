@@ -60,7 +60,7 @@ class _InviteState extends State<Invite> {
               ]),
               Expanded(
                   child: Align(
-                    child: Text("邀请好友",style: TextStyle,),
+                    child: Text("邀请好友"),
                   )),
             ],
           )),
