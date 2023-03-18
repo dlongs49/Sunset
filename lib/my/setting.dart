@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Setting extends StatefulWidget {
   const Setting({Key? key}) : super(key: key);
@@ -197,6 +198,13 @@ class _SettingState extends State<Setting> {
                                       color: Color(0xffff0000), fontSize: 20)),
                             ),
                             onTap: () {
+                              Fluttertoast.showToast(
+                                  msg: '退出登录',
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.CENTER,
+                                  backgroundColor: Colors.red,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0);
                               print("退出登录>>");
                             })
                       ]))),
