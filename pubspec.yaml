@@ -17,6 +17,7 @@ dependencies:
   flutter_swiper : ^1.1.6
   flutter_webview_plugin: ^0.4.0
   fluttertoast: ^3.0.6
+  flutter_pickers: ^2.1.9
 
 dev_dependencies:
   flutter_test:
