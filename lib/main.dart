@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import './nav_page/home.dart';
 import './nav_page/community.dart';
 import './nav_page/find.dart';
+import './nav_page/my.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -42,8 +43,8 @@ class _HomePageState extends State<HomePage> {
     return (Icon(IconData(icon, fontFamily: 'sunfont'), color: Color(color)));
   }
 
-  int currentIndex = 2; // 导航索引
-  List<Widget> pages = [Home(),Community(),Find()];
+  int currentIndex = 3; // 导航索引
+  List<Widget> pages = [Home(),Community(),Find(),My()];
   // 更改底部导航栏索引
   void changeNavBar(int index) {
     setState(() {
