@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import '../webview/mall.dart';
 class My extends StatefulWidget {
   const My({Key? key}) : super(key: key);
 
@@ -196,7 +195,7 @@ class _MyState extends State<My> {
                                             ),
                                             onTap:(){
                                               Navigator.pushNamed(context, "mall");
-                                              print("商城");
+                                              print("route >> 商城");
                                             })
                                     ),
                                     SizedBox(width: 15),
@@ -225,7 +224,8 @@ class _MyState extends State<My> {
                                             ),
                                           ),
                                           onTap: (){
-                                            print("邀请");
+                                            Navigator.pushNamed(context, "invite");
+                                            print("route >> 邀请好友");
                                           }
                                         )
                                     ),

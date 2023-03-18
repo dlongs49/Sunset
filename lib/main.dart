@@ -10,6 +10,7 @@ import './nav_page/find.dart';
 import './nav_page/my.dart';
 
 import './webview/mall.dart';
+import './webview/invite.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         home: HomePage(),
         routes:{
           "mall":(BuildContext context) => Mall(),
+          "invite":(BuildContext context) => Invite(),
         });
   }
 }
