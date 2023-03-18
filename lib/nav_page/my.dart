@@ -195,6 +195,7 @@ class _MyState extends State<My> {
                                               ),
                                             ),
                                             onTap:(){
+                                              Navigator.pushNamed(context, "mall");
                                               print("商城");
                                             })
                                     ),

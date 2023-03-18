@@ -9,6 +9,8 @@ import './nav_page/community.dart';
 import './nav_page/find.dart';
 import './nav_page/my.dart';
 
+import './webview/mall.dart';
+
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
@@ -24,7 +26,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Sunset',
         debugShowCheckedModeBanner: false, // 移除右上角 debug 标志
-        home: HomePage());
+        home: HomePage(),
+        routes:{
+          "mall":(BuildContext context) => Mall(),
+        });
   }
 }
 
