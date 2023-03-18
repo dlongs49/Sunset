@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_pickers/pickers.dart';
+import 'package:flutter_pickers/style/picker_style.dart';
 import '../local_data/info.dart';
 
 class MyInfo extends StatefulWidget {
@@ -14,21 +15,30 @@ class MyInfo extends StatefulWidget {
 }
 
 class _MyInfoState extends State<MyInfo> {
-  List<String> sexList = ["女", "男"];
-  int sexActive = 0;
-  int seleStature = 160;
+  List sexList = ["女", "男"];
+  int sexActive = 0; // 默认索引对应值 女
+  int seleStature = 160; // 女：160cm 男：180cm
+  double seleWeight = 45.0; // 女：45.0kg 男：60.0kg
+  int seleWaistline = 60; // 女：60cm 男：80cm
+  // 重写选择器的样式
+  PickerStyle customPickStyle() {
+    // 确定按钮样式
+    Widget _commitButton = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+      margin: const EdgeInsets.only(right: 22),
+      child:
+          Text('确定', style: TextStyle(fontSize: 14, color: Color(0xff22d47e))),
+    );
+    return PickerStyle(
+      commitButton: _commitButton,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     double topBarHeight =
-        MediaQueryData
-            .fromWindow(window)
-            .padding
-            .top; // 沉浸栏高度
-    double mWidth = MediaQuery
-        .of(context)
-        .size
-        .width; // 屏幕宽度
+        MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
+    double mWidth = MediaQuery.of(context).size.width; // 屏幕宽度
     return Container(
       color: Colors.white,
       child: Column(
@@ -75,7 +85,7 @@ class _MyInfoState extends State<MyInfo> {
               child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 15),
                   child: MediaQuery.removePadding(
-                    // 去除顶部留白
+                      // 去除顶部留白
                       context: context,
                       removeTop: true,
                       removeBottom: true,
@@ -163,50 +173,49 @@ class _MyInfoState extends State<MyInfo> {
                                 Text("性别", style: TextStyle(fontSize: 17)),
                                 Spacer(flex: 1),
                                 Row(
-                                    children:
-                                    sexList
+                                    children: sexList
                                         .asMap()
                                         .entries
-                                        .map((enry) {
-                                      int index = enry.key;
-                                      String item = enry.value;
-                                      return InkWell(
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 26, vertical: 5),
-                                            decoration: BoxDecoration(
-                                              color: Color(sexActive == index
-                                                  ? 0xff22d47e
-                                                  : 0xffe8e8f2),
-                                              borderRadius: index == 0
-                                                  ? BorderRadius.only(
+                                        .map<Widget>((enry) {
+                                  int index = enry.key;
+                                  String item = enry.value;
+                                  return InkWell(
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 26, vertical: 5),
+                                        decoration: BoxDecoration(
+                                          color: Color(sexActive == index
+                                              ? 0xff22d47e
+                                              : 0xffe8e8f2),
+                                          borderRadius: index == 0
+                                              ? BorderRadius.only(
                                                   bottomLeft:
-                                                  Radius.circular(30),
+                                                      Radius.circular(30),
                                                   topLeft: Radius.circular(30))
-                                                  : BorderRadius.only(
+                                              : BorderRadius.only(
                                                   bottomRight:
-                                                  Radius.circular(30),
+                                                      Radius.circular(30),
                                                   topRight:
-                                                  Radius.circular(30)),
-                                            ),
-                                            child: Text(
-                                              item,
-                                              style: TextStyle(
-                                                  fontSize: 17,
-                                                  color: Color(
-                                                      sexActive == index
-                                                          ? 0xffffffff
-                                                          : 0xff747474)),
-                                            ),
-                                          ),
-                                          onTap: () {
-                                            setState(() {
-                                              sexActive = index;
-                                              seleStature =
-                                              index == 0 ? 160 : 180;
-                                            });
-                                          });
-                                    }).toList())
+                                                      Radius.circular(30)),
+                                        ),
+                                        child: Text(
+                                          item,
+                                          style: TextStyle(
+                                              fontSize: 17,
+                                              color: Color(sexActive == index
+                                                  ? 0xffffffff
+                                                  : 0xff747474)),
+                                        ),
+                                      ),
+                                      onTap: () {
+                                        setState(() {
+                                          sexActive = index;
+                                          seleStature = index == 0 ? 160 : 180;
+                                          seleWeight = index == 0 ? 45.0 : 60.0;
+                                          seleWaistline = index == 0 ? 60 : 80;
+                                        });
+                                      });
+                                }).toList())
                               ],
                             ),
                             SizedBox(height: 36),
@@ -216,7 +225,7 @@ class _MyInfoState extends State<MyInfo> {
                                 Text("身高", style: TextStyle(fontSize: 17)),
                                 Spacer(flex: 1),
                                 InkWell(
-                                    child: Text("180.CM",
+                                    child: Text(seleStature.toString() + ".CM",
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w400,
@@ -224,11 +233,16 @@ class _MyInfoState extends State<MyInfo> {
                                     onTap: () {
                                       Pickers.showSinglePicker(context,
                                           data: stature,
+                                          pickerStyle: customPickStyle(),
                                           selectData: seleStature,
-                                          onConfirm: (v, i) {},
-                                          onChanged: (p, i) =>
-                                              print('数据发生改变：$p')
-                                      );
+                                          onConfirm: (val, i) {
+                                            setState(() {
+                                              seleStature = val;
+                                            });
+                                            print(val);
+                                          },
+                                          onChanged: (val, i) =>
+                                              print('选择的身高为：$val'));
                                     }),
                                 SizedBox(width: 5),
                                 Icon(IconData(0xeb8a, fontFamily: "sunfont"),
@@ -260,12 +274,25 @@ class _MyInfoState extends State<MyInfo> {
                                 Text("体重", style: TextStyle(fontSize: 17)),
                                 Spacer(flex: 1),
                                 InkWell(
-                                    child: Text("88.8公斤",
+                                    child: Text(seleWeight.toString() + "公斤",
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w400,
                                             color: Color(0xffb3b3b3))),
-                                    onTap: () {}),
+                                    onTap: () {
+                                      Pickers.showSinglePicker(context,
+                                          data: weight,
+                                          pickerStyle: customPickStyle(),
+                                          selectData: seleWeight,
+                                          onConfirm: (val, i) {
+                                            setState(() {
+                                              seleWeight = val;
+                                            });
+                                            print(val);
+                                          },
+                                          onChanged: (val, i) =>
+                                              print('选择的体重为：$val'));
+                                    }),
                                 SizedBox(width: 5),
                                 Icon(IconData(0xeb8a, fontFamily: "sunfont"),
                                     size: 13, color: Color(0xffbababa))
@@ -278,12 +305,25 @@ class _MyInfoState extends State<MyInfo> {
                                 Text("腰围", style: TextStyle(fontSize: 17)),
                                 Spacer(flex: 1),
                                 InkWell(
-                                    child: Text("95.0CM",
+                                    child: Text(seleWaistline.toString()+".0CM",
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w400,
                                             color: Color(0xffb3b3b3))),
-                                    onTap: () {}),
+                                    onTap: () {
+                                      Pickers.showSinglePicker(context,
+                                          data: waistLine,
+                                          pickerStyle: customPickStyle(),
+                                          selectData: seleWaistline,
+                                          onConfirm: (val, i) {
+                                            setState(() {
+                                              seleWaistline = val;
+                                            });
+                                            print(val);
+                                          },
+                                          onChanged: (val, i) =>
+                                              print('选择的腰围为：$val'));
+                                    }),
                                 SizedBox(width: 5),
                                 Icon(IconData(0xeb8a, fontFamily: "sunfont"),
                                     size: 13, color: Color(0xffbababa))
@@ -295,12 +335,13 @@ class _MyInfoState extends State<MyInfo> {
                                   vertical: 8, horizontal: 12),
                               decoration: BoxDecoration(
                                   color: Color(0xfff8f8fa),
-                                  borderRadius: BorderRadius.circular(8)
-                              ),
+                                  borderRadius: BorderRadius.circular(8)),
                               child: Text(
                                   "性别、年龄、身高、体重、腰围信息将影响日常活动、体脂数据的准确性。请准确填写以上个人资料，以获取更精准的健康数据",
                                   style: TextStyle(
-                                      fontSize: 12, color: Color(0xff6d6d6d))),
+                                      height: 1.5,
+                                      fontSize: 12,
+                                      color: Color(0xff6d6d6d))),
                             )
                           ])))),
         ],
