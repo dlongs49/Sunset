@@ -672,7 +672,9 @@ class _HomeState extends State<Home> {
                 removeTop: true,
                 removeBottom: true,
                 child:
-                ListView(physics: ClampingScrollPhysics(), children: [
+                ListView(
+                    physics: BouncingScrollPhysics(), // ClampingScrollPhysics 安卓滑动效果 BouncingScrollPhysics IOS滑动效果
+                    children: [
                   Container(
                     margin: EdgeInsets.only(top: 5),
                     padding: EdgeInsets.only(left: 15, right: 15),

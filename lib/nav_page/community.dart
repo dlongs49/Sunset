@@ -192,7 +192,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
               removeTop: true,
               removeBottom: true,
               child: ListView(
-                  physics: ClampingScrollPhysics(),
+                  physics: BouncingScrollPhysics(), // ClampingScrollPhysics 安卓滑动效果 BouncingScrollPhysics IOS滑动效果
                   children: list.asMap().entries.map((entry) {
                     int index = entry.key;
                     String item = entry.value;
@@ -262,7 +262,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                   child: GridView.builder(
                                       shrinkWrap: true,
                                       itemCount: 6,
-                                      physics: NeverScrollableScrollPhysics(),
+                                      physics: NeverScrollableScrollPhysics(),// 禁止滑动
                                       gridDelegate:
                                           SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 3, // 主轴一行的数量
