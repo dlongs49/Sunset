@@ -15,6 +15,7 @@ import './my/my_device.dart';
 import './my/bind_device.dart';
 import './my/theme_skin.dart';
 import './my/family.dart';
+import './my/setting.dart';
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
@@ -54,7 +55,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   int currentIndex = 3; // 导航索引
-  List<Widget> pages = [Home(),Community(),Find(),Family()];
+  List<Widget> pages = [Home(),Community(),Find(),Setting()];
   // 更改底部导航栏索引
   void changeNavBar(int index) {
     setState(() {
@@ -111,7 +112,8 @@ class _HomePageState extends State<HomePage> {
                   label: "我的",
                 )
               ]),
-          body: pages[currentIndex],
+          // body: pages[currentIndex],
+          body: Setting(),
         ));
   }
 }
