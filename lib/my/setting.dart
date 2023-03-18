@@ -198,13 +198,48 @@ class _SettingState extends State<Setting> {
                                       color: Color(0xffff0000), fontSize: 20)),
                             ),
                             onTap: () {
-                              Fluttertoast.showToast(
-                                  msg: '退出登录',
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.CENTER,
-                                  backgroundColor: Colors.red,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0);
+                              // Fluttertoast.showToast(
+                              //     msg: '退出登录',
+                              //     toastLength: Toast.LENGTH_SHORT,
+                              //     gravity: ToastGravity.CENTER,
+                              //     backgroundColor: Color(0xd23b3b3b),
+                              //     textColor: Colors.white,
+                              //     fontSize: 16.0);
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Container(
+                                          height: 30,
+                                          alignment: Alignment(0, 0),
+                                          child: Text('提示')),
+                                      content: Container(
+                                          alignment: Alignment(0, 0),
+                                          height: 24,
+                                          child: Text('是否确定退出')),
+                                      actions: <Widget>[
+                                        TextButton(
+                                            child: Text(
+                                              '取消',
+                                              style:
+                                                  TextStyle(color: Colors.grey),
+                                            ),
+                                            onPressed: () {
+                                              Navigator.pop(context, "取消");
+                                            }),
+                                        TextButton(
+                                          child: Text(
+                                            '确定',
+                                            style: TextStyle(
+                                                color: Color(0xff4ece99)),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context, "确定");
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  });
                               print("退出登录>>");
                             })
                       ]))),
