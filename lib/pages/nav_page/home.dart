@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import '../local_data/home.dart';
+import '../../local_data/home.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);

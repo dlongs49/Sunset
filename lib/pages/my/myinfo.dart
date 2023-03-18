@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_pickers/pickers.dart';
 import 'package:flutter_pickers/style/picker_style.dart';
-import '../local_data/info.dart';
+import '../../local_data/info.dart';
 
 class MyInfo extends StatefulWidget {
   const MyInfo({Key? key}) : super(key: key);

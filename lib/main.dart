@@ -5,20 +5,20 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 /* 底部导航对应的页面 */
-import './nav_page/home.dart';
-import './nav_page/community.dart';
-import './nav_page/find.dart';
-import './nav_page/my.dart';
+import './pages/nav_page/home.dart';
+import './pages/nav_page/community.dart';
+import './pages/nav_page/find.dart';
+import './pages/nav_page/my.dart';
 
-import './webview/mall.dart';
-import './webview/invite.dart';
-import './my/my_device.dart';
-import './my/bind_device.dart';
-import './my/theme_skin.dart';
-import './my/family.dart';
-import './my/setting.dart';
-import './my/myinfo.dart';
-import './my/my_profile.dart';
+import './pages/webview/mall.dart';
+import './pages/webview/invite.dart';
+import './pages/my/my_device.dart';
+import './pages/my/bind_device.dart';
+import './pages/my/theme_skin.dart';
+import './pages/my/family.dart';
+import './pages/my/setting.dart';
+import './pages/my/myinfo.dart';
+import './pages/my/my_profile.dart';
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
@@ -45,6 +45,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false, // 开放环境下移除右上角 debug 标志
         home: HomePage(),
         routes:{
+          "myProfile":(BuildContext context) => Mall(),
           "mall":(BuildContext context) => Mall(),
           "invite":(BuildContext context) => Invite(),
         });
