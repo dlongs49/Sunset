@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 /* 底部导航对应的页面 */
 import './nav_page/home.dart';
 import './nav_page/community.dart';
@@ -17,6 +18,7 @@ import './my/theme_skin.dart';
 import './my/family.dart';
 import './my/setting.dart';
 import './my/myinfo.dart';
+import './my/my_profile.dart';
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
@@ -31,7 +33,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Sunset',
-        debugShowCheckedModeBanner: false, // 移除右上角 debug 标志
+        localizationsDelegates: [
+          // 语言代理
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('zh', 'CN'),//设置语言为中文
+        ],
+        debugShowCheckedModeBanner: false, // 开放环境下移除右上角 debug 标志
         home: HomePage(),
         routes:{
           "mall":(BuildContext context) => Mall(),
@@ -114,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                 )
               ]),
           // body: pages[currentIndex],
-          body: MyInfo(),
+          body: MyProfile(),
         ));
   }
 }
