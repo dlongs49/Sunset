@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-
+import '../webview/mall.dart';
 class My extends StatefulWidget {
   const My({Key? key}) : super(key: key);
 
@@ -312,7 +312,6 @@ class _MyState extends State<My> {
     );
   }
 }
-
 // 弧形
 class arcBg extends CustomPainter {
   Paint _paint = Paint()

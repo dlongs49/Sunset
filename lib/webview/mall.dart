@@ -42,6 +42,7 @@ class _MallState extends State<Mall> {
                           alignment: Alignment.centerLeft,
                           child: Icon(IconData(0xec8e, fontFamily: 'sunfont'),
                               color: Colors.black, size: 18.0)),
+                      behavior: HitTestBehavior.opaque, // 点击整个区域有响应事件，
                       onTap: () {
                         print("返回上一页");
                         Navigator.of(context).pop();
