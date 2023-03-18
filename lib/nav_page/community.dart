@@ -12,7 +12,6 @@ class Community extends StatefulWidget {
 }
 
 class _CommunityState extends State<Community> with TickerProviderStateMixin {
-  double topBarHeight = MediaQueryData.fromWindow(window).padding.top;
   List tabBar = ["最新", "精选", "关注"];
   List list = ['', '', '', ''];
   int activeBar = 0;
@@ -52,6 +51,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
 
   Widget build(BuildContext context) {
     double mWidth = MediaQuery.of(context).size.width; // 屏幕宽度
+    double topBarHeight = MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
