@@ -13,21 +13,6 @@ class Family extends StatefulWidget {
 class _FamilyState extends State<Family> {
   List list = [
     {"name": "书本书华", "sex": 1},
-    {"name": "黎宝", "sex": 0},
-    {"name": "书本书华", "sex": 1},
-    {"name": "黎宝", "sex": 0},
-    {"name": "书本书华", "sex": 1},
-    {"name": "黎宝", "sex": 0},
-    {"name": "书本书华", "sex": 1},
-    {"name": "黎宝", "sex": 0},
-    {"name": "书本书华", "sex": 1},
-    {"name": "黎宝", "sex": 0},
-    {"name": "书本书华", "sex": 1},
-    {"name": "黎宝", "sex": 0},
-    {"name": "书本书华", "sex": 1},
-    {"name": "黎宝", "sex": 0},
-    {"name": "书本书华", "sex": 1},
-    {"name": "黎宝", "sex": 0},
   ];
 
   @override
@@ -35,9 +20,9 @@ class _FamilyState extends State<Family> {
     double topBarHeight =
         MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
     double mWidth = MediaQuery.of(context).size.width; // 屏幕宽度
-    return Container(
-      color: Colors.white,
-      child: Column(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Column(
         children: [
           Column(children: [
             Container(
@@ -61,7 +46,7 @@ class _FamilyState extends State<Family> {
                       behavior: HitTestBehavior.opaque, // 点击整个区域有响应事件，
                       onTap: () {
                         print("返回上一页");
-                        // Navigator.of(context).pop();
+                        Navigator.of(context).pop();
                       }),
                   Positioned(
                       left: 0,
@@ -79,6 +64,7 @@ class _FamilyState extends State<Family> {
           ]),
           Expanded(
               child: Stack(alignment: Alignment.center, children: [
+                list.length != 0 ?
             MediaQuery.removePadding(
                 // 去除顶部留白
                 context: context,
@@ -118,7 +104,8 @@ class _FamilyState extends State<Family> {
                                       : 0xff51aefe))
                             ],
                           ),
-                        ))),
+                        )))
+                :Container(child:Align(child: Image.asset("assets/images/none.png"))),
             Positioned(
                 bottom: 18,
                 child: InkWell(
