@@ -609,6 +609,11 @@ class _HomeState extends State<Home> {
           duration: const Duration(seconds: 1), curve: Curves.linear);
     });
   }
+  // 跳转设备管理页面
+  @override
+  void toDevice (){
+    Navigator.pushNamed(context, 'myDevice');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -648,18 +653,21 @@ class _HomeState extends State<Home> {
                       )
                     ],
                   ),
-                  Row(
-                    children: [
-                      Text(
-                        "设备",
-                      ),
-                      Container(
-                          margin: EdgeInsets.only(left: 5),
-                          child: Icon(
-                              IconData(0xe720, fontFamily: 'sunfont'),
-                              color: Colors.black,
-                              size: 21.0)),
-                    ],
+                  InkWell(
+                    child:Row(
+                      children: [
+                        Text(
+                          "设备",
+                        ),
+                        Container(
+                            margin: EdgeInsets.only(left: 5),
+                            child: Icon(
+                                IconData(0xe720, fontFamily: 'sunfont'),
+                                color: Colors.black,
+                                size: 21.0)),
+                      ],
+                    ),
+                    onTap:toDevice
                   )
                 ],
               ),
