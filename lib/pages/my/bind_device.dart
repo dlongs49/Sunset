@@ -16,7 +16,8 @@ class _BindDeviceState extends State<BindDevice> {
     double topBarHeight =
         MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
     double mWidth = MediaQuery.of(context).size.width; // 屏幕宽度
-    return Column(
+    return Scaffold(
+        body: Column(
       children: [
         Column(children: [
           Container(
@@ -144,7 +145,8 @@ class _BindDeviceState extends State<BindDevice> {
             ),
             Spacer(flex: 1),
             InkWell(
-                borderRadius: new BorderRadius.all(new Radius.circular(30.0)), // 点击水波纹是圆角的，默认是矩形的
+                borderRadius: new BorderRadius.all(
+                    new Radius.circular(30.0)), // 点击水波纹是圆角的，默认是矩形的
                 child: Container(
                   alignment: Alignment(0, 0),
                   width: mWidth - 50,
@@ -166,6 +168,6 @@ class _BindDeviceState extends State<BindDevice> {
           ],
         ))
       ],
-    );
+    ));
   }
 }
