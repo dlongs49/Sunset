@@ -29,22 +29,29 @@ class _MyDeviceState extends State<MyDevice> {
       "image": "assets/images/04.png",
       "title": "智能体脂秤",
       "desc": "科学管理好身材",
-      "state": 1
+      "state": 0
     }
   ];
 
   // 跳转绑定页面
   @override
   void toBind(dynamic params, int index) {
-   final item = Map<String, dynamic>.from(params); // list中item项转换 Map 否则 item['title'] 报错
+    final item = Map<String, dynamic>.from(
+        params); // list中item项转换 Map 否则 item['title'] 报错
     if (index == 2) {
-      Navigator.pushNamed(context, 'bindDevice');
+      if (item["state"] == 0) {
+        Navigator.pushNamed(context, 'bindDevice');
+      } else {
+        Navigator.pushNamed(context, 'balance');
+      }
     } else {
       // 暂无页面
-    Fluttertoast.showToast(
+      Fluttertoast.showToast(
           msg: item["title"],
-          toastLength: Toast.LENGTH_SHORT, // 停留时长短 & 长
-          gravity: ToastGravity.CENTER, // 弹框是否居中
+          toastLength: Toast.LENGTH_SHORT,
+          // 停留时长短 & 长
+          gravity: ToastGravity.CENTER,
+          // 弹框是否居中
           backgroundColor: Color(0xd23b3b3b),
           textColor: Colors.white,
           fontSize: 16.0);

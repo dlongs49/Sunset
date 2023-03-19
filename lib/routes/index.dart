@@ -5,8 +5,8 @@ import 'package:sunset/pages/webview/mall.dart'; // 我的-->香豆商城[淘宝
 import 'package:sunset/pages/webview/invite.dart'; // 我的-->邀请[空]
 /* 页面 */
 import 'package:sunset/pages/my/my_device.dart'; // 我的-->我的设备
-import 'package:sunset/pages/device/balance.dart'; // 我的-->体脂秤
 import 'package:sunset/pages/device/bind_device.dart'; // 我的-->设备绑定
+import 'package:sunset/pages/device/balance.dart'; // 我的-->体脂秤
 import 'package:sunset/pages/my/theme_skin.dart'; // 我的-->主题换肤
 import 'package:sunset/pages/my/family.dart'; // 我的-->家庭成员
 import 'package:sunset/pages/my/setting.dart'; // 我的-->设置
@@ -33,7 +33,6 @@ final Map<String, WidgetBuilder> routes = {
 // 路由处理
 // ignore: top_level_function_literal_block
 var onGenerateRoute=(RouteSettings settings) {
-  print(settings);
   final String? name = settings.name;
   final Function pageContentBuilder = routes[name] as Function;
   if (pageContentBuilder != null) {
