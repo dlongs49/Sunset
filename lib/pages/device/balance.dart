@@ -3,14 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart'; // 弹框插件
-class BindDevice extends StatefulWidget {
-  const BindDevice({Key? key}) : super(key: key);
+class Balance extends StatefulWidget {
+  const Balance({Key? key}) : super(key: key);
 
   @override
-  _BindDeviceState createState() => _BindDeviceState();
+  _BalanceState createState() => _BalanceState();
 }
 
-class _BindDeviceState extends State<BindDevice> {
+class _BalanceState extends State<Balance> {
 
   //解除绑定
   @override

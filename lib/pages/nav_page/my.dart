@@ -86,9 +86,7 @@ class _MyState extends State<My> {
                                   IconData(0xe601, fontFamily: 'sunfont'),
                                   color: Colors.white,
                                   size: 24.0)),
-                          onTap: () {
-                            print("扫一扫");
-                          }),
+                          onTap: () =>toPages("scan")),
                       Text("我的",
                           style: TextStyle(color: Colors.white, fontSize: 18)),
                       Row(

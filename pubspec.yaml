@@ -20,6 +20,10 @@ dependencies:
   fluttertoast: ^3.0.6  # 提示插件
   flutter_pickers: ^2.1.9 # 选择器插件 类似于前端的select等选择器
   image_picker: ^0.8.3 # 图片选择，拍摄图片
+  flutter_qr_reader: ^1.0.5
+  flutter_blue: ^0.8.0
+  #camera: ^0.5.8
+  #scan: ^1.6.0
   #path_provider: ^1.6.8 # 获取缓存
 dev_dependencies:
   flutter_test:

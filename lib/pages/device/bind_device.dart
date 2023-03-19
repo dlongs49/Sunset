@@ -6,14 +6,14 @@ import 'package:flutter_qr_reader/flutter_qr_reader.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 
-class Scan extends StatefulWidget {
-  const Scan({Key? key}) : super(key: key);
+class BindDevice extends StatefulWidget {
+  const BindDevice({Key? key}) : super(key: key);
 
   @override
-  _ScanState createState() => _ScanState();
+  _BindDeviceState createState() => _BindDeviceState();
 }
 
-class _ScanState extends State<Scan> {
+class _BindDeviceState extends State<BindDevice> {
   FlutterBlue flutterBlue = FlutterBlue.instance;
   String Id = '123';
 
