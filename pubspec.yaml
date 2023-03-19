@@ -19,7 +19,8 @@ dependencies:
   flutter_webview_plugin: ^0.4.0 # 内嵌 H5 网页插件
   fluttertoast: ^3.0.6  # 提示插件
   flutter_pickers: ^2.1.9 # 选择器插件 类似于前端的select等选择器
-  image_picker: ^0.8.0 # 图片选择，拍摄图片
+  image_picker: ^0.8.3 # 图片选择，拍摄图片
+  #path_provider: ^1.6.8 # 获取缓存
 dev_dependencies:
   flutter_test:
     sdk: flutter

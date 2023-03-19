@@ -72,9 +72,7 @@ class _MyInfoState extends State<MyInfo> {
               onTap: () async {
                 try {
                   final XFile? imgFile = await imgPicker.pickImage(
-                      source: ImageSource.camera,
-                      maxHeight: 600,
-                      maxWidth: 600);
+                      source: ImageSource.camera);
                   if (imgFile != null) {
                     print("拍摄图片>> ${imgFile.path}");
                     File file = File(imgFile.path);
@@ -102,8 +100,7 @@ class _MyInfoState extends State<MyInfo> {
                 ),
               ),
               onTap: () async {
-                final XFile? imgFile = await imgPicker.pickImage(
-                    source: ImageSource.gallery, maxHeight: 600, maxWidth: 600);
+                final XFile? imgFile = await imgPicker.pickImage(source: ImageSource.gallery);
                 if (imgFile != null) {
                   print("选择图片>> ${imgFile.path}");
                   File file = File(imgFile.path);
