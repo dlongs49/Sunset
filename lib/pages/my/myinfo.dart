@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_pickers/pickers.dart';
 import 'package:flutter_pickers/style/picker_style.dart';
+import 'package:flutter_pickers/time_picker/model/date_mode.dart';
 import 'package:sunset/local_data/info.dart';
 
 class MyInfo extends StatefulWidget {
@@ -32,6 +33,67 @@ class _MyInfoState extends State<MyInfo> {
     return PickerStyle(
       commitButton: _commitButton,
     );
+  }
+
+  // 选择出生日期
+  void changeBirth(BuildContext context) {
+    Pickers.showDatePicker(context,
+        mode: DateMode.YMD,
+        pickerStyle: customPickStyle(),
+        onConfirm: (params) {},
+        onChanged: (val) => print('选择的出生日期为：$val'));
+  }
+  // 重写 showModalBottomSheet 布局样式
+  Widget CustomBottomSheet(BuildContext context){
+    return Container(
+        width: double.infinity,
+        height: 130,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10)),
+            color: Colors.white),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            InkWell(
+              child: Container(
+                width: double.infinity,
+                alignment: Alignment(0, 0),
+                height: 130 / 2 - 4,
+                child: InkWell(
+                    child: Text("拍照", style: TextStyle(fontSize: 18))),
+              ),
+              onTap: () {
+                print("拍照");
+              },
+            ),
+            InkWell(
+              child: Container(
+                width: double.infinity,
+                alignment: Alignment(0, 0),
+                height: 55,
+                child: Text(
+                  "选取相册照片",
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+              onTap: () {
+                print("拍照");
+              },
+            ),
+          ],
+        ));
+  }
+  // 头像
+  void onHeadImg(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: false, // 是否滚动
+        backgroundColor: Colors.transparent, // 透明是为了自定义样式，例如圆角等
+        builder: (context) {
+          return CustomBottomSheet(context);
+        });
   }
 
   // 个人简介
@@ -103,13 +165,16 @@ class _MyInfoState extends State<MyInfo> {
                               children: [
                                 Text("头像", style: TextStyle(fontSize: 17)),
                                 Spacer(flex: 1),
-                                ClipRRect(
-                                    borderRadius: BorderRadius.circular(36),
-                                    child: Image.network(
-                                      "https://p.qqan.com/up/2021-5/16215608427768095.png",
-                                      width: 36,
-                                      height: 36,
-                                    )),
+                                InkWell(
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(36),
+                                      child: Image.network(
+                                        "https://p.qqan.com/up/2021-5/16215608427768095.png",
+                                        width: 36,
+                                        height: 36,
+                                      )),
+                                  onTap: () => onHeadImg(context),
+                                ),
                                 SizedBox(width: 15),
                                 Icon(IconData(0xeb8a, fontFamily: "sunfont"),
                                     size: 13, color: Color(0xffbababa))
@@ -153,7 +218,7 @@ class _MyInfoState extends State<MyInfo> {
                                 Text("个人简介", style: TextStyle(fontSize: 17)),
                                 Spacer(flex: 1),
                                 InkResponse(
-                                  // 取消点击水波纹使用 InkResponse
+                                    // 取消点击水波纹使用 InkResponse
                                     highlightColor: Colors.transparent,
                                     radius: 0.0,
                                     child: Text("取半舍满",
@@ -268,7 +333,7 @@ class _MyInfoState extends State<MyInfo> {
                                             fontSize: 16,
                                             fontWeight: FontWeight.w400,
                                             color: Color(0xffb3b3b3))),
-                                    onTap: () {}),
+                                    onTap: () => changeBirth(context)),
                                 SizedBox(width: 5),
                                 Icon(IconData(0xeb8a, fontFamily: "sunfont"),
                                     size: 13, color: Color(0xffbababa))
