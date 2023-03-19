@@ -37,9 +37,9 @@ class _MyProfileState extends State<MyProfile> {
     double topBarHeight =
         MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
     double mWidth = MediaQuery.of(context).size.width; // 屏幕宽度
-    return Container(
-      color: Colors.white,
-      child: Column(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Column(
         children: [
           Column(children: [
             Container(

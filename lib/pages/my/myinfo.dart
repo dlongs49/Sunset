@@ -34,14 +34,18 @@ class _MyInfoState extends State<MyInfo> {
     );
   }
 
+  // 个人简介
+  void toPage(String path) {
+    Navigator.pushNamed(context, path);
+  }
+
   @override
   Widget build(BuildContext context) {
     double topBarHeight =
         MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
-    double mWidth = MediaQuery.of(context).size.width; // 屏幕宽度
-    return Container(
-      color: Colors.white,
-      child: Column(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Column(
         children: [
           Column(children: [
             Container(
@@ -65,7 +69,7 @@ class _MyInfoState extends State<MyInfo> {
                       behavior: HitTestBehavior.opaque, // 点击整个区域有响应事件，
                       onTap: () {
                         print("返回上一页");
-                        // Navigator.of(context).pop();
+                        Navigator.of(context).pop();
                       }),
                   Positioned(
                       left: 0,
@@ -148,13 +152,16 @@ class _MyInfoState extends State<MyInfo> {
                               children: [
                                 Text("个人简介", style: TextStyle(fontSize: 17)),
                                 Spacer(flex: 1),
-                                InkWell(
+                                InkResponse(
+                                  // 取消点击水波纹使用 InkResponse
+                                    highlightColor: Colors.transparent,
+                                    radius: 0.0,
                                     child: Text("取半舍满",
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w400,
                                             color: Color(0xffb3b3b3))),
-                                    onTap: () {}),
+                                    onTap: () => toPage("myProfile")),
                                 SizedBox(width: 5),
                                 Icon(IconData(0xeb8a, fontFamily: "sunfont"),
                                     size: 13, color: Color(0xffbababa))
@@ -305,7 +312,8 @@ class _MyInfoState extends State<MyInfo> {
                                 Text("腰围", style: TextStyle(fontSize: 17)),
                                 Spacer(flex: 1),
                                 InkWell(
-                                    child: Text(seleWaistline.toString()+".0CM",
+                                    child: Text(
+                                        seleWaistline.toString() + ".0CM",
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w400,
