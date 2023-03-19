@@ -2,23 +2,8 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-/* 底部导航对应的页面 */
-import './pages/nav_page/home.dart';
-import './pages/nav_page/community.dart';
-import './pages/nav_page/find.dart';
-import './pages/nav_page/my.dart';
-
-import './pages/webview/mall.dart';
-import './pages/webview/invite.dart';
-import './pages/my/my_device.dart';
-import './pages/my/bind_device.dart';
-import './pages/my/theme_skin.dart';
-import './pages/my/family.dart';
-import './pages/my/setting.dart';
-import './pages/my/myinfo.dart';
-import './pages/my/my_profile.dart';
+import 'package:sunset/routes/index.dart';
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
@@ -32,101 +17,33 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Sunset',
-        localizationsDelegates: [
-          // 语言代理
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: [
-          const Locale('zh', 'CN'),//设置语言为中文
-        ],
-        debugShowCheckedModeBanner: false, // 开放环境下移除右上角 debug 标志
+      title: 'Sunset',
+      localizationsDelegates: [
+        // 语言代理
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('zh', 'CN'), //设置语言为中文
+      ],
+      // 开放环境下移除右上角 debug 标志
+      debugShowCheckedModeBanner: false,
+
+      /*
+        这里的 home 与 initialRoute 只能存其一
         home: HomePage(),
-        routes:{
-          "myProfile":(BuildContext context) => Mall(),
-          "mall":(BuildContext context) => Mall(),
-          "invite":(BuildContext context) => Invite(),
-        });
-  }
-}
-
-class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
-
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-
-  // 抽离底部导航栏Icon
-  Widget bomIcon(icon, color) {
-    return (Icon(IconData(icon, fontFamily: 'sunfont'), color: Color(color)));
-  }
-
-  int currentIndex = 3; // 导航索引
-  List<Widget> pages = [Home(),Community(),Find(),Setting()];
-  // 更改底部导航栏索引
-  void changeNavBar(int index) {
-    setState(() {
-      currentIndex = index;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle(
-          // 设置沉浸式状态栏文字颜色
-          statusBarColor: Colors.transparent,
-          systemNavigationBarColor: Colors.black,
-          statusBarIconBrightness: Brightness.dark,
-          systemNavigationBarIconBrightness: Brightness.dark,
-        ),
-        child: Scaffold(
-          backgroundColor: Color.fromRGBO(246, 247, 251, 1),
-          bottomNavigationBar: BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              currentIndex: currentIndex,
-              // 当前选中
-              iconSize: 18,
-              // 图标尺寸
-              fixedColor: Color(0xff000000),
-              // 选中的颜色
-              selectedFontSize: 10.0,
-              // 选中的字体大小
-              unselectedFontSize: 10.0,
-              // 未选中的字体大小
-              onTap: (index) {
-                changeNavBar(index);
-              },
-              items: [
-                BottomNavigationBarItem(
-                  icon: bomIcon(0xe718, 0xffb4b7be),
-                  activeIcon: bomIcon(0xe718, 0xff262626),
-                  label: "首页",
-                ),
-                BottomNavigationBarItem(
-                  icon: bomIcon(0xe8c5, 0xffb4b7be),
-                  activeIcon: bomIcon(0xe8c5, 0xff262626),
-                  label: "社区",
-                ),
-                BottomNavigationBarItem(
-                  icon: bomIcon(0xe621, 0xffb4b7be),
-                  activeIcon: bomIcon(0xe621, 0xff262626),
-                  label: "发现",
-                ),
-                BottomNavigationBarItem(
-                  icon: bomIcon(0xe941, 0xffb4b7be),
-                  activeIcon: bomIcon(0xe941, 0xff262626),
-                  label: "我的",
-                )
-              ]),
-          // body: pages[currentIndex],
-          body: MyProfile(),
-        ));
+      */
+      // 初始化路由 >> 说明：这里如果指定了页面那么在 routes 文件中 不能含有 '/'
+      initialRoute: "/",
+      // 命名路由
+      onGenerateRoute: onGenerateRoute,
+      /*
+      基本路由，推荐命名路由
+      routes:{
+          "my":(context)=>My(),
+          ...
+       } */
+    );
   }
 }
