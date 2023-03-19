@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-
+import 'package:fluttertoast/fluttertoast.dart'; // 弹框插件
 class BindDevice extends StatefulWidget {
   const BindDevice({Key? key}) : super(key: key);
 
@@ -11,6 +11,22 @@ class BindDevice extends StatefulWidget {
 }
 
 class _BindDeviceState extends State<BindDevice> {
+
+  //解除绑定
+  @override
+  void onRemoveBind(){
+    Navigator.of(context).pop();
+  }
+  @override
+  void onGuide(){
+    Fluttertoast.showToast(
+        msg: "操作指南",
+        toastLength: Toast.LENGTH_SHORT, // 停留时长短 & 长
+        gravity: ToastGravity.CENTER, // 弹框是否居中
+        backgroundColor: Color(0xd23b3b3b),
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
   @override
   Widget build(BuildContext context) {
     double topBarHeight =
@@ -41,7 +57,7 @@ class _BindDeviceState extends State<BindDevice> {
                     behavior: HitTestBehavior.opaque, // 点击整个区域有响应事件，
                     onTap: () {
                       print("返回上一页");
-                      // Navigator.of(context).pop();
+                      Navigator.of(context).pop();
                     }),
                 Positioned(
                     left: 0,
@@ -116,9 +132,7 @@ class _BindDeviceState extends State<BindDevice> {
                     ],
                   ),
                 ),
-                onTap: () {
-                  print("操作指南>>");
-                }),
+                onTap: onGuide),
             Container(
               width: double.infinity,
               margin: EdgeInsets.symmetric(horizontal: 15),
@@ -161,9 +175,7 @@ class _BindDeviceState extends State<BindDevice> {
                               fontSize: 20,
                               fontWeight: FontWeight.w600))),
                 ),
-                onTap: () {
-                  print("绑定 & 解除绑定 >>");
-                }),
+                onTap: onRemoveBind),
             SizedBox(height: 30)
           ],
         ))
