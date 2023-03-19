@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:core';
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:flutter_pickers/pickers.dart';
 import 'package:flutter_pickers/style/picker_style.dart';
 import 'package:flutter_pickers/time_picker/model/date_mode.dart';
 import 'package:sunset/local_data/info.dart';
+import 'package:image_picker/image_picker.dart';
 
 class MyInfo extends StatefulWidget {
   const MyInfo({Key? key}) : super(key: key);
@@ -16,6 +19,8 @@ class MyInfo extends StatefulWidget {
 }
 
 class _MyInfoState extends State<MyInfo> {
+  final ImagePicker imgPicker = ImagePicker(); // 相机，图库权限
+  String headimg = "";
   List sexList = ["女", "男"];
   int sexActive = 0; // 默认索引对应值 女
   int seleStature = 160; // 女：160cm 男：180cm
@@ -43,15 +48,15 @@ class _MyInfoState extends State<MyInfo> {
         onConfirm: (params) {},
         onChanged: (val) => print('选择的出生日期为：$val'));
   }
+
   // 重写 showModalBottomSheet 布局样式
-  Widget CustomBottomSheet(BuildContext context){
+  Widget CustomBottomSheet(BuildContext context) {
     return Container(
         width: double.infinity,
         height: 130,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10)),
+                topLeft: Radius.circular(10), topRight: Radius.circular(10)),
             color: Colors.white),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -61,11 +66,29 @@ class _MyInfoState extends State<MyInfo> {
                 width: double.infinity,
                 alignment: Alignment(0, 0),
                 height: 130 / 2 - 4,
-                child: InkWell(
-                    child: Text("拍照", style: TextStyle(fontSize: 18))),
+                child:
+                    InkWell(child: Text("拍照", style: TextStyle(fontSize: 18))),
               ),
-              onTap: () {
-                print("拍照");
+              onTap: () async {
+                try {
+                  final XFile? imgFile = await imgPicker.pickImage(
+                      source: ImageSource.camera,
+                      maxHeight: 600,
+                      maxWidth: 600);
+                  if (imgFile != null) {
+                    print("拍摄图片>> ${imgFile.path}");
+                    File file = File(imgFile.path);
+                    final imageBytes = await file.readAsBytes();
+                    String base64Img = base64Encode(imageBytes);
+                    setState(() {
+                      headimg = base64Img;
+                    });
+                    Navigator.pop(context); // 用于底部弹框关闭
+                    print("图片base64 >> $base64Img");
+                  }
+                } catch (e) {
+                  print("异常>> $e");
+                }
               },
             ),
             InkWell(
@@ -78,13 +101,26 @@ class _MyInfoState extends State<MyInfo> {
                   style: TextStyle(fontSize: 18),
                 ),
               ),
-              onTap: () {
-                print("拍照");
+              onTap: () async {
+                final XFile? imgFile = await imgPicker.pickImage(
+                    source: ImageSource.gallery, maxHeight: 600, maxWidth: 600);
+                if (imgFile != null) {
+                  print("选择图片>> ${imgFile.path}");
+                  File file = File(imgFile.path);
+                  final imageBytes = await file.readAsBytes();
+                  String base64Img = base64Encode(imageBytes);
+                  setState(() {
+                    headimg = base64Img;
+                  });
+                  Navigator.pop(context); // 用于底部弹框关闭
+                  print("图片base64 >> $base64Img");
+                }
               },
             ),
           ],
         ));
   }
+
   // 头像
   void onHeadImg(BuildContext context) {
     showModalBottomSheet(
@@ -167,12 +203,16 @@ class _MyInfoState extends State<MyInfo> {
                                 Spacer(flex: 1),
                                 InkWell(
                                   child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(36),
-                                      child: Image.network(
-                                        "https://p.qqan.com/up/2021-5/16215608427768095.png",
-                                        width: 36,
-                                        height: 36,
-                                      )),
+                                    borderRadius: BorderRadius.circular(36),
+                                    child: headimg == ""
+                                        ? Image.network(
+                                            "https://p.qqan.com/up/2021-5/16215608427768095.png",
+                                            width: 36,
+                                            height: 36,
+                                          )
+                                        : Image.memory(base64.decode(headimg),
+                                            width: 36, height: 36),
+                                  ),
                                   onTap: () => onHeadImg(context),
                                 ),
                                 SizedBox(width: 15),
