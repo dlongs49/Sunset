@@ -1,8 +1,9 @@
 import 'dart:ui';
-import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
 class My extends StatefulWidget {
   const My({Key? key}) : super(key: key);
 
@@ -12,16 +13,45 @@ class My extends StatefulWidget {
 
 class _MyState extends State<My> {
   List card1 = [
-    {"icon":0xe720,"title":"我的设备","path":""},
-    {"icon":0xe899,"title":"家庭成员","path":""},
-    {"icon":0xe65d,"title":"历史记录","path":""},
+    {"icon": 0xe720, "title": "我的设备", "path": "myDevice"},
+    {"icon": 0xe899, "title": "家庭成员", "path": "family"},
+    {"icon": 0xe65d, "title": "历史记录", "path": ""},
   ];
   List card2 = [
-    {"icon":0xe8ba,"title":"主题皮肤","path":""},
-    {"icon":0xe642,"title":"问题反馈","path":""},
-    {"icon":0xe746,"title":"称重提醒","path":""},
-    {"icon":0xe625,"title":"我的收藏","path":""},
+    {"icon": 0xe8ba, "title": "主题皮肤", "path": "themeSkin"},
+    {"icon": 0xe642, "title": "问题反馈", "path": ""},
+    {"icon": 0xe746, "title": "称重提醒", "path": ""},
+    {"icon": 0xe625, "title": "我的收藏", "path": ""},
   ];
+
+  //去设置页面
+  void toSetting() {
+    Navigator.pushNamed(context, "setting");
+  }
+
+  // 卡片跳转页面
+  void toPage(dynamic val, int index) {
+    Map item = Map<String, dynamic>.from(val);
+    if (item["path"].length != 0 && item["path"] != null) {
+      Navigator.pushNamed(context, item["path"]);
+    } else {
+      // 暂无页面
+      Fluttertoast.showToast(
+          msg: item["title"],
+          toastLength: Toast.LENGTH_SHORT,
+          // 停留时长短 & 长
+          gravity: ToastGravity.CENTER,
+          // 弹框是否居中
+          backgroundColor: Color(0xd23b3b3b),
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
+  }
+
+  //邀请好友 & 商城 【webview】
+  void toview(String webViewName) {
+    Navigator.pushNamed(context, webViewName);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +102,7 @@ class _MyState extends State<My> {
                                       IconData(0xe636, fontFamily: 'sunfont'),
                                       color: Colors.white,
                                       size: 22.0)),
-                              onTap: () {
-                                print("设置");
-                              }),
+                              onTap: toSetting),
                           InkWell(
                               child: Container(
                                   width: 40,
@@ -130,25 +158,39 @@ class _MyState extends State<My> {
                                       height: 70,
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(70),
-                                        child: Image.network("https://image.findlinked.cn/xiangrui/2022-06-13/53e425a3-e1e5-4b4b-91e2-e989d102b219.jpeg"),
+                                        child: Image.network(
+                                            "https://image.findlinked.cn/xiangrui/2022-06-13/53e425a3-e1e5-4b4b-91e2-e989d102b219.jpeg"),
                                       ),
                                       decoration: BoxDecoration(
-                                              borderRadius:BorderRadius.circular(70),
+                                          borderRadius:
+                                              BorderRadius.circular(70),
                                           color: Colors.white),
                                     ),
                                     SizedBox(width: 15),
                                     Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Text("书本书华",style: TextStyle(color: Colors.white,fontSize: 22,fontWeight: FontWeight.w800)),
+                                        Text("书本书华",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.w800)),
                                         Row(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
                                           children: [
-                                            Text("个人主页",style: TextStyle(color: Color(
-                                                0xb7ffffff))),
+                                            Text("个人主页",
+                                                style: TextStyle(
+                                                    color: Color(0xb7ffffff))),
                                             SizedBox(width: 4),
-                                            Icon(IconData(0xeb8a,fontFamily: 'sunfont'),color: Color(0xb7ffffff),size: 10)
+                                            Icon(
+                                                IconData(0xeb8a,
+                                                    fontFamily: 'sunfont'),
+                                                color: Color(0xb7ffffff),
+                                                size: 10)
                                           ],
                                         )
                                       ],
@@ -158,146 +200,210 @@ class _MyState extends State<My> {
                                       width: 30,
                                       height: 30,
                                       decoration: BoxDecoration(
-                                        color: Color(0x28000000),
-                                        borderRadius: BorderRadius.circular(30)
-                                      ),
-                                      child: Icon(IconData(0xe703,fontFamily: 'sunfont'),color: Colors.white,size: 16),
+                                          color: Color(0x28000000),
+                                          borderRadius:
+                                              BorderRadius.circular(30)),
+                                      child: Icon(
+                                          IconData(0xe703,
+                                              fontFamily: 'sunfont'),
+                                          color: Colors.white,
+                                          size: 16),
                                     )
                                   ],
                                 ),
                                 SizedBox(height: 20),
                                 Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(
                                         child: InkWell(
-                                            child:Container(
-                                              padding:EdgeInsets.symmetric(vertical: 10,horizontal: 15),
+                                            child: Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 10, horizontal: 15),
                                               decoration: BoxDecoration(
                                                   color: Colors.white,
-                                                  borderRadius: BorderRadius.circular(8)
-                                              ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(8)),
                                               child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
                                                 children: [
                                                   Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
-                                                      Text("香豆商城",style: TextStyle(color:Color(0xffe8ae65),fontSize: 16,fontWeight: FontWeight.w800)),
+                                                      Text("香豆商城",
+                                                          style: TextStyle(
+                                                              color: Color(
+                                                                  0xffe8ae65),
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w800)),
                                                       SizedBox(height: 4),
-                                                      Text("可兑换海量商品",style: TextStyle(color:Color(0xffe7c192),fontSize: 12))
+                                                      Text("可兑换海量商品",
+                                                          style: TextStyle(
+                                                              color: Color(
+                                                                  0xffe7c192),
+                                                              fontSize: 12))
                                                     ],
                                                   ),
-                                                  Image.asset("assets/images/mall.png",width: 30,height: 30,)
+                                                  Image.asset(
+                                                    "assets/images/mall.png",
+                                                    width: 30,
+                                                    height: 30,
+                                                  )
                                                 ],
                                               ),
                                             ),
-                                            onTap:(){
-                                              Navigator.pushNamed(context, "mall");
-                                              print("route >> 商城");
-                                            })
-                                    ),
+                                            onTap: () => toview("mall"))),
                                     SizedBox(width: 15),
                                     Expanded(
                                         child: InkWell(
-                                          child: Container(
-                                            padding:EdgeInsets.symmetric(vertical: 10,horizontal: 15),
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.circular(8)
+                                            child: Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 10, horizontal: 15),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(8)),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text("邀请享好礼",
+                                                          style: TextStyle(
+                                                              color: Color(
+                                                                  0xffe08278),
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w800)),
+                                                      SizedBox(height: 4),
+                                                      Text("天天香豆赚不停",
+                                                          style: TextStyle(
+                                                              color: Color(
+                                                                  0xffd2b0ae),
+                                                              fontSize: 12))
+                                                    ],
+                                                  ),
+                                                  Image.asset(
+                                                    "assets/images/gift.png",
+                                                    width: 30,
+                                                    height: 30,
+                                                  )
+                                                ],
+                                              ),
                                             ),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text("邀请享好礼",style: TextStyle(color:Color(0xffe08278),fontSize: 16,fontWeight: FontWeight.w800)),
-                                                    SizedBox(height: 4),
-                                                    Text("天天香豆赚不停",style: TextStyle(color:Color(0xffd2b0ae),fontSize: 12))
-                                                  ],
-                                                ),
-                                                Image.asset("assets/images/gift.png",width: 30,height: 30,)
-                                              ],
-                                            ),
-                                          ),
-                                          onTap: (){
-                                            Navigator.pushNamed(context, "invite");
-                                            print("route >> 邀请好友");
-                                          }
-                                        )
-                                    ),
+                                            onTap: () => toview("invite"))),
                                   ],
                                 ),
                                 SizedBox(height: 16),
                                 Container(
-                                  padding: EdgeInsets.symmetric(vertical: 10,horizontal: 15),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 15),
                                   decoration: BoxDecoration(
-                                      color:Colors.white,
-                                      borderRadius: BorderRadius.circular(12)
-                                  ),
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(12)),
                                   child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: card1.asMap().entries.map((entry){
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children:
+                                          card1.asMap().entries.map((entry) {
                                         int index = entry.key;
                                         var item = entry.value;
                                         return InkWell(
-                                            child:Container(
-                                              margin:EdgeInsets.only(bottom:index != 2 ? 30 : 0),
-                                              padding:EdgeInsets.symmetric(vertical: 10),
-                                              child:Row(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                            child: Container(
+                                              margin: EdgeInsets.only(
+                                                  bottom: index != 2 ? 30 : 0),
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 10),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
                                                 children: [
-                                                  Icon(IconData(item["icon"],fontFamily: 'sunfont'),size:20,color:Colors.black),
+                                                  Icon(
+                                                      IconData(item["icon"],
+                                                          fontFamily:
+                                                              'sunfont'),
+                                                      size: 20,
+                                                      color: Colors.black),
                                                   SizedBox(width: 8),
-                                                  Text(item["title"],style: TextStyle(fontSize: 16)),
+                                                  Text(item["title"],
+                                                      style: TextStyle(
+                                                          fontSize: 16)),
                                                   Spacer(flex: 1),
-                                                  Icon(IconData(0xeb8a,fontFamily: "sunfont"),size:14,color:Color(0xffb8b7bd))
+                                                  Icon(
+                                                      IconData(0xeb8a,
+                                                          fontFamily:
+                                                              "sunfont"),
+                                                      size: 14,
+                                                      color: Color(0xffb8b7bd))
                                                 ],
                                               ),
                                             ),
-                                            onTap: (){
-                                              print(item["title"]);
-                                            }
-                                        );
-                                      }).toList()
-                                  ),
+                                            onTap: () => toPage(item, index));
+                                      }).toList()),
                                 ),
                                 SizedBox(height: 16),
                                 Container(
-                                  padding: EdgeInsets.symmetric(vertical: 10,horizontal: 15),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 15),
                                   decoration: BoxDecoration(
-                                      color:Colors.white,
-                                      borderRadius: BorderRadius.circular(12)
-                                  ),
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(12)),
                                   child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: card2.asMap().entries.map((entry){
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children:
+                                          card2.asMap().entries.map((entry) {
                                         int index = entry.key;
                                         var item = entry.value;
                                         return InkWell(
-                                            child:Container(
-                                              margin:EdgeInsets.only(bottom:index != 3 ? 30 : 0),
-                                              padding:EdgeInsets.symmetric(vertical: 10),
-                                              child:Row(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                            child: Container(
+                                              margin: EdgeInsets.only(
+                                                  bottom: index != 3 ? 30 : 0),
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 10),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
                                                 children: [
-                                                  Icon(IconData(item["icon"],fontFamily: 'sunfont'),size:20,color:Colors.black),
+                                                  Icon(
+                                                      IconData(item["icon"],
+                                                          fontFamily:
+                                                              'sunfont'),
+                                                      size: 20,
+                                                      color: Colors.black),
                                                   SizedBox(width: 8),
-                                                  Text(item["title"],style: TextStyle(fontSize: 16)),
+                                                  Text(item["title"],
+                                                      style: TextStyle(
+                                                          fontSize: 16)),
                                                   Spacer(flex: 1),
-                                                  Icon(IconData(0xeb8a,fontFamily: "sunfont"),size:14,color:Color(0xffb8b7bd))
+                                                  Icon(
+                                                      IconData(0xeb8a,
+                                                          fontFamily:
+                                                              "sunfont"),
+                                                      size: 14,
+                                                      color: Color(0xffb8b7bd))
                                                 ],
                                               ),
                                             ),
-                                            onTap: (){
-                                              print(item["title"]);
-                                            }
-                                        );
-                                      }).toList()
-                                  ),
+                                            onTap: () => toPage(item, index));
+                                      }).toList()),
                                 ),
                                 SizedBox(height: 30)
                               ],
@@ -312,7 +418,8 @@ class _MyState extends State<My> {
     );
   }
 }
-// 弧形
+
+// 弧形 【百度大神】
 class arcBg extends CustomPainter {
   Paint _paint = Paint()
     ..color = Color(0xff22d47e) //画笔颜色
