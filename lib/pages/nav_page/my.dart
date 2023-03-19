@@ -24,9 +24,9 @@ class _MyState extends State<My> {
     {"icon": 0xe625, "title": "我的收藏", "path": ""},
   ];
 
-  //去设置页面
-  void toSetting() {
-    Navigator.pushNamed(context, "setting");
+  //设置 个人信息
+  void toPages(String path) {
+    Navigator.pushNamed(context, path);
   }
 
   // 卡片跳转页面
@@ -102,7 +102,7 @@ class _MyState extends State<My> {
                                       IconData(0xe636, fontFamily: 'sunfont'),
                                       color: Colors.white,
                                       size: 22.0)),
-                              onTap: toSetting),
+                              onTap: ()=>toPages("setting")),
                           InkWell(
                               child: Container(
                                   width: 40,
@@ -153,47 +153,53 @@ class _MyState extends State<My> {
                                 SizedBox(height: 30),
                                 Row(
                                   children: [
-                                    Container(
-                                      width: 70,
-                                      height: 70,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(70),
-                                        child: Image.network(
-                                            "https://image.findlinked.cn/xiangrui/2022-06-13/53e425a3-e1e5-4b4b-91e2-e989d102b219.jpeg"),
+                                    InkWell(
+                                      child:Container(
+                                        width: 70,
+                                        height: 70,
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(70),
+                                          child: Image.network(
+                                              "https://image.findlinked.cn/xiangrui/2022-06-13/53e425a3-e1e5-4b4b-91e2-e989d102b219.jpeg"),
+                                        ),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(70),
+                                            color: Colors.white),
                                       ),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(70),
-                                          color: Colors.white),
+                                      onTap: ()=>toPages("myInfo"),
                                     ),
                                     SizedBox(width: 15),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text("书本书华",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 22,
-                                                fontWeight: FontWeight.w800)),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text("个人主页",
-                                                style: TextStyle(
-                                                    color: Color(0xb7ffffff))),
-                                            SizedBox(width: 4),
-                                            Icon(
-                                                IconData(0xeb8a,
-                                                    fontFamily: 'sunfont'),
-                                                color: Color(0xb7ffffff),
-                                                size: 10)
-                                          ],
-                                        )
-                                      ],
+                                    InkWell(
+                                      child:Column(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Text("书本书华",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 22,
+                                                  fontWeight: FontWeight.w800)),
+                                          Row(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                            children: [
+                                              Text("个人主页",
+                                                  style: TextStyle(
+                                                      color: Color(0xb7ffffff))),
+                                              SizedBox(width: 4),
+                                              Icon(
+                                                  IconData(0xeb8a,
+                                                      fontFamily: 'sunfont'),
+                                                  color: Color(0xb7ffffff),
+                                                  size: 10)
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                      onTap:()=>toPages("myInfo")
                                     ),
                                     Spacer(flex: 1),
                                     Container(
