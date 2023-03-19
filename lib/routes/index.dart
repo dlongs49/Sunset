@@ -11,6 +11,7 @@ import 'package:sunset/pages/my/family.dart'; // 我的-->家庭成员
 import 'package:sunset/pages/my/setting.dart'; // 我的-->设置
 import 'package:sunset/pages/my/myinfo.dart'; // 我的--> 个人信息
 import 'package:sunset/pages/my/my_profile.dart'; // 我的-->个人简介
+import 'package:sunset/pages/my/scan.dart'; // 我的-->扫一扫
 import 'package:sunset/app.dart';
 
 final Map<String, WidgetBuilder> routes = {
@@ -24,6 +25,7 @@ final Map<String, WidgetBuilder> routes = {
   "myProfile": (BuildContext context) => MyProfile(),
   "mall": (BuildContext context) => Mall(),
   "invite": (BuildContext context) => Invite(),
+  "scan": (BuildContext context) => Scan(),
 };
 
 // 路由处理
