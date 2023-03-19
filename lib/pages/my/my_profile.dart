@@ -3,8 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_pickers/pickers.dart';
-import 'package:flutter_pickers/style/picker_style.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({Key? key}) : super(key: key);
@@ -17,21 +16,32 @@ class _MyProfileState extends State<MyProfile> {
   String maxTextNum = "0/50";
   String inpText = "";
   int maxnum = 51;
+
   // 监听文字输入
   void textChanged(text) {
     print("TextLen>> ${text.length} >> $maxnum");
     setState(() {
-      inpText=text;
+      inpText = text;
       maxTextNum = "${text.length.toString()}/50";
     });
     print(maxTextNum.runtimeType); // 检测数据类型
     print("Text>>$text >>> $maxTextNum");
   }
-  // 保存
-  void saveProfile(){
-    print(inpText);
 
+  // 保存
+  void saveProfile() {
+    Fluttertoast.showToast(
+        msg: "保存成功",
+        toastLength: Toast.LENGTH_SHORT,
+        // 停留时长短 & 长
+        gravity: ToastGravity.CENTER,
+        // 弹框是否居中
+        backgroundColor: Color(0xd23b3b3b),
+        textColor: Colors.white,
+        fontSize: 16.0);
+    Navigator.of(context).pop();
   }
+
   @override
   Widget build(BuildContext context) {
     double topBarHeight =
@@ -65,7 +75,7 @@ class _MyProfileState extends State<MyProfile> {
                       behavior: HitTestBehavior.opaque, // 点击整个区域有响应事件，
                       onTap: () {
                         print("返回上一页");
-                        // Navigator.of(context).pop();
+                        Navigator.of(context).pop();
                       }),
                   Text("个人信息",
                       textAlign: TextAlign.center,
@@ -85,7 +95,7 @@ class _MyProfileState extends State<MyProfile> {
                           child: Text("保存",
                               style: TextStyle(
                                   fontSize: 14, color: Color(0xff22d47e)))),
-                      onTap:saveProfile)
+                      onTap: saveProfile)
                 ],
               ),
             )
@@ -110,7 +120,7 @@ class _MyProfileState extends State<MyProfile> {
                       helperStyle:
                           TextStyle(color: Color(0xffd0d0d0), fontSize: 13)),
                   inputFormatters: <TextInputFormatter>[
-                    LengthLimitingTextInputFormatter(maxnum)//限制长度
+                    LengthLimitingTextInputFormatter(maxnum) //限制长度
                   ],
                   onChanged: textChanged),
             ),
