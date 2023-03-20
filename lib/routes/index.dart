@@ -13,6 +13,7 @@ import 'package:sunset/pages/my/setting.dart'; // 我的-->设置
 import 'package:sunset/pages/my/myinfo.dart'; // 我的--> 个人信息
 import 'package:sunset/pages/my/my_profile.dart'; // 我的-->个人简介
 import 'package:sunset/pages/my/scan.dart'; // 我的-->扫一扫
+import 'package:sunset/pages/detail/user_info.dart'; // 用户信息
 import 'package:sunset/app.dart';
 
 final Map<String, WidgetBuilder> routes = {
@@ -28,6 +29,7 @@ final Map<String, WidgetBuilder> routes = {
   "mall": (BuildContext context) => Mall(),
   "invite": (BuildContext context) => Invite(),
   "scan": (BuildContext context) => Scan(),
+  "userInfo": (BuildContext context) => UserInfo(),
 };
 
 // 路由处理

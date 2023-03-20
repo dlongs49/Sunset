@@ -636,16 +636,22 @@ class _HomeState extends State<Home> {
                 children: [
                   Row(
                     children: [
-                      Container(
-                        width: 30,
-                        height: 30,
-                        margin: EdgeInsets.only(right: 10),
-                        clipBehavior: Clip.hardEdge,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30)),
-                        child: Image.asset("assets/images/3044.jpg",
-                            fit: BoxFit.cover),
-                      ),
+                      InkWell(
+                        child:Container(
+                          width: 30,
+                          height: 30,
+                          margin: EdgeInsets.only(right: 10),
+                          clipBehavior: Clip.hardEdge,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Image.asset("assets/images/3044.jpg",
+                              fit: BoxFit.cover),
+                        ) ,
+                        onTap: (){
+                          Navigator.pushNamed(context, "userInfo");
+                        },
+                      )
+                      ,
                       Text(
                         "我",
                         style: TextStyle(

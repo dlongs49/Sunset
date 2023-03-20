@@ -48,7 +48,9 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
         .animate(_controller);
     _controller.forward();
   }
-
+  void toPage(String path, dynamic arg){
+    Navigator.pushNamed(context, path);
+  }
   Widget build(BuildContext context) {
     double mWidth = MediaQuery.of(context).size.width; // 屏幕宽度
     double topBarHeight = MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
@@ -72,16 +74,20 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        width: 30,
-                        height: 30,
-                        margin: EdgeInsets.only(right: 40),
-                        clipBehavior: Clip.hardEdge,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30)),
-                        child: Image.asset("assets/images/3044.jpg",
-                            fit: BoxFit.cover),
-                      ),
+                      InkWell(
+                        child: Container(
+                          width: 30,
+                          height: 30,
+                          margin: EdgeInsets.only(right: 40),
+                          clipBehavior: Clip.hardEdge,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Image.asset("assets/images/3044.jpg",
+                              fit: BoxFit.cover),
+                        ),
+                        onTap: ()=>toPage("userInfo",null),
+                      )
+                      ,
                       Expanded(
                           child: Container(
                         child: Row(
@@ -191,30 +197,33 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
               context: context,
               removeTop: true,
               removeBottom: true,
-              child: ListView(
+              child: ListView.builder(
                   physics: BouncingScrollPhysics(), // ClampingScrollPhysics 安卓滑动效果 BouncingScrollPhysics IOS滑动效果
-                  children: list.asMap().entries.map((entry) {
-                    int index = entry.key;
-                    String item = entry.value;
+                  itemCount: list.length,
+                  itemBuilder: (ctx,i){
                     return Container(
                         width: double.infinity,
                         color: Colors.white,
                         margin: EdgeInsets.only(bottom: 8),
                         padding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                        EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(children: [
-                                Container(
-                                    width: 38,
-                                    height: 38,
-                                    margin: EdgeInsets.only(right: 8),
-                                    child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(38),
-                                        child: Image.asset(
-                                            "assets/images/400x400.jpg",
-                                            fit: BoxFit.cover))),
+                                InkWell(
+                                  child: Container(
+                                      width: 38,
+                                      height: 38,
+                                      margin: EdgeInsets.only(right: 8),
+                                      child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(38),
+                                          child: Image.asset(
+                                              "assets/images/400x400.jpg",
+                                              fit: BoxFit.cover))),
+                                  onTap: ()=> toPage("userInfo",{}),
+                                )
+                                ,
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -264,7 +273,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                       itemCount: 6,
                                       physics: NeverScrollableScrollPhysics(),// 禁止滑动
                                       gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                      SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 3, // 主轴一行的数量
                                         mainAxisSpacing: 6, // 主轴每行间距
                                         crossAxisSpacing: 6, // 交叉轴每行间距
@@ -279,8 +288,8 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                                     fit: BoxFit.fitWidth),
                                                 shape: RoundedRectangleBorder(
                                                     borderRadius:
-                                                        BorderRadiusDirectional
-                                                            .circular(6)))));
+                                                    BorderRadiusDirectional
+                                                        .circular(6)))));
                                       })),
                               Container(
                                   margin: EdgeInsets.only(top: 12, bottom: 10),
@@ -295,11 +304,11 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                           fontSize: 12))),
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                    CrossAxisAlignment.center,
                                     children: [
                                       Icon(
                                           IconData(0xec7f,
@@ -322,7 +331,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                   ),
                                   Row(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                    CrossAxisAlignment.center,
                                     children: [
                                       Icon(
                                           IconData(0xe600,
@@ -366,12 +375,12 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                                 color: Color(0xff22d47e),
                                                 fontSize: 12),
                                             children: <TextSpan>[
-                                          TextSpan(
-                                              text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 12)),
-                                        ])),
+                                              TextSpan(
+                                                  text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 12)),
+                                            ])),
                                     SizedBox(height: 8),
                                     RichText(
                                         text: TextSpan(
@@ -380,12 +389,12 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                                 color: Color(0xff22d47e),
                                                 fontSize: 12),
                                             children: <TextSpan>[
-                                          TextSpan(
-                                              text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 12)),
-                                        ])),
+                                              TextSpan(
+                                                  text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 12)),
+                                            ])),
                                     SizedBox(height: 8),
                                     Text("查看全部评论",
                                         style: TextStyle(
@@ -395,7 +404,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                 ),
                               )
                             ]));
-                  }).toList())),
+                  })),
           Positioned(
               bottom: 50,
               right: 30,
