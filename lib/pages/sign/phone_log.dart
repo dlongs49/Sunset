@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -61,7 +60,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
     double topBarHeight =
         MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
     return Scaffold(
-      resizeToAvoidBottomInset: false, // 解决键盘谈起容器溢出bug
+      resizeToAvoidBottomInset: false, // 解决键盘弹起容器溢出bug
       backgroundColor: Colors.white,
       body: Column(
         children: [
@@ -209,7 +208,9 @@ class _PhoneLoginState extends State<PhoneLogin> {
                     margin: EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
                       children: [
-                        Radio(
+                        Transform.scale(
+                        scale: 0.8,
+                        child: Radio(
                           activeColor: Color(0xff22d47e),
                           groupValue: true,
                           value: isCheck,
@@ -218,8 +219,9 @@ class _PhoneLoginState extends State<PhoneLogin> {
                               // isCheck =val;
                             });
                           },
-                        ),
-                        RichText(
+                        ))
+                       ,
+                        Expanded(child: RichText(
                           textAlign: TextAlign.start,
                           text: TextSpan(children: [
                             TextSpan(
@@ -241,10 +243,10 @@ class _PhoneLoginState extends State<PhoneLogin> {
                             TextSpan(
                                 text: '《隐私政策》',
                                 style: TextStyle(
-                                    color: Color(0xff22d47e), fontSize: 12),
+                                    color: Color(0xff22d47e), fontSize: 14),
                                 recognizer: privacypolicy..onTap = () {}),
                           ]),
-                        )
+                        ))
                       ],
                     ),
                   ),

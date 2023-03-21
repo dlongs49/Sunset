@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -12,7 +13,39 @@ class ForgetPwd extends StatefulWidget {
 }
 
 class _ForgetPwdState extends State<ForgetPwd> {
-  void phoneChange(String str) {}
+  TextEditingController PhoneController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  String phone = '';
+
+  // 输入值
+  void inputChange(String type, String str) {
+    if (type == 'phone') {
+      setState(() {
+        phone = str;
+      });
+    }
+    if (type == 'clear') {
+      PhoneController.clear(); // 清除输入的值
+      setState(() {
+        phone = '';
+      });
+    }
+  }
+
+  // 登录
+  void handleLogin() {}
+
+  // 验证码
+  void onCode() {}
+
+  void toPage(dynamic item) {
+    Navigator.pushNamed(context, item);
+  }
   @override
   Widget build(BuildContext context) {
     double topBarHeight =
@@ -35,7 +68,7 @@ class _ForgetPwdState extends State<ForgetPwd> {
                 children: [
                   Align(
                       alignment: Alignment.center,
-                      child: Text("手机登录",
+                      child: Text("忘记密码",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: Colors.black,
@@ -50,7 +83,7 @@ class _ForgetPwdState extends State<ForgetPwd> {
           Container(
             alignment: Alignment(0,0),
             margin: EdgeInsets.symmetric(vertical: 30),
-            child: Text("为了您的安全我们会向您的手机发送验证码",style:TextStyle(color:Color(0xffc2c2c2),fontSize: 12)),
+            child: Text("为了您的安全我们会向您的手机发送验证码",style:TextStyle(color:Color(0xffc2c2c2),fontSize: 16)),
           ),
           Container(
               width: double.infinity,
@@ -59,53 +92,56 @@ class _ForgetPwdState extends State<ForgetPwd> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: EdgeInsets.only(left: 2, right: 8),
+                    padding:
+                    EdgeInsets.only(left: 2, right: 8, top: 5, bottom: 8),
                     decoration: BoxDecoration(
                         border: Border(
                             bottom: BorderSide(
-                                width: 1, color: Color(0xffe8e8e8)))),
+                                width: 0.5, color: Color(0xffe8e8e8)))),
                     child: Row(
                       children: [
                         Expanded(
                             child: Container(
                                 child: TextField(
+                                    controller: PhoneController,
                                     cursorColor: Color(0xff22d47e),
                                     autofocus: false,
-                                    style: TextStyle(fontSize: 14),
-                                    // 数字键盘
+                                    style: TextStyle(fontSize: 16),
                                     inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly
+                                      LengthLimitingTextInputFormatter(11),
+                                      //限制长度
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp("[0-9]"))
+                                      // 数字键盘
                                     ],
                                     decoration: InputDecoration(
                                         isCollapsed: true,
-                                        contentPadding: EdgeInsets.all(6),
+                                        contentPadding: EdgeInsets.all(8),
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide.none),
                                         hintText: '手机号码',
-                                        helperStyle: TextStyle(
-                                            color: Color(0xffd0d0d0),
-                                            fontSize: 13)),
-                                    onChanged: phoneChange))),
+                                        hintStyle: TextStyle(
+                                            color: Color(0xffacacac))),
+                                    onChanged: (value) =>
+                                        inputChange('phone', value)))),
                         InkWell(
-                          borderRadius: BorderRadius.circular(30),
-                          child: Container(
-                              padding: EdgeInsets.all(5),
-                              child: Icon(Icons.cancel,
-                                  size: 16, color: Color(0xff8b8b8b))),
-                          onTap: () {
-                            print(123);
-                          },
-                        )
+                            borderRadius: BorderRadius.circular(30),
+                            child: Container(
+                                padding: EdgeInsets.all(5),
+                                child: Icon(Icons.cancel,
+                                    size: 16, color: Color(0xff8b8b8b))),
+                            onTap: () => inputChange('clear', ''))
                       ],
                     ),
                   ),
                   SizedBox(height: 20),
                   Container(
-                    padding: EdgeInsets.only(left: 2, right: 8),
+                    padding:
+                    EdgeInsets.only(left: 2, right: 8, top: 5, bottom: 8),
                     decoration: BoxDecoration(
                         border: Border(
                             bottom: BorderSide(
-                                width: 1, color: Color(0xffe8e8e8)))),
+                                width: 0.5, color: Color(0xffe8e8e8)))),
                     child: Row(
                       children: [
                         Expanded(
@@ -113,24 +149,27 @@ class _ForgetPwdState extends State<ForgetPwd> {
                                 child: TextField(
                                     cursorColor: Color(0xff22d47e),
                                     autofocus: false,
-                                    style: TextStyle(fontSize: 14),
-                                    // 数字键盘
+                                    style: TextStyle(fontSize: 16),
                                     inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly
+                                      LengthLimitingTextInputFormatter(6),
+                                      //限制长度
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp("[0-9]"))
+                                      // 数字键盘
                                     ],
                                     decoration: InputDecoration(
                                         isCollapsed: true,
-                                        contentPadding: EdgeInsets.all(6),
+                                        contentPadding: EdgeInsets.all(8),
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide.none),
                                         hintText: '随机生成验证码',
-                                        helperStyle: TextStyle(
-                                            color: Color(0xffd0d0d0),
-                                            fontSize: 13)),
-                                    onChanged: phoneChange))),
+                                        hintStyle: TextStyle(
+                                            color: Color(0xffacacac))),
+                                    onChanged: (value) =>
+                                        inputChange("", value)))),
                         Container(
                           width: 1,
-                          height: 12,
+                          height: 16,
                           color: Color(0xffb4b4b4),
                         ),
                         SizedBox(width: 30),
@@ -138,32 +177,40 @@ class _ForgetPwdState extends State<ForgetPwd> {
                           borderRadius: BorderRadius.circular(30),
                           child: Container(
                               padding: EdgeInsets.all(5),
+                              color: Color(0xffffff),
                               child: Text("获取验证码",
                                   style: TextStyle(
-                                      fontSize: 15, color: Color(0xff22d47e)))),
-                          onTap: () {
-                            print(123);
-                          },
+                                      fontSize: 16, color: Color(0xff22d47e)))),
+                          onTap: onCode,
                         ),
                       ],
                     ),
                   ),
                   SizedBox(height: 20),
+                  SizedBox(height: 20),
                   Align(
-                      child: InkWell(
-                          child: Container(
-                            margin: EdgeInsets.only(top: 14, bottom: 10),
-                            alignment: Alignment(0, 0),
-                            width: 320,
-                            height: 40,
-                            decoration: BoxDecoration(
-                                color: Color(0xff22d47e),
-                                borderRadius: BorderRadius.circular(40)),
-                            child: Text("下一步",
-                                style: TextStyle(
-                                    color: Color(0xffffffff), fontSize: 16)),
-                          ),
-                          onTap: () {})),
+                    child: Ink(
+                        decoration: BoxDecoration(
+                            color: Color(0xff22d47e),
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(50))),
+                        child: InkWell(
+                            borderRadius: BorderRadius.circular(50),
+                            highlightColor: Color(0xff11a55f), // 水波纹高亮颜色
+                            child: Container(
+                              alignment: Alignment(0, 0),
+                              width: double.infinity,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50)),
+                              child: Text("下一步",
+                                  style: TextStyle(
+                                      color: Color(0xffffffff),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w800)),
+                            ),
+                            onTap: handleLogin)),
+                  ),
                 ],
               ))
         ],
