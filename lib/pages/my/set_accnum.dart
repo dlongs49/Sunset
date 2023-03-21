@@ -19,10 +19,7 @@ class _SetAccnumState extends State<SetAccnum> {
   @override
   Widget build(BuildContext context) {
     double topBarHeight =
-        MediaQueryData
-            .fromWindow(window)
-            .padding
-            .top; // 沉浸栏高度
+        MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
     return Scaffold(
         backgroundColor: Colors.white,
         body: Column(
@@ -65,77 +62,73 @@ class _SetAccnumState extends State<SetAccnum> {
                 ),
               )
             ]),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 15),
-              child: Column(
-                children: [
-                  InkWell(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 15),
-                        child: Row(
-                          children: [
-                            Icon(Icons.phone_iphone_outlined,
-                                color: Color(0xff5e5e5e), size: 16),
-                            SizedBox(width: 12),
-                            Text("手机号", style: TextStyle(fontSize: 14)),
-                            Spacer(flex: 1),
-                            Text("18794388410",
-                                style: TextStyle(
-                                    fontSize: 13, color: Color(0xffc1c1c1))),
-                            SizedBox(width: 10),
-                            Icon(Icons.chevron_right_outlined,
-                                color: Color(0xffc1c1c1), size: 13),
-                          ],
-                        ),
+            Column(
+              children: [
+                InkWell(
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                      child: Row(
+                        children: [
+                          Icon(Icons.phone_iphone_outlined,
+                              color: Color(0xff5e5e5e), size: 22),
+                          SizedBox(width: 12),
+                          Text("手机号", style: TextStyle(fontSize: 16)),
+                          Spacer(flex: 1),
+                          Text("18794388410",
+                              style: TextStyle(
+                                  fontSize: 14, color: Color(0xffb6b6b6))),
+                          SizedBox(width: 10),
+                          Icon(Icons.chevron_right_outlined,
+                              color: Color(0xffc1c1c1), size: 22),
+                        ],
                       ),
-                      onTap: () => toPage("")
-                  ),
-                  InkWell(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 15),
-                        decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(width: 1, color: Color(
-                                    0xffefefef)))
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.lock_outlined,
-                                color: Color(0xff5e5e5e), size: 16),
-                            SizedBox(width: 12),
-                            Text("设置密码", style: TextStyle(fontSize: 14)),
-                            Spacer(flex: 1),
-                            Icon(Icons.chevron_right_outlined,
-                                color: Color(0xffc1c1c1), size: 13),
-                          ],
-                        ),
+                    ),
+                    onTap: () => toPage("")),
+                InkWell(
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                                  width: 1, color: Color(0xffefefef)))),
+                      child: Row(
+                        children: [
+                          Icon(Icons.lock_outlined,
+                              color: Color(0xff5e5e5e), size: 22),
+                          SizedBox(width: 12),
+                          Text("设置密码", style: TextStyle(fontSize: 16)),
+                          Spacer(flex: 1),
+                          Icon(Icons.chevron_right_outlined,
+                              color: Color(0xffc1c1c1), size: 22),
+                        ],
                       ),
-                      onTap: () => toPage("setPwd")
-                  ),
-                  InkWell(
-                      child: Container(
-                        margin: EdgeInsets.only(top: 20),
-                        padding: EdgeInsets.symmetric(vertical: 15),
-                        child: Row(
-                          children: [
-                            Icon(Icons.power_settings_new,
-                                color: Color(0xffff1a1a), size: 16),
-                            SizedBox(width: 12),
-                            Text("注销账号", style: TextStyle(fontSize: 14)),
-                            Spacer(flex: 1),
-                            Text("永久删除账号",
-                                style: TextStyle(
-                                    fontSize: 13, color: Color(0xffc1c1c1))),
-                            SizedBox(width: 10),
-                            Icon(Icons.chevron_right_outlined,
-                                color: Color(0xffc1c1c1), size: 13),
-                          ],
-                        ),
+                    ),
+                    onTap: () => toPage("setPwd")),
+                SizedBox(height: 20),
+                InkWell(
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                      child: Row(
+                        children: [
+                          Icon(Icons.power_settings_new,
+                              color: Color(0xffff1a1a), size: 22),
+                          SizedBox(width: 12),
+                          Text("注销账号", style: TextStyle(fontSize: 16)),
+                          Spacer(flex: 1),
+                          Text("永久删除账号",
+                              style: TextStyle(
+                                  fontSize: 13, color: Color(0xffc1c1c1))),
+                          SizedBox(width: 10),
+                          Icon(Icons.chevron_right_outlined,
+                              color: Color(0xffc1c1c1), size: 22),
+                        ],
                       ),
-                      onTap: () => toPage("dsyAccnum")
-                  ),
-                ],
-              ),
+                    ),
+                    onTap: () => toPage("dsyAccnum")),
+              ],
             )
           ],
         ));
