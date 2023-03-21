@@ -25,7 +25,7 @@ import 'package:sunset/pages/sign/forget_pwd.dart'; // 忘记密码
 import 'package:sunset/pages/sign/phone_log.dart'; // 手机登录
 import 'package:sunset/pages/sign/pwd_log.dart'; // 密码登录
 import 'package:sunset/pages/sign/set_pwd.dart'; // 设置密码 & 重置密码
-
+import 'package:sunset/pages/sign/bind_phone.dart'; // 更换绑定手机号
 final Map<String, WidgetBuilder> routes = {
   //"/":(BuildContext context) => App(), // 说明：这里如果指定了页面那么在 main中 home: HomePage() 不能存在
   "myDevice": (BuildContext context) => MyDevice(),
@@ -47,7 +47,8 @@ final Map<String, WidgetBuilder> routes = {
   "forgetPwd":(BuildContext context)=> ForgetPwd(),//forgetPwd
   "phoneLog":(BuildContext context)=> PhoneLogin(),//phoneLog
   "pwdLogin":(BuildContext context)=> PwdLogin(), // pwdLogin
-  "/":(BuildContext context)=> SetPwd(),//setPwd
+  "setPwd":(BuildContext context)=> SetPwd(),//setPwd
+  "/":(BuildContext context)=> BindPhone(),//bindPhone
 };
 
 // 路由处理
