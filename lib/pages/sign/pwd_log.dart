@@ -15,12 +15,27 @@ class PwdLogin extends StatefulWidget {
 class _PwdLoginState extends State<PwdLogin> {
   TapGestureRecognizer useragreeall = TapGestureRecognizer();
   TapGestureRecognizer privacypolicy = TapGestureRecognizer();
+  TextEditingController PhoneController= TextEditingController();
 
   @override
   void initState() {
     super.initState();
   }
-
+  String phone = '';
+  // 输入值
+  void inputChange(String type,String str) {
+    if(type == 'phone'){
+      setState(() {
+        phone = str;
+      });
+    }
+    if(type == 'clear'){
+      PhoneController.clear(); // 清除输入的值
+      setState(() {
+        phone = '';
+      });
+    }
+  }
   void toPage(dynamic item) {
     Navigator.pushNamed(context, item);
   }
@@ -82,33 +97,33 @@ class _PwdLoginState extends State<PwdLogin> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: EdgeInsets.only(left: 2, right: 8),
+                    padding: EdgeInsets.only(left: 2, right: 8,top: 5,bottom: 8),
                     decoration: BoxDecoration(
                         border: Border(
                             bottom: BorderSide(
-                                width: 1, color: Color(0xffe8e8e8)))),
+                                width: 0.5, color: Color(0xffe8e8e8)))),
                     child: Row(
                       children: [
                         Expanded(
                             child: Container(
                                 child: TextField(
+                                    controller: PhoneController,
                                     cursorColor: Color(0xff22d47e),
                                     autofocus: false,
-                                    style: TextStyle(fontSize: 14),
-                                    // 数字键盘
+                                    style: TextStyle(fontSize: 16),
                                     inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly
+                                      LengthLimitingTextInputFormatter(11), //限制长度
+                                      FilteringTextInputFormatter.allow(RegExp("[0-9]")) // 数字键盘
                                     ],
                                     decoration: InputDecoration(
                                         isCollapsed: true,
-                                        contentPadding: EdgeInsets.all(6),
+                                        contentPadding: EdgeInsets.all(8),
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide.none),
                                         hintText: '手机号码',
-                                        helperStyle: TextStyle(
-                                            color: Color(0xffd0d0d0),
-                                            fontSize: 13)),
-                                    onChanged: phoneChange))),
+                                        hintStyle: TextStyle(
+                                            color: Color(0xffacacac))),
+                                    onChanged: (value)=>inputChange('phone',value)))),
                         InkWell(
                           borderRadius: BorderRadius.circular(30),
                           child: Container(
