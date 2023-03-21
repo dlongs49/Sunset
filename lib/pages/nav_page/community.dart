@@ -33,10 +33,10 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
     if (index == 0) {
       sx = 2.7;
       ex = 2.7;
-    }else if(index == 1){
+    } else if (index == 1) {
       sx = 2.7;
       ex = 6.1;
-    }else{
+    } else {
       sx = 6.1;
       ex = 9.6;
     }
@@ -48,12 +48,15 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
         .animate(_controller);
     _controller.forward();
   }
-  void toPage(String path, dynamic arg){
+
+  void toPage(String path, dynamic arg) {
     Navigator.pushNamed(context, path);
   }
+
   Widget build(BuildContext context) {
     double mWidth = MediaQuery.of(context).size.width; // 屏幕宽度
-    double topBarHeight = MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
+    double topBarHeight =
+        MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -85,9 +88,8 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                           child: Image.asset("assets/images/3044.jpg",
                               fit: BoxFit.cover),
                         ),
-                        onTap: ()=>toPage("userInfo",null),
-                      )
-                      ,
+                        onTap: () => toPage("userInfo", null),
+                      ),
                       Expanded(
                           child: Container(
                         child: Row(
@@ -198,15 +200,16 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
               removeTop: true,
               removeBottom: true,
               child: ListView.builder(
-                  physics: BouncingScrollPhysics(), // ClampingScrollPhysics 安卓滑动效果 BouncingScrollPhysics IOS滑动效果
+                  physics: BouncingScrollPhysics(),
+                  // ClampingScrollPhysics 安卓滑动效果 BouncingScrollPhysics IOS滑动效果
                   itemCount: list.length,
-                  itemBuilder: (ctx,i){
+                  itemBuilder: (ctx, i) {
                     return Container(
                         width: double.infinity,
                         color: Colors.white,
                         margin: EdgeInsets.only(bottom: 8),
                         padding:
-                        EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -217,13 +220,13 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                       height: 38,
                                       margin: EdgeInsets.only(right: 8),
                                       child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(38),
+                                          borderRadius:
+                                              BorderRadius.circular(38),
                                           child: Image.asset(
                                               "assets/images/400x400.jpg",
                                               fit: BoxFit.cover))),
-                                  onTap: ()=> toPage("userInfo",{}),
-                                )
-                                ,
+                                  onTap: () => toPage("userInfo", {}),
+                                ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -263,17 +266,22 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                 )
                               ]),
                               SizedBox(height: 10),
-                              Text(
-                                  "浔阳江头夜送客，枫叶荻花秋瑟瑟，主人下马客在船，举酒欲饮无管弦。醉不成欢惨将别，别时茫茫江浸月。忽闻水上琵琶声，主人忘归客不发。寻声暗问弹者谁？琵琶声停欲语迟。",
-                                  style: TextStyle(fontSize: 14, height: 1.7)),
+                              InkWell(
+                                child: Text(
+                                    "浔阳江头夜送客，枫叶荻花秋瑟瑟，主人下马客在船，举酒欲饮无管弦。醉不成欢惨将别，别时茫茫江浸月。忽闻水上琵琶声，主人忘归客不发。寻声暗问弹者谁？琵琶声停欲语迟。",
+                                    style:
+                                        TextStyle(fontSize: 14, height: 1.7)),
+                                onTap: () => toPage("dynamicDetail", {})
+                              ),
                               Container(
                                   margin: EdgeInsets.only(top: 20),
                                   child: GridView.builder(
                                       shrinkWrap: true,
                                       itemCount: 6,
-                                      physics: NeverScrollableScrollPhysics(),// 禁止滑动
+                                      physics: NeverScrollableScrollPhysics(),
+                                      // 禁止滑动
                                       gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                          SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 3, // 主轴一行的数量
                                         mainAxisSpacing: 6, // 主轴每行间距
                                         crossAxisSpacing: 6, // 交叉轴每行间距
@@ -288,8 +296,8 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                                     fit: BoxFit.fitWidth),
                                                 shape: RoundedRectangleBorder(
                                                     borderRadius:
-                                                    BorderRadiusDirectional
-                                                        .circular(6)))));
+                                                        BorderRadiusDirectional
+                                                            .circular(6)))));
                                       })),
                               Container(
                                   margin: EdgeInsets.only(top: 12, bottom: 10),
@@ -302,107 +310,115 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                       style: TextStyle(
                                           color: Color(0xff22d47e),
                                           fontSize: 12))),
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                          IconData(0xec7f,
-                                              fontFamily: 'sunfont'),
-                                          size: 18,
-                                          color: Color(0xffbbbbbb)),
-                                      SizedBox(width: 6),
-                                      Text("赞",
-                                          style: TextStyle(
-                                              color: Color(0xffbbbbbb),
-                                              height: 1.5,
-                                              fontSize: 14)),
-                                      SizedBox(width: 4),
-                                      Text("2",
-                                          style: TextStyle(
-                                              color: Color(0xffbbbbbb),
-                                              height: 1.7,
-                                              fontSize: 14))
-                                    ],
-                                  ),
-                                  Row(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                          IconData(0xe600,
-                                              fontFamily: 'sunfont'),
-                                          size: 20,
-                                          color: Color(0xffbbbbbb)),
-                                      SizedBox(width: 6),
-                                      Text("评论",
-                                          style: TextStyle(
-                                              color: Color(0xffbbbbbb),
-                                              height: 1.4,
-                                              fontSize: 14)),
-                                      SizedBox(width: 4),
-                                      Text("2",
-                                          style: TextStyle(
-                                              color: Color(0xffbbbbbb),
-                                              height: 1.4,
-                                              fontSize: 14))
-                                    ],
-                                  ),
-                                  Icon(IconData(0xe617, fontFamily: 'sunfont'),
-                                      size: 18, color: Color(0xffbbbbbb)),
-                                ],
-                              ),
-                              Container(
-                                width: double.infinity,
-                                margin: EdgeInsets.only(top: 14),
-                                constraints: BoxConstraints(minHeight: 50),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 10),
-                                decoration: BoxDecoration(
-                                    color: Color(0xfff3f3f3),
-                                    borderRadius: BorderRadius.circular(8)),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                              InkWell(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    RichText(
-                                        text: TextSpan(
-                                            text: '书本书华：',
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                            IconData(0xec7f,
+                                                fontFamily: 'sunfont'),
+                                            size: 18,
+                                            color: Color(0xffbbbbbb)),
+                                        SizedBox(width: 6),
+                                        Text("赞",
                                             style: TextStyle(
-                                                color: Color(0xff22d47e),
-                                                fontSize: 12),
-                                            children: <TextSpan>[
-                                              TextSpan(
-                                                  text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 12)),
-                                            ])),
-                                    SizedBox(height: 8),
-                                    RichText(
-                                        text: TextSpan(
-                                            text: '书本书华：',
+                                                color: Color(0xffbbbbbb),
+                                                height: 1.5,
+                                                fontSize: 14)),
+                                        SizedBox(width: 4),
+                                        Text("2",
                                             style: TextStyle(
-                                                color: Color(0xff22d47e),
-                                                fontSize: 12),
-                                            children: <TextSpan>[
-                                              TextSpan(
-                                                  text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 12)),
-                                            ])),
-                                    SizedBox(height: 8),
-                                    Text("查看全部评论",
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: Color(0xff7b7b7b)))
+                                                color: Color(0xffbbbbbb),
+                                                height: 1.7,
+                                                fontSize: 14))
+                                      ],
+                                    ),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                            IconData(0xe600,
+                                                fontFamily: 'sunfont'),
+                                            size: 20,
+                                            color: Color(0xffbbbbbb)),
+                                        SizedBox(width: 6),
+                                        Text("评论",
+                                            style: TextStyle(
+                                                color: Color(0xffbbbbbb),
+                                                height: 1.4,
+                                                fontSize: 14)),
+                                        SizedBox(width: 4),
+                                        Text("2",
+                                            style: TextStyle(
+                                                color: Color(0xffbbbbbb),
+                                                height: 1.4,
+                                                fontSize: 14))
+                                      ],
+                                    ),
+                                    Icon(
+                                        IconData(0xe617, fontFamily: 'sunfont'),
+                                        size: 18,
+                                        color: Color(0xffbbbbbb)),
                                   ],
                                 ),
-                              )
+                                onTap: () => toPage("dynamicDetail", {}),
+                              ),
+                              InkWell(
+                                  child: Container(
+                                    width: double.infinity,
+                                    margin: EdgeInsets.only(top: 14),
+                                    constraints: BoxConstraints(minHeight: 50),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 10),
+                                    decoration: BoxDecoration(
+                                        color: Color(0xfff3f3f3),
+                                        borderRadius: BorderRadius.circular(8)),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        RichText(
+                                            text: TextSpan(
+                                                text: '书本书华：',
+                                                style: TextStyle(
+                                                    color: Color(0xff22d47e),
+                                                    fontSize: 12),
+                                                children: <TextSpan>[
+                                              TextSpan(
+                                                  text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 12)),
+                                            ])),
+                                        SizedBox(height: 8),
+                                        RichText(
+                                            text: TextSpan(
+                                                text: '书本书华：',
+                                                style: TextStyle(
+                                                    color: Color(0xff22d47e),
+                                                    fontSize: 12),
+                                                children: <TextSpan>[
+                                              TextSpan(
+                                                  text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 12)),
+                                            ])),
+                                        SizedBox(height: 8),
+                                        Text("查看全部评论",
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Color(0xff7b7b7b)))
+                                      ],
+                                    ),
+                                  ),
+                                  onTap: () => toPage("dynamicDetail", {}))
                             ]));
                   })),
           Positioned(
