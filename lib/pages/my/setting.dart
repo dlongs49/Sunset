@@ -15,7 +15,7 @@ class Setting extends StatefulWidget {
 
 class _SettingState extends State<Setting> {
   List card1 = [
-    {"title": "账号与安全", "type": 0},
+    {"title": "账号与安全", "type": 0, "path": "setAccnum"},
     {"title": "消息推送设置", "type": 0},
     {"title": "个性化服务", "type": 0},
     {"title": "单位设置", "type": 0},
@@ -35,14 +35,22 @@ class _SettingState extends State<Setting> {
     {"title": "设备授权", "type": 0}
   ];
   bool isSwitch = false;
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
   }
-  void onCard3(params){
-    if(params['type'] == 1){
 
-    }else{
+  void toPage(params) {
+    if (params["path"] != null) {
+      Navigator.pushNamed(context, params['path']);
+    }
+  }
+
+  void onCard3(params) {
+    if (params['type'] == 1) {
+
+    } else {
       // 暂无页面
       Fluttertoast.showToast(
           msg: params["title"],
@@ -55,10 +63,14 @@ class _SettingState extends State<Setting> {
           fontSize: 16.0);
     }
   }
+
   @override
   Widget build(BuildContext context) {
     double topBarHeight =
-        MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
+        MediaQueryData
+            .fromWindow(window)
+            .padding
+            .top; // 沉浸栏高度
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -103,7 +115,7 @@ class _SettingState extends State<Setting> {
           ]),
           Expanded(
               child: MediaQuery.removePadding(
-                  // 去除顶部留白
+                // 去除顶部留白
                   context: context,
                   removeTop: true,
                   removeBottom: true,
@@ -118,116 +130,131 @@ class _SettingState extends State<Setting> {
                                     bottom: BorderSide(
                                         width: 1, color: Color(0xfff3f3f3)))),
                             child: Column(
-                                children: card1.asMap().entries.map((enry) {
-                              int idx = enry.key;
-                              final item = enry.value;
-                              return InkWell(
-                                borderRadius: BorderRadius.circular(10),
-                                  child: Container(
-                                    padding: EdgeInsets.all(18),
-                                    child: Row(
-                                      children: [
-                                        Text(item['title'],
-                                            style: TextStyle(fontSize: 16)),
-                                        SizedBox(width: 10),
-                                        Spacer(flex: 1),
-                                        item["type"] == 1 ?CupertinoSwitch (
-                                            value: isSwitch,
-                                            activeColor: Color(0xffdfdfdf),
-                                            trackColor: Color(0xff22d47e),
-                                            onChanged: (value) {
-                                              setState(() {
-                                                isSwitch = value;
-                                              });
-                                            }
-                                        ) : Container(),
-                                        item["type"] == 0 ? Icon(
-                                            IconData(0xeb8a,
-                                                fontFamily: "sunfont"),
-                                            size: 13,
-                                            color: Color(0xffbababa)) : Container()
-                                      ],
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    print(item["title"]);
-                                  });
-                            }).toList())),
+                                children: card1
+                                    .asMap()
+                                    .entries
+                                    .map((enry) {
+                                  int idx = enry.key;
+                                  final item = enry.value;
+                                  return InkWell(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Container(
+                                        padding: EdgeInsets.all(18),
+                                        child: Row(
+                                          children: [
+                                            Text(item['title'],
+                                                style: TextStyle(fontSize: 16)),
+                                            SizedBox(width: 10),
+                                            Spacer(flex: 1),
+                                            item["type"] == 1 ? CupertinoSwitch(
+                                                value: isSwitch,
+                                                activeColor: Color(0xffdfdfdf),
+                                                trackColor: Color(0xff22d47e),
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    isSwitch = value;
+                                                  });
+                                                }
+                                            ) : Container(),
+                                            item["type"] == 0
+                                                ? Icon(
+                                                IconData(0xeb8a,
+                                                    fontFamily: "sunfont"),
+                                                size: 13,
+                                                color: Color(0xffbababa))
+                                                : Container()
+                                          ],
+                                        ),
+                                      ),
+                                      onTap: ()=>toPage(item));
+                                }).toList())),
                         Container(
-                            padding: EdgeInsets.only(top: 20,bottom: 20),
+                            padding: EdgeInsets.only(top: 20, bottom: 20),
                             decoration: BoxDecoration(
                                 border: Border(
                                     bottom: BorderSide(
                                         width: 1, color: Color(0xfff3f3f3)))),
                             child: Column(
-                                children: card2.asMap().entries.map((enry) {
-                              int idx = enry.key;
-                              final item = enry.value;
-                              return InkWell(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Container(
-                                    padding: EdgeInsets.all(18),
-                                    child: Row(
-                                      children: [
-                                        Text(item['title'],
-                                            style: TextStyle(fontSize: 16)),
-                                        SizedBox(width: 10),
-                                        Spacer(flex: 1),
-                                        Icon(
-                                            IconData(0xeb8a,
-                                                fontFamily: "sunfont"),
-                                            size: 13,
-                                            color: Color(0xffbababa))
-                                      ],
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    print(item["title"]);
-                                  });
-                            }).toList())),
+                                children: card2
+                                    .asMap()
+                                    .entries
+                                    .map((enry) {
+                                  int idx = enry.key;
+                                  final item = enry.value;
+                                  return InkWell(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Container(
+                                        padding: EdgeInsets.all(18),
+                                        child: Row(
+                                          children: [
+                                            Text(item['title'],
+                                                style: TextStyle(fontSize: 16)),
+                                            SizedBox(width: 10),
+                                            Spacer(flex: 1),
+                                            Icon(
+                                                IconData(0xeb8a,
+                                                    fontFamily: "sunfont"),
+                                                size: 13,
+                                                color: Color(0xffbababa))
+                                          ],
+                                        ),
+                                      ),
+                                      onTap: () {
+                                        print(item["title"]);
+                                      });
+                                }).toList())),
                         Container(
-                            padding: EdgeInsets.only(top: 20,bottom: 20),
+                            padding: EdgeInsets.only(top: 20, bottom: 20),
                             child: Column(
-                                children: card3.asMap().entries.map((enry) {
-                              int idx = enry.key;
-                              final item = enry.value;
-                              return InkWell(
-                                  child: Container(
-                                    padding: EdgeInsets.all(18),
-                                    child: Row(
-                                      children: [
-                                        Text(item['title'],
-                                            style: TextStyle(fontSize: 16)),
-                                        SizedBox(width: 10),
-                                        Spacer(flex: 1),
-                                        Text(item["type"] == 1 ? "123.0M" : '',style: TextStyle(color: Color(0xffc2c2c2),fontSize: 16)),
-                                        Icon(
-                                            IconData(0xeb8a,
-                                                fontFamily: "sunfont"),
-                                            size: 13,
-                                            color: Color(0xffbababa))
-                                      ],
-                                    ),
-                                  ),
-                                  onTap: () =>onCard3(item));
-                            }).toList())),
+                                children: card3
+                                    .asMap()
+                                    .entries
+                                    .map((enry) {
+                                  int idx = enry.key;
+                                  final item = enry.value;
+                                  return InkWell(
+                                      child: Container(
+                                        padding: EdgeInsets.all(18),
+                                        child: Row(
+                                          children: [
+                                            Text(item['title'],
+                                                style: TextStyle(fontSize: 16)),
+                                            SizedBox(width: 10),
+                                            Spacer(flex: 1),
+                                            Text(item["type"] == 1
+                                                ? "123.0M"
+                                                : '', style: TextStyle(
+                                                color: Color(0xffc2c2c2),
+                                                fontSize: 16)),
+                                            Icon(
+                                                IconData(0xeb8a,
+                                                    fontFamily: "sunfont"),
+                                                size: 13,
+                                                color: Color(0xffbababa))
+                                          ],
+                                        ),
+                                      ),
+                                      onTap: () => onCard3(item));
+                                }).toList())),
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: 30),
                           child: InkWell(
                               borderRadius: new BorderRadius.all(
-                                  new Radius.circular(30.0)), // 点击水波纹是圆角的，默认是矩形的
+                                  new Radius.circular(30.0)),
+                              // 点击水波纹是圆角的，默认是矩形的
                               child: Container(
                                 height: 50,
                                 alignment: Alignment(0, 0),
                                 // 子元素水平垂直居中
                                 decoration: BoxDecoration(
-                                    // color: Color(0xffffffff),
+                                  // color: Color(0xffffffff),
                                     border: Border.all(
                                         width: 1, color: Color(0xffff0000)),
                                     borderRadius: BorderRadius.circular(30)),
                                 child: Text("退出登录",
                                     style: TextStyle(
-                                        color: Color(0xffff0000), fontSize: 20)),
+                                        color: Color(0xffff0000),
+                                        fontSize: 20)),
                               ),
                               onTap: () {
                                 // Fluttertoast.showToast(
