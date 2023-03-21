@@ -197,7 +197,7 @@ class _MyState extends State<My> {
                                           )
                                         ],
                                       ),
-                                      onTap:()=>toPages("myInfo")
+                                      onTap:()=>toPages("userInfo")
                                     ),
                                     Spacer(flex: 1),
                                     Container(

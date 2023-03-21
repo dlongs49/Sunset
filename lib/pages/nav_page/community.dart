@@ -161,7 +161,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                       borderRadius: BorderRadius.circular(6)),
                                   child: Text("2",
                                       style: TextStyle(
-                                          fontSize: 6, color: Colors.white)),
+                                          fontSize: 8, color: Colors.white)),
                                 ))
                           ],
                         ),

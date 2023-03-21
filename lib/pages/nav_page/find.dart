@@ -14,6 +14,10 @@ class Find extends StatefulWidget {
 class _FindState extends State<Find> {
   List list = [];
 
+  void toPage(String path) {
+    Navigator.pushNamed(context, path);
+  }
+
   @override
   Widget build(BuildContext context) {
     double topBarHeight = MediaQueryData.fromWindow(window).padding.top;
@@ -84,7 +88,8 @@ class _FindState extends State<Find> {
                               GridView.builder(
                                   shrinkWrap: true,
                                   itemCount: 6,
-                                  physics: BouncingScrollPhysics(),// IOS的回弹属性
+                                  physics: BouncingScrollPhysics(),
+                                  // IOS的回弹属性
                                   gridDelegate:
                                       SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2, // 主轴一行的数量
@@ -92,58 +97,89 @@ class _FindState extends State<Find> {
                                     crossAxisSpacing: 10, // 交叉轴每行间距
                                     childAspectRatio: 1 / 1.6, // item的宽高比
                                   ),
-                                  itemBuilder: (context, index) => Container(
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      child: Column(children: [
-                                        ClipRRect(
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(10),
-                                                topRight: Radius.circular(10)),
-                                            child: Image.network(
-                                              "https://gw.alicdn.com/imgextra/i2/3086666176/O1CN01NTf5HW1vUerjT60Zq_!!3086666176.jpg_Q75.jpg_.webp",
-                                              width: double.infinity,
-                                              height: 170,
-                                              fit: BoxFit.fitWidth,
-                                            )),
-                                        Container(
-                                            padding: EdgeInsets.only(
-                                                left: 12, right: 12),
-                                            child: Column(children: [
-                                              Text("真低脂，无淀粉，少添加，多快乐",
-                                                  softWrap: true,
-                                                  textAlign: TextAlign.left,
-                                                  overflow:
-                                                      TextOverflow.visible,
-                                                  maxLines: 1,
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 14,
-                                                      height: 2.0)),
-                                              SizedBox(height: 4),
-                                              Text("真低脂，无淀粉，少添加，多快乐",
-                                                  softWrap: true,
-                                                  textAlign: TextAlign.left,
-                                                  overflow:
-                                                  TextOverflow.visible,
-                                                  maxLines: 2,
-                                                  style: TextStyle(
-                                                      color: Color(0xff9c9c9c),
-                                                      fontSize: 12,
-                                                      height: 1.4)),
-                                              SizedBox(height: 6),
-                                              Row(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                children: [
-                                                Text("￥14.8",style: TextStyle(color: Color(0xffe46135),fontSize: 16,fontWeight: FontWeight.w600)),
-                                                SizedBox(width: 6),
-                                                Text("￥24.6",style: TextStyle(color: Color(0xffb8b7bd),fontSize: 13,fontWeight: FontWeight.w600,decoration: TextDecoration.lineThrough,))
-                                              ],)
-                                            ]))
-                                      ]))),
+                                  itemBuilder: (context, index) => InkWell(
+                                      child: Container(
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: Column(children: [
+                                            AspectRatio(
+                                              aspectRatio: 1 / 1,
+                                              child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  10),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  10)),
+                                                  child: Image.network(
+                                                    "https://gw.alicdn.com/imgextra/i2/3086666176/O1CN01NTf5HW1vUerjT60Zq_!!3086666176.jpg_Q75.jpg_.webp",
+                                                    width: double.infinity,
+                                                    height: 170,
+                                                    fit: BoxFit.fitWidth,
+                                                  )),
+                                            ),
+                                            Container(
+                                                padding: EdgeInsets.only(
+                                                    left: 12, right: 12),
+                                                child: Column(children: [
+                                                  Text("真低脂，无淀粉，少添加，多快乐",
+                                                      softWrap: true,
+                                                      textAlign: TextAlign.left,
+                                                      overflow:
+                                                          TextOverflow.visible,
+                                                      maxLines: 1,
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 14,
+                                                          height: 2.0)),
+                                                  SizedBox(height: 4),
+                                                  Text("真低脂，无淀粉，少添加，多快乐",
+                                                      softWrap: true,
+                                                      textAlign: TextAlign.left,
+                                                      overflow:
+                                                          TextOverflow.visible,
+                                                      maxLines: 2,
+                                                      style: TextStyle(
+                                                          color:
+                                                              Color(0xff9c9c9c),
+                                                          fontSize: 12,
+                                                          height: 1.4)),
+                                                  SizedBox(height: 6),
+                                                  Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text("￥14.8",
+                                                          style: TextStyle(
+                                                              color: Color(
+                                                                  0xffe46135),
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600)),
+                                                      SizedBox(width: 6),
+                                                      Text("￥24.6",
+                                                          style: TextStyle(
+                                                            color: Color(
+                                                                0xffb8b7bd),
+                                                            fontSize: 13,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .lineThrough,
+                                                          ))
+                                                    ],
+                                                  )
+                                                ]))
+                                          ])),
+                                      onTap: () => toPage("shopDetail"))),
                               SizedBox(height: 20)
                             ],
                           ),

@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 /* 内嵌H5 */
 import 'package:sunset/pages/webview/mall.dart'; // 我的-->香豆商城[淘宝]
 import 'package:sunset/pages/webview/invite.dart'; // 我的-->邀请[空]
+import 'package:sunset/pages/webview/shopdetail.dart'; // 发现商品详情
+
 /* 页面 */
 import 'package:sunset/pages/my/my_device.dart'; // 我的-->我的设备
 import 'package:sunset/pages/device/bind_device.dart'; // 我的-->设备绑定
@@ -31,7 +33,8 @@ final Map<String, WidgetBuilder> routes = {
   "invite": (BuildContext context) => Invite(),
   "scan": (BuildContext context) => Scan(),
   "userInfo": (BuildContext context) => UserInfo(),
-  'dynamicDetail':(BuildContext context)=>DynamicDetail(),
+  "dynamicDetail":(BuildContext context)=>DynamicDetail(),
+  "shopDetail":(BuildContext context)=> ShopDetail(),
 };
 
 // 路由处理
