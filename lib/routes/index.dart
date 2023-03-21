@@ -45,8 +45,8 @@ final Map<String, WidgetBuilder> routes = {
   "shopDetail":(BuildContext context)=> ShopDetail(),
   "dsyAccnum":(BuildContext context)=> DsyAccnum(),
   "forgetPwd":(BuildContext context)=> ForgetPwd(),
-  "/":(BuildContext context)=> PhoneLogin(),//phoneLog
-  "pwdLogin":(BuildContext context)=> PwdLogin(),
+  "phoneLog":(BuildContext context)=> PhoneLogin(),//phoneLog
+  "/":(BuildContext context)=> PwdLogin(), // pwdLogin
   "setPwd":(BuildContext context)=> SetPwd(),
 };
 
