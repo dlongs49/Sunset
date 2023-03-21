@@ -7,6 +7,7 @@ import 'package:sunset/pages/webview/shopdetail.dart'; // 发现商品详情
 
 /* 页面 */
 import 'package:sunset/app.dart';
+import 'package:sunset/pages/aboutApp.dart'; // 关于作者/APP说明
 import 'package:sunset/pages/my/my_device.dart'; // 我的-->我的设备
 import 'package:sunset/pages/device/bind_device.dart'; // 我的-->设备绑定
 import 'package:sunset/pages/device/balance.dart'; // 我的-->体脂秤
@@ -27,7 +28,8 @@ import 'package:sunset/pages/sign/pwd_log.dart'; // 密码登录
 import 'package:sunset/pages/sign/set_pwd.dart'; // 设置密码 & 重置密码
 import 'package:sunset/pages/sign/bind_phone.dart'; // 更换绑定手机号
 final Map<String, WidgetBuilder> routes = {
-  "/":(BuildContext context) => App(), // 说明：这里如果指定了页面那么在 main中 home: HomePage() 不能存在
+  // "/":(BuildContext context) => App(), // 说明：这里如果指定了页面那么在 main中 home: HomePage() 不能存在
+  "/": (BuildContext context) => AboutApp(),
   "myDevice": (BuildContext context) => MyDevice(),
   "bindDevice": (BuildContext context) => BindDevice(),
   "balance": (BuildContext context) => Balance(),
