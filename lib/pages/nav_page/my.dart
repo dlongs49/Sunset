@@ -13,6 +13,7 @@ class My extends StatefulWidget {
 
 class _MyState extends State<My> {
   List card1 = [
+    {"icon": 0xeeee, "title": "关于App/作者", "path": "aboutApp"},
     {"icon": 0xe720, "title": "我的设备", "path": "myDevice"},
     {"icon": 0xe899, "title": "家庭成员", "path": "family"},
     {"icon": 0xe65d, "title": "历史记录", "path": ""},
@@ -332,13 +333,16 @@ class _MyState extends State<My> {
                                         return InkWell(
                                             child: Container(
                                               margin: EdgeInsets.only(
-                                                  bottom: index != 2 ? 30 : 0),
+                                                  bottom: index != 3 ? 30 : 0),
                                               padding: EdgeInsets.symmetric(
                                                   vertical: 10),
                                               child: Row(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
                                                 children: [
+                                                  item['icon'] == 0xeeee ? Image.asset("assets/images/author.png", width:30,
+                                                          height:30,)
+                                                      :
                                                   Icon(
                                                       IconData(item["icon"],
                                                           fontFamily:
