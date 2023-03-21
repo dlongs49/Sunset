@@ -425,6 +425,8 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
               bottom: 50,
               right: 30,
               child: InkWell(
+                  borderRadius: new BorderRadius.all(
+                      new Radius.circular(70.0)), // 点击水波纹是圆角的，默认是矩形的
                   child: Container(
                       width: 70,
                       height: 70,

@@ -11,6 +11,11 @@ class DynamicDetail extends StatefulWidget {
 }
 
 class _DynamicDetailState extends State<DynamicDetail> {
+  void textChanged(String txt){
+    print(txt);
+  }
+
+
   void toPage(String path, dynamic arg) {
     Navigator.pushNamed(context, path);
   }
@@ -68,6 +73,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
                   removeTop: true,
                   removeBottom: true,
                   child: ListView(
+                    physics: BouncingScrollPhysics(), // IOS的回弹属性
                     children: [
                       Container(
                         margin: EdgeInsets.symmetric(horizontal: 15),
@@ -164,7 +170,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
                       ListView.builder(
                           shrinkWrap: true, //解决无限高度问题
                           physics: new NeverScrollableScrollPhysics(), //禁用滑动事件
-                          itemCount: 10,
+                          itemCount: 3,
                           itemBuilder: (ctx, i) {
                             return Container(
                               padding: EdgeInsets.symmetric(
@@ -328,16 +334,51 @@ class _DynamicDetailState extends State<DynamicDetail> {
                           })
                     ],
                   )
-
-                  // ListView.builder(
-                  //   physics: BouncingScrollPhysics(),
-                  //   // ClampingScrollPhysics 安卓滑动效果 BouncingScrollPhysics IOS滑动效果
-                  //   itemCount: 10,
-                  //   itemBuilder: (ctx, i) {
-                  //     return Container();
-                  //   },
-                  // )
                   ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              height: 48,
+              child: Row(
+                children: [
+                  Expanded(child:  Container(
+                    width: 200,
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                        color: Color(0xffeeeff3),
+                        borderRadius: BorderRadius.circular(20)),
+                    child: TextField(
+                        cursorHeight: 16,
+                        // 光标颜色
+                        cursorColor: Color(0xff22d47e),
+                        // 取消自动获取焦点
+                        autofocus: false,
+                        maxLines: 1,
+                        style: TextStyle(fontSize: 13),
+                        decoration: InputDecoration(
+                            isCollapsed: true,
+                            //可以设置自己的
+                            contentPadding: EdgeInsets.all(6),
+                            border: OutlineInputBorder(borderSide: BorderSide.none),
+                            // 取消边框
+                            hintText: '友善评论',
+                            helperStyle:
+                            TextStyle(color: Color(0xffd0d0d0), fontSize: 13)),
+                        onChanged: textChanged),
+                  )),
+                  SizedBox(width: 16),
+                  Container(
+                    height: 28,
+                    padding: EdgeInsets.symmetric(vertical: 3,horizontal: 20),
+                    decoration: BoxDecoration(
+                      color:Color(0xff22d47e),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    alignment: Alignment(0,0),
+                    child: Text("发送",style:TextStyle(color:Colors.white,fontSize: 12),
+                  ))
+                ],
+              ),
             )
           ],
         ));
