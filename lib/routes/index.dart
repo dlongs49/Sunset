@@ -44,10 +44,10 @@ final Map<String, WidgetBuilder> routes = {
   "dynamicDetail":(BuildContext context)=>DynamicDetail(),
   "shopDetail":(BuildContext context)=> ShopDetail(),
   "dsyAccnum":(BuildContext context)=> DsyAccnum(),
-  "/":(BuildContext context)=> ForgetPwd(),//forgetPwd
+  "forgetPwd":(BuildContext context)=> ForgetPwd(),//forgetPwd
   "phoneLog":(BuildContext context)=> PhoneLogin(),//phoneLog
   "pwdLogin":(BuildContext context)=> PwdLogin(), // pwdLogin
-  "setPwd":(BuildContext context)=> SetPwd(),
+  "/":(BuildContext context)=> SetPwd(),//setPwd
 };
 
 // 路由处理

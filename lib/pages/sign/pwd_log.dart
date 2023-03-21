@@ -137,16 +137,12 @@ class _PwdLoginState extends State<PwdLogin> {
                                     cursorColor: Color(0xff22d47e),
                                     autofocus: false,
                                     style: TextStyle(fontSize: 14),
-                                    // 数字键盘
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly
-                                    ],
                                     decoration: InputDecoration(
                                         isCollapsed: true,
                                         contentPadding: EdgeInsets.all(6),
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide.none),
-                                        hintText: '手机号码',
+                                        hintText: '密码',
                                         helperStyle: TextStyle(
                                             color: Color(0xffd0d0d0),
                                             fontSize: 13)),
