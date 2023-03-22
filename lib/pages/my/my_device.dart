@@ -130,6 +130,7 @@ class _MyDeviceState extends State<MyDevice> {
                                   Icon(
                                     IconData(0xeb8a, fontFamily: 'sunfont'),
                                     size: 12,
+                                    color: Color(0xffa3a3a3),
                                   )
                                 ],
                               )

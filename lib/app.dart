@@ -3,9 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:sunset/pages/device/bind_device.dart';
 /* 底部导航对应的页面 */
 import 'package:sunset/pages/nav_page/home.dart'; // 首页
 import 'package:sunset/pages/nav_page/community.dart'; // 社区
+import 'package:sunset/pages/device/bind_device.dart'; // 绑定设备
 import 'package:sunset/pages/nav_page/find.dart'; // 发现
 import 'package:sunset/pages/nav_page/my.dart'; // 我的
 
@@ -26,7 +28,7 @@ class _AppState extends State<App> {
   }
 
   int currentIndex = 0; // 导航索引
-  List<Widget> pages = [Home(), Community(),Find(), Find(), My()];
+  List<Widget> pages = [Home(), Community(),BindDevice(),Find(),  My()];
 
   // 更改底部导航栏索引
   @override
