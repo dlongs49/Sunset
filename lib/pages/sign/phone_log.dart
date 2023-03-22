@@ -53,7 +53,13 @@ class _PhoneLoginState extends State<PhoneLogin> {
     Navigator.pushNamed(context, '/');
   }
 
-  final isCheck = false;
+  bool isCheck = false;
+
+  void handleCheck() {
+    setState(() {
+      isCheck = !isCheck;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -208,20 +214,17 @@ class _PhoneLoginState extends State<PhoneLogin> {
                     margin: EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
                       children: [
-                        Transform.scale(
-                        scale: 0.8,
-                        child: Radio(
-                          activeColor: Color(0xff22d47e),
-                          groupValue: true,
-                          value: isCheck,
-                          onChanged: (vl) {
-                            setState(() {
-                              // isCheck =val;
-                            });
-                          },
-                        ))
-                       ,
-                        Expanded(child: RichText(
+                        InkWell(
+                            child: Icon(
+                              IconData(isCheck ? 0xe645 : 0xe614,
+                                  fontFamily: 'sunfont'),
+                              size: 16,
+                              color: Color(isCheck ? 0xff22d47e : 0xffb4b3b3),
+                            ),
+                            onTap: handleCheck),
+                        SizedBox(width: 5),
+                        Expanded(
+                            child: RichText(
                           textAlign: TextAlign.start,
                           text: TextSpan(children: [
                             TextSpan(

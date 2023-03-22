@@ -51,9 +51,13 @@ class _PwdLoginState extends State<PwdLogin> {
     Navigator.pushNamed(context, item);
   }
 
-  final isCheck = false;
+  bool isCheck = false;
 
-
+  void handleCheck(){
+    setState(() {
+      isCheck = !isCheck;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     double topBarHeight =
@@ -198,26 +202,19 @@ class _PwdLoginState extends State<PwdLogin> {
                     margin: EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
                       children: [
-                        Transform.scale(
-                            scale: 0.8,
-                            child: Radio(
-                              activeColor: Color(0xff22d47e),
-                              groupValue: true,
-                              value: isCheck,
-                              onChanged: (vl) {
-                                setState(() {
-                                  // isCheck =val;
-                                });
-                              },
-                            ))
-                        ,
+                        InkWell(
+                          child: Icon(IconData(isCheck ? 0xe645 :0xe614,fontFamily: 'sunfont'),size: 16,color: Color(
+                              isCheck ? 0xff22d47e :0xffb4b3b3),),
+                          onTap:handleCheck
+                        ),
+                        SizedBox(width: 5),
                         Expanded(child: RichText(
                           textAlign: TextAlign.start,
                           text: TextSpan(children: [
                             TextSpan(
                                 text: '您已阅读并同意',
                                 style: TextStyle(
-                                    color: Color(0xffd2d2d2), fontSize: 14)),
+                                    color: Color(0xffb4b3b3), fontSize: 14)),
                             TextSpan(
                                 text: '《用户协议》',
                                 style: TextStyle(

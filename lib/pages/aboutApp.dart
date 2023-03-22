@@ -66,7 +66,7 @@ class _AboutAppState extends State<AboutApp> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("码云", style: TextStyle(fontSize: 18)),
+                        Text("码云", style: TextStyle(fontSize: 16)),
                         Icon(Icons.chevron_right_outlined,
                             color: Color(0xffc2c2c2), size: 24)
                       ],
@@ -83,7 +83,7 @@ class _AboutAppState extends State<AboutApp> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("GitHub", style: TextStyle(fontSize: 18)),
+                        Text("GitHub", style: TextStyle(fontSize: 16)),
                         Icon(Icons.chevron_right_outlined,
                             color: Color(0xffc2c2c2), size: 24)
                       ],
@@ -100,7 +100,7 @@ class _AboutAppState extends State<AboutApp> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("个站", style: TextStyle(fontSize: 18)),
+                        Text("个站", style: TextStyle(fontSize: 16)),
                         Icon(Icons.chevron_right_outlined,
                             color: Color(0xffc2c2c2), size: 24)
                       ],
