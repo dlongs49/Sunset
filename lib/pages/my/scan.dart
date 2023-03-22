@@ -49,22 +49,9 @@ class _ScanState extends State<Scan> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomHeight = MediaQueryData.fromWindow(window).padding.bottom;
-    final width = MediaQueryData.fromWindow(window).size.width;
     return Scaffold(
       body: Column(
         children: [
-          // InkWell(
-          //     child: Container(
-          //         margin: EdgeInsets.only(top: 40),
-          //         width: 120,
-          //         height: 120,
-          //         color: Color(0xff2cdfef),
-          //         child: Text(Id)),
-          //     onTap: openBlue),
-          SizedBox(height: 300),
-          Spacer(flex: 1),
-          Container(height: 10,color: Colors.black,),
 
         ],
       ),

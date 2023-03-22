@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../aboutApp.dart';
+
 class My extends StatefulWidget {
   const My({Key? key}) : super(key: key);
 
@@ -35,6 +37,8 @@ class _MyState extends State<My> {
     Map item = Map<String, dynamic>.from(val);
     if (item["path"].length != 0 && item["path"] != null) {
       Navigator.pushNamed(context, item["path"]);
+      // Navigator.push(
+      //     context, CupertinoPageRoute(builder: (context) => AboutApp()));
     } else {
       // 暂无页面
       Fluttertoast.showToast(

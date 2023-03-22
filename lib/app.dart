@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 /* 底部导航对应的页面 */
 import 'package:sunset/pages/nav_page/home.dart'; // 首页
 import 'package:sunset/pages/nav_page/community.dart'; // 社区
