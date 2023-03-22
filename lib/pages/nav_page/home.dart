@@ -194,7 +194,7 @@ class _HomeState extends State<Home> {
                             bottomLeft: Radius.circular(8))),
                     child: ListView(
                         shrinkWrap: true,
-                        physics: AlwaysScrollableScrollPhysics(),
+                        physics: BouncingScrollPhysics(),
                         scrollDirection: Axis.horizontal,
                         children: compareVos.asMap().entries.map((entry) {
                           int index = entry.key;
@@ -317,7 +317,7 @@ class _HomeState extends State<Home> {
               margin: EdgeInsets.only(top: 14, bottom: 12),
               child: ListView(
                   shrinkWrap: true,
-                  physics: AlwaysScrollableScrollPhysics(),
+                  physics: BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
                   children: deviceList.map((item) {
                     return InkWell(
@@ -395,7 +395,7 @@ class _HomeState extends State<Home> {
             margin: EdgeInsets.only(top: 18),
             child: ListView(
               shrinkWrap: true,
-              physics: AlwaysScrollableScrollPhysics(),
+              physics: BouncingScrollPhysics(),
               scrollDirection: Axis.horizontal,
               children: popTrendList.map((item) {
                 return InkWell(
@@ -535,8 +535,7 @@ class _HomeState extends State<Home> {
             margin: EdgeInsets.only(top: 18),
             child: ListView(
                 shrinkWrap: true,
-                physics: AlwaysScrollableScrollPhysics(),
-                // 根据不同的平台切换不同的物理效果
+                physics: BouncingScrollPhysics(),
                 scrollDirection: Axis.horizontal,
                 children: knowLedgeList.map((item) {
                   return InkWell(
@@ -799,8 +798,7 @@ class _HomeState extends State<Home> {
                                   height: 78,
                                   child: ListView(
                                     shrinkWrap: true,
-                                    physics: AlwaysScrollableScrollPhysics(),
-                                    // 根据不同的平台切换不同的物理效果
+                                    physics: BouncingScrollPhysics(),
                                     scrollDirection: Axis.horizontal,
                                     controller: navController,
                                     children: [
