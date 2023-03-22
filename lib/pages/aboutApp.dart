@@ -2,7 +2,8 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:fluttertoast/fluttertoast.dart'; // 弹框插件
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart'; // 弹框插件
 
 class AboutApp extends StatefulWidget {
   const AboutApp({Key? key}) : super(key: key);
@@ -12,8 +13,18 @@ class AboutApp extends StatefulWidget {
 }
 
 class _AboutAppState extends State<AboutApp> {
-  void toPage(path) {
-    print(path);
+  void toLauncher(String str) async {
+    String url = "https://www.dillonl.com";
+    if (str == 'gitee') {
+      url = "https://gitee.com/dlongs49/sunset";
+    } else if (str == 'github') {
+      url = "https://github.com/dlongs49/sunset";
+    }
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      print("异常");
+    }
   }
 
   @override
@@ -89,7 +100,7 @@ class _AboutAppState extends State<AboutApp> {
           SizedBox(height: 30),
           InkWell(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 15,vertical: 20),
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
                 child: Column(
                   children: [
                     Row(
@@ -103,10 +114,10 @@ class _AboutAppState extends State<AboutApp> {
                   ],
                 ),
               ),
-              onTap: () => toPage('gitee')),
+              onTap: () => toLauncher('gitee')),
           InkWell(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 15,vertical: 20),
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
                 child: Column(
                   children: [
                     Row(
@@ -120,10 +131,10 @@ class _AboutAppState extends State<AboutApp> {
                   ],
                 ),
               ),
-              onTap: () => toPage('github')),
+              onTap: () => toLauncher('github')),
           InkWell(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 15,vertical: 20),
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
                 child: Column(
                   children: [
                     Row(
@@ -137,7 +148,7 @@ class _AboutAppState extends State<AboutApp> {
                   ],
                 ),
               ),
-              onTap: () => toPage('website')),
+              onTap: () => toLauncher('website')),
           SizedBox(height: 10),
           Container(
               width: double.infinity,
@@ -149,7 +160,7 @@ class _AboutAppState extends State<AboutApp> {
           SizedBox(height: 26),
           Container(
               width: double.infinity,
-              height: 80,
+              constraints: BoxConstraints(minHeight: 80),
               margin: EdgeInsets.symmetric(horizontal: 15),
               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               decoration: BoxDecoration(
@@ -157,7 +168,7 @@ class _AboutAppState extends State<AboutApp> {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
-                  "该软件仅用于学习开发使用，请勿在商业用途使用,如有侵权请立即联系作者 dillonl.dl49@gmail.com",
+                  "该软件仅用于学习开发使用，已在Gitee(码云), github 上开源，请勿在用于商业用途,原版App为Sunri，如有侵权请立即联系作者 dillonl.dl49@gmail.com",
                   style: TextStyle(fontSize: 13, height: 1.6)))
         ],
       ),
