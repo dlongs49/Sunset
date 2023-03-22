@@ -2,8 +2,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:url_launcher/url_launcher.dart'; // 弹框插件
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutApp extends StatefulWidget {
   const AboutApp({Key? key}) : super(key: key);
@@ -168,7 +167,7 @@ class _AboutAppState extends State<AboutApp> {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
-                  "该软件仅用于学习开发使用，已在Gitee(码云), github 上开源，请勿在用于商业用途,原版App为Sunri，如有侵权请立即联系作者 dillonl.dl49@gmail.com",
+                  "该软件仅用于学习开发使用，已在Gitee(码云), github 上开源，请勿用于商业用途,原版App为Sunri，如有侵权请立即联系作者 dillonl.dl49@gmail.com",
                   style: TextStyle(fontSize: 13, height: 1.6)))
         ],
       ),
