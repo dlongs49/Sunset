@@ -74,10 +74,9 @@ class _MyProfileState extends State<MyProfile> {
                               color: Colors.black, size: 18.0)),
                       behavior: HitTestBehavior.opaque, // 点击整个区域有响应事件，
                       onTap: () {
-                        print("返回上一页");
                         Navigator.of(context).pop();
                       }),
-                  Text("个人信息",
+                  Text("个人简介",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Colors.black,

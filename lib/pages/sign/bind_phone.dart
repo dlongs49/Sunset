@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:sunset/components/tabbar.dart';
 
 class BindPhone extends StatefulWidget {
   const BindPhone({Key? key}) : super(key: key);
@@ -40,37 +41,11 @@ class _BindPhoneState extends State<BindPhone> {
   }
   @override
   Widget build(BuildContext context) {
-    double topBarHeight =
-        MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          Column(children: [
-            Container(
-              height: topBarHeight,
-              color: Color(0xffffffff),
-            ),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.only(left: 15, right: 15),
-              height: 46.0,
-              color: Color(0xffffffff),
-              child: Stack(
-                children: [
-                  Align(
-                      alignment: Alignment.center,
-                      child: Text("手机登录",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              height: 2.2,
-                              decoration: TextDecoration.none))),
-                ],
-              ),
-            ),
-          ]),
+          CustomTabBar(title: "换绑手机号", bgColor: null, fontColor: null),
           Container(
               width: double.infinity,
               margin: EdgeInsets.symmetric(horizontal: 18),

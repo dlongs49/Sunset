@@ -8,6 +8,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_pickers/pickers.dart';
 import 'package:flutter_pickers/style/picker_style.dart';
 import 'package:flutter_pickers/time_picker/model/date_mode.dart';
+import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/local_data/info.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -142,44 +143,7 @@ class _MyInfoState extends State<MyInfo> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          Column(children: [
-            Container(
-              height: topBarHeight,
-              color: Color(0xffffffff),
-            ),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.only(left: 15, right: 15),
-              height: 46.0,
-              color: Color(0xffffffff),
-              child: Stack(
-                children: [
-                  GestureDetector(
-                      child: Container(
-                          width: 40,
-                          height: 40,
-                          alignment: Alignment.centerLeft,
-                          child: Icon(IconData(0xec8e, fontFamily: 'sunfont'),
-                              color: Colors.black, size: 18.0)),
-                      behavior: HitTestBehavior.opaque, // 点击整个区域有响应事件，
-                      onTap: () {
-                        print("返回上一页");
-                        Navigator.of(context).pop();
-                      }),
-                  Positioned(
-                      left: 0,
-                      right: 0,
-                      child: Text("个人信息",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              height: 2.2,
-                              decoration: TextDecoration.none)))
-                ],
-              ),
-            )
-          ]),
+          CustomTabBar(title: "个人信息", bgColor: null, fontColor: null),
           Expanded(
               child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 15),

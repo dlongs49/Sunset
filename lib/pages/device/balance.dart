@@ -2,7 +2,8 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:fluttertoast/fluttertoast.dart'; // 弹框插件
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:sunset/components/tabbar.dart'; // 弹框插件
 class Balance extends StatefulWidget {
   const Balance({Key? key}) : super(key: key);
 
@@ -36,42 +37,7 @@ class _BalanceState extends State<Balance> {
         body: Column(
       children: [
         Column(children: [
-          Container(
-            height: topBarHeight,
-            color: Color(0xff22d47e),
-          ),
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.only(left: 15, right: 15),
-            height: 46.0,
-            color: Color(0xff22d47e),
-            child: Stack(
-              children: [
-                GestureDetector(
-                    child: Container(
-                        width: 40,
-                        height: 40,
-                        alignment: Alignment.centerLeft,
-                        child: Icon(IconData(0xec8e, fontFamily: 'sunfont'),
-                            color: Colors.white, size: 18.0)),
-                    behavior: HitTestBehavior.opaque, // 点击整个区域有响应事件，
-                    onTap: () {
-                      print("返回上一页");
-                      Navigator.of(context).pop();
-                    }),
-                Positioned(
-                    left: 0,
-                    right: 0,
-                    child: Text("体脂秤",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            height: 2.2,
-                            decoration: TextDecoration.none)))
-              ],
-            ),
-          ),
+          CustomTabBar(title: "操作指南", bgColor: 0xff22d47e, fontColor: 0xffffffff),
           Container(
             width: double.infinity,
             height: 140,
@@ -93,7 +59,7 @@ class _BalanceState extends State<Balance> {
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
-                    width: 0.5, //宽度
+                    width: 0.3, //宽度
                     color: Color(0xffe0e0e0), //边框颜色
                   ),
                 ),
@@ -118,7 +84,7 @@ class _BalanceState extends State<Balance> {
                   decoration: BoxDecoration(
                     border: Border(
                       bottom: BorderSide(
-                        width: 0.5, //宽度
+                        width: 0.3, //宽度
                         color: Color(0xffe0e0e0), //边框颜色
                       ),
                     ),
@@ -140,7 +106,7 @@ class _BalanceState extends State<Balance> {
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
-                    width: 0.5, //宽度
+                    width: 0.3, //宽度
                     color: Color(0xffe0e0e0), //边框颜色
                   ),
                 ),

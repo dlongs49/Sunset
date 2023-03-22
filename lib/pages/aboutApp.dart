@@ -28,8 +28,6 @@ class _AboutAppState extends State<AboutApp> {
 
   @override
   Widget build(BuildContext context) {
-    double topBarHeight =
-        MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(

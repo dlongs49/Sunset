@@ -1,9 +1,9 @@
 import 'dart:ui';
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:sunset/components/tabbar.dart';
 
 
 class Setting extends StatefulWidget {
@@ -66,53 +66,11 @@ class _SettingState extends State<Setting> {
 
   @override
   Widget build(BuildContext context) {
-    double topBarHeight =
-        MediaQueryData
-            .fromWindow(window)
-            .padding
-            .top; // 沉浸栏高度
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          Column(children: [
-            Container(
-              height: topBarHeight,
-              color: Color(0xffffffff),
-            ),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.only(left: 15, right: 15),
-              height: 46.0,
-              color: Color(0xffffffff),
-              child: Stack(
-                children: [
-                  GestureDetector(
-                      child: Container(
-                          width: 40,
-                          height: 40,
-                          alignment: Alignment.centerLeft,
-                          child: Icon(IconData(0xec8e, fontFamily: 'sunfont'),
-                              color: Colors.black, size: 18.0)),
-                      behavior: HitTestBehavior.opaque, // 点击整个区域有响应事件，
-                      onTap: () {
-                        print("返回上一页");
-                        // Navigator.of(context).pop();
-                      }),
-                  Positioned(
-                      left: 0,
-                      right: 0,
-                      child: Text("设置",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              height: 2.2,
-                              decoration: TextDecoration.none)))
-                ],
-              ),
-            )
-          ]),
+          CustomTabBar(title:"设置",bgColor:null,fontColor:null),
           Expanded(
               child: MediaQuery.removePadding(
                 // 去除顶部留白

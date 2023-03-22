@@ -84,7 +84,7 @@ class _SetAccnumState extends State<SetAccnum> {
                         ],
                       ),
                     ),
-                    onTap: () => toPage("")),
+                    onTap: () => toPage("bindPhone")),
                 InkWell(
                     child: Container(
                       padding:

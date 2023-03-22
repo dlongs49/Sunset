@@ -22,7 +22,6 @@ class _CustomTabBarState extends State<CustomTabBar> {
     double topBarHeight =
         MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
     void toBack(){
-      print("回退");
       Navigator.of(context).pop();
     }
     return  Column(children: [
@@ -31,7 +30,7 @@ class _CustomTabBarState extends State<CustomTabBar> {
           padding: EdgeInsets.only(top:topBarHeight,bottom: 4),
           color: Color(bgColor),
           child: Stack(
-            children: [
+              children: [
               Positioned(
                   left: 0,
                   right: 0,
@@ -45,6 +44,7 @@ class _CustomTabBarState extends State<CustomTabBar> {
               // Position 在上，否则点击无效，由于 Position 应在 Container 上面
               InkWell(
                   child: Container(
+                      alignment: Alignment(0,0.4),
                       width: 50,
                       height: 40,
                       child: Icon(IconData(0xec8e, fontFamily: 'sunfont'),

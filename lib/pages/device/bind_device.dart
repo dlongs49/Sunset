@@ -48,6 +48,7 @@ class _BindDeviceState extends State<BindDevice> {
 
   @override
   Widget build(BuildContext context) {
+    // CustomTabBar(title: "绑定设备", bgColor: null, fontColor: null),
     return Scaffold(
       body: InkWell(
           child: Container(

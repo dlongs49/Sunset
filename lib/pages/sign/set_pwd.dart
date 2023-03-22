@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:sunset/components/tabbar.dart';
 
 class SetPwd extends StatefulWidget {
   const SetPwd({Key? key}) : super(key: key);
@@ -40,45 +41,11 @@ class _SetPwdState extends State<SetPwd> {
 
   @override
   Widget build(BuildContext context) {
-    double topBarHeight =
-        MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          Column(children: [
-            Container(
-              height: topBarHeight,
-              color: Color(0xffffffff),
-            ),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.only(left: 15, right: 15),
-              height: 46.0,
-              color: Color(0xffffffff),
-              child: Stack(
-                children: [
-                  Align(
-                      alignment: Alignment.center,
-                      child: Text("密码登录",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              height: 2.2,
-                              decoration: TextDecoration.none))),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: InkWell(
-                        child: Text("密码登录",
-                            style: TextStyle(
-                                color: Color(0xffb8b8b8), fontSize: 12)),
-                        onTap: () {}),
-                  )
-                ],
-              ),
-            ),
-          ]),
+          CustomTabBar(title: "修改密码", bgColor: null, fontColor: null),
           Column(
             children: [
               Container(
@@ -127,7 +94,7 @@ class _SetPwdState extends State<SetPwd> {
                   ])),
               Container(
                   margin: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                  padding: EdgeInsets.only(left: 2, right: 8),
+                  padding: EdgeInsets.only(right: 8, top: 10, bottom: 10),
                   decoration: BoxDecoration(
                       border: Border(
                           bottom:
