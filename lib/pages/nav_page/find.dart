@@ -61,13 +61,20 @@ class _FindState extends State<Find> {
                 removeTop: true,
                 removeBottom: true,
                 child: ListView.builder(
-                    padding: EdgeInsets.only(top: 30),
                     physics: BouncingScrollPhysics(), // IOS的回弹属性
                     itemCount: 12,
                     itemBuilder: (context, i) => Container(
                           padding: EdgeInsets.only(left: 15, right: 15),
                           child: Column(
                             children: [
+                              SizedBox(height: 16),
+                              InkWell(
+                                  child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child:
+                                    Image.asset("assets/images/banner_1.jpg"),
+                              )),
+                              SizedBox(height: 16),
                               Row(
                                 children: [
                                   Container(
