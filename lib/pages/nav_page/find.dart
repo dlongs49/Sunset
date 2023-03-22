@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Find extends StatefulWidget {
   const Find({Key? key}) : super(key: key);
@@ -16,6 +17,18 @@ class _FindState extends State<Find> {
 
   void toPage(String path) {
     Navigator.pushNamed(context, path);
+  }
+
+  //跳转浏览器
+  void toLauncher() async {
+    // 跳转的 url 淘宝的链接
+    var url =
+        "https://detail.tmall.com/item.htm?id=556923025304&scene=taobao_shop&spm=a312a.7700824.w15913892-23209753121.1.74a332fdQym577";
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      print("异常");
+    }
   }
 
   @override
@@ -69,11 +82,13 @@ class _FindState extends State<Find> {
                             children: [
                               SizedBox(height: 16),
                               InkWell(
-                                  child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child:
-                                    Image.asset("assets/images/banner_1.jpg"),
-                              )),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child:
+                                      Image.asset("assets/images/banner_1.jpg"),
+                                ),
+                                onTap: toLauncher,
+                              ),
                               SizedBox(height: 16),
                               Row(
                                 children: [
