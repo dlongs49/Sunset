@@ -22,6 +22,7 @@ class _CustomTabBarState extends State<CustomTabBar> {
     double topBarHeight =
         MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
     void toBack(){
+      print("回退");
       Navigator.of(context).pop();
     }
     return  Column(children: [
@@ -31,14 +32,6 @@ class _CustomTabBarState extends State<CustomTabBar> {
           color: Color(bgColor),
           child: Stack(
             children: [
-              GestureDetector(
-                  child: Container(
-                      width: 50,
-                      height: 40,
-                      child: Icon(IconData(0xec8e, fontFamily: 'sunfont'),
-                          color: Color(fontColor), size: 18.0)),
-                  behavior: HitTestBehavior.opaque, // 点击整个区域有响应事件，
-                  onTap: toBack),
               Positioned(
                   left: 0,
                   right: 0,
@@ -48,7 +41,16 @@ class _CustomTabBarState extends State<CustomTabBar> {
                           color: Color(fontColor),
                           fontSize: 18,
                           height: 2.2,
-                          decoration: TextDecoration.none)))
+                          decoration: TextDecoration.none))),
+              // Position 在上，否则点击无效，由于 Position 应在 Container 上面
+              InkWell(
+                  child: Container(
+                      width: 50,
+                      height: 40,
+                      child: Icon(IconData(0xec8e, fontFamily: 'sunfont'),
+                          color: Color(fontColor), size: 18.0)),
+                  onTap: toBack),
+
             ],
           )
       ),
