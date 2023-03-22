@@ -15,7 +15,7 @@ dependencies:
   flutter_localizations: # Flutter 默认是英文，这里配置支持多国语言
     sdk: flutter
   cupertino_icons: ^1.0.2
-  flutter_swiper : ^1.1.6 # 非常强大的轮播图插件
+  flutter_swiper: ^1.1.6 # 非常强大的轮播图插件
   flutter_webview_plugin: ^0.4.0 # 内嵌 H5 网页插件
   fluttertoast: ^3.0.6  # 提示插件
   flutter_pickers: ^2.1.9 # 选择器插件 类似于前端的select等选择器
@@ -23,9 +23,10 @@ dependencies:
   flutter_qr_reader: ^1.0.5
   flutter_blue: ^0.8.0
   url_launcher: ^6.0.0 #跳转浏览器
+  permission_handler: ^8.0.0
   #camera: ^0.5.8
   #scan: ^1.6.0
-  #path_provider: ^1.6.8 # 获取缓存
+#path_provider: ^1.6.8 # 获取缓存
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -27,7 +27,10 @@ import 'package:sunset/pages/sign/phone_log.dart'; // 手机登录
 import 'package:sunset/pages/sign/pwd_log.dart'; // 密码登录
 import 'package:sunset/pages/sign/set_pwd.dart'; // 设置密码 & 重置密码
 import 'package:sunset/pages/sign/bind_phone.dart'; // 更换绑定手机号
+
+import 'package:sunset/pages/Test.dart'; // 测试页面
 final Map<String, WidgetBuilder> routes = {
+  "/Test":(BuildContext context) => Test(),
   "/":(BuildContext context) => App(), // 说明：这里如果指定了页面那么在 main中 home: HomePage() 不能存在
   "aboutApp": (BuildContext context) => AboutApp(),
   "myDevice": (BuildContext context) => MyDevice(),
