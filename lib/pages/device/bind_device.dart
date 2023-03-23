@@ -7,46 +7,69 @@ import 'package:sunset/components/tabbar.dart';
 
 class BindDevice extends StatefulWidget {
   final arguments; // 路由带的参数
-  const BindDevice({Key? key,this.arguments}) : super(key: key);
+  const BindDevice({Key? key, this.arguments}) : super(key: key);
 
   @override
-  _BindDeviceState createState() => _BindDeviceState(arguments:this.arguments);
+  _BindDeviceState createState() => _BindDeviceState(arguments: this.arguments);
 }
 
 class _BindDeviceState extends State<BindDevice> with TickerProviderStateMixin {
   /* 拿到路由传的值 */
   final arguments;
-  _BindDeviceState({this.arguments});
 
+  _BindDeviceState({this.arguments});
 
   FlutterBlue flutterBlue = FlutterBlue.instance;
   String Id = '123';
 
   @override
   void initState() {
-      print(">> ${arguments}");
-      initBlue();
+    print(">> ${arguments}");
+    initBlue();
+  }
+
+  connectBlue(device) async {
+    flutterBlue.stopScan();
+    try {
+      print("连接中...");
+      await device.connect(autoConnect: true, timeout: Duration(seconds: 100));
+      print("连接成功");
+      List<BluetoothService> services = await device.discoverServices();
+      services.forEach((el) {
+        print(el);
+        var value = el.uuid.toString();
+        print(">>>>$value");
+      });
+    } catch (e) {
+      print("异常");
+      print(e);
+    }
+
   }
 
   void initBlue() {
-    flutterBlue.startScan(timeout: Duration(seconds: 4));
-    var device;
-    var ss = flutterBlue.scanResults.listen((results) async {
+    flutterBlue.startScan(timeout: Duration(seconds: 10));
+    Map device = {};
+    flutterBlue.scanResults.listen((results) async {
+      print('蓝牙扫描开始>>');
       for (ScanResult r in results) {
-        device = r.device;
-        setState(() {
-          Id = r.device.name;
-        });
+        var obj = r.device;
         // Bb-AM-D6-0  10:96:1A:6C:B6:50
-        print('设备>>>>${r.device}');
-        // if(r.device.name == "AIMA-06639D"){
-        //   print('开始连接');
-        //   await device.connect();
-        //   print('连接成功');
-        // }
+        print(obj.name);
+        if (obj.name == "Bb-AM-D6-0") {
+          print('符合特征 >>>>${r.device}');
+          this.connectBlue(obj);
+          // 符合特征值，停止扫描蓝牙
+          // flutterBlue.stopScan();
+        }
       }
     });
 
+    // if(r.device.name == "AIMA-06639D"){
+    //   print('开始连接');
+    //   await device.connect();
+    //   print('连接成功');
+    // }
     // List<BluetoothService> services = await device.discoverServices();
     // services.forEach((service) {
     //   print('SERVICE>> ${service}');
@@ -153,24 +176,25 @@ class _BindDeviceState extends State<BindDevice> with TickerProviderStateMixin {
             SizedBox(height: 20),
             Align(
                 child: InkWell(
-                  child: Container(
-                    alignment: Alignment(0, 0),
-                    width: double.infinity,
-                    height: 48,
-                    margin: EdgeInsets.symmetric(horizontal: 15),
-                    decoration: BoxDecoration(
-                      color: Color(0xff22d47e),
-                      borderRadius: BorderRadius.circular(48),
-                    ),
-                    child: Text("重新搜索",
-                        style: TextStyle(color: Colors.white, fontSize: 16)),
-                  ),
-                )),
+              child: Container(
+                alignment: Alignment(0, 0),
+                width: double.infinity,
+                height: 48,
+                margin: EdgeInsets.symmetric(horizontal: 15),
+                decoration: BoxDecoration(
+                  color: Color(0xff22d47e),
+                  borderRadius: BorderRadius.circular(48),
+                ),
+                child: Text("重新搜索",
+                    style: TextStyle(color: Colors.white, fontSize: 16)),
+              ),
+            )),
             SizedBox(height: 20),
             Align(
               child: InkWell(
                   child: Text("重新搜索",
-                      style: TextStyle(fontSize: 16, color: Color(0xff4c4c4c)))),
+                      style:
+                          TextStyle(fontSize: 16, color: Color(0xff4c4c4c)))),
             )
           ],
         ),
@@ -178,7 +202,9 @@ class _BindDeviceState extends State<BindDevice> with TickerProviderStateMixin {
       ],
     );
   }
+
   late String base;
+
   @override
   Widget build(BuildContext context) {
     // dynamic obj = ModalRoute.of(context)!.settings.arguments;
@@ -186,7 +212,7 @@ class _BindDeviceState extends State<BindDevice> with TickerProviderStateMixin {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          CustomTabBar(title: "请上秤", bgColor: null, fontColor: null,arg:null),
+          CustomTabBar(title: "请上秤", bgColor: null, fontColor: null, arg: null),
           SizedBox(height: 80),
           Expanded(child: initDevice())
         ],
