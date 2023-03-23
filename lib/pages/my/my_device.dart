@@ -6,7 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sunset/components/tabbar.dart';
 
 class MyDevice extends StatefulWidget {
-  const MyDevice({Key? key}) : super(key: key);
+  const MyDevice({Key? key, arguments}) : super(key: key);
 
   @override
   _MyDeviceState createState() => _MyDeviceState();
