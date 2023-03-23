@@ -34,7 +34,7 @@ class _AppState extends State<App> {
   @override
   void changeNavBar(int index) {
     if(index == 2){
-      Navigator.pushNamed(context, "bindDevice");
+      Navigator.pushNamed(context, "bindDevice",arguments:{"base":"root"});
     }else{
       setState(() {
         currentIndex = index;
