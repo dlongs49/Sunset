@@ -33,6 +33,9 @@ class _AppState extends State<App> {
   // 更改底部导航栏索引
   @override
   void changeNavBar(int index) {
+    if(index == 2){
+      Navigator.pushNamed(context, "bindDevice");
+    }
     setState(() {
       currentIndex = index;
     });
