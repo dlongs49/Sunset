@@ -63,12 +63,14 @@ var onGenerateRoute=(RouteSettings settings) {
   final Function pageContentBuilder = routes[name] as Function;
   if (pageContentBuilder != null) {
     if (settings.arguments != null) {
-      final Route route = MaterialPageRoute(
+      /* MaterialPageRoute 安卓默认页面过渡【上下淡出】
+      CupertinoPageRoute IOS默认页面过渡 【左右切换】*/
+      final Route route = CupertinoPageRoute(
           builder: (context) =>
               pageContentBuilder(context, arguments: settings.arguments));
       return route;
     }else{
-      final Route route = MaterialPageRoute(
+      final Route route = CupertinoPageRoute(
           builder: (context) =>
               pageContentBuilder(context));
       return route;
