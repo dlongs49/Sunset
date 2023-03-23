@@ -35,10 +35,12 @@ class _AppState extends State<App> {
   void changeNavBar(int index) {
     if(index == 2){
       Navigator.pushNamed(context, "bindDevice");
+    }else{
+      setState(() {
+        currentIndex = index;
+      });
     }
-    setState(() {
-      currentIndex = index;
-    });
+
   }
   @override
   Widget build(BuildContext context) {
