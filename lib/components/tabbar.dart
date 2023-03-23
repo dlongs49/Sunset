@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class CustomTabBar extends StatefulWidget {
-  const CustomTabBar({Key? key,this.bgColor,this.title,this.fontColor}) : super(key: key);
+  const CustomTabBar({Key? key,this.bgColor,this.title,this.fontColor, arg}) : super(key: key);
   final bgColor;
   final fontColor;
   final title;

@@ -6,20 +6,29 @@ import 'package:flutter_blue/flutter_blue.dart';
 import 'package:sunset/components/tabbar.dart';
 
 class BindDevice extends StatefulWidget {
-  const BindDevice({Key? key}) : super(key: key);
+  final arguments; // 路由带的参数
+  const BindDevice({Key? key,this.arguments}) : super(key: key);
 
   @override
-  _BindDeviceState createState() => _BindDeviceState();
+  _BindDeviceState createState() => _BindDeviceState(arguments:this.arguments);
 }
 
 class _BindDeviceState extends State<BindDevice> with TickerProviderStateMixin {
+  /* 拿到路由传的值 */
+  final arguments;
+  _BindDeviceState({this.arguments});
+
+
   FlutterBlue flutterBlue = FlutterBlue.instance;
   String Id = '123';
 
   @override
-  void initState() {}
+  void initState() {
+      print(">> ${arguments}");
+      initBlue();
+  }
 
-  void openBlue() {
+  void initBlue() {
     flutterBlue.startScan(timeout: Duration(seconds: 4));
     var device;
     var ss = flutterBlue.scanResults.listen((results) async {
@@ -45,6 +54,7 @@ class _BindDeviceState extends State<BindDevice> with TickerProviderStateMixin {
     // flutterBlue.stopScan();
   }
 
+  // 淡入淡出动画
   late final AnimationController controllAnimate =
       AnimationController(vsync: this, duration: Duration(seconds: 3))
         ..repeat(reverse: true);
@@ -168,14 +178,15 @@ class _BindDeviceState extends State<BindDevice> with TickerProviderStateMixin {
       ],
     );
   }
-
+  late String base;
   @override
   Widget build(BuildContext context) {
+    // dynamic obj = ModalRoute.of(context)!.settings.arguments;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          CustomTabBar(title: "请上秤", bgColor: null, fontColor: null),
+          CustomTabBar(title: "请上秤", bgColor: null, fontColor: null,arg:null),
           SizedBox(height: 80),
           Expanded(child: initDevice())
         ],
