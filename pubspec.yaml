@@ -23,7 +23,8 @@ dependencies:
   flutter_qr_reader: ^1.0.5
   flutter_blue: ^0.8.0
   url_launcher: ^6.0.0 #跳转浏览器
-  permission_handler: ^8.0.0
+  permission_handler: ^8.0.0 # 权限申请
+  dio: ^2.0.2 # 网络请求
   #camera: ^0.5.8
   #scan: ^1.6.0
 #path_provider: ^1.6.8 # 获取缓存
