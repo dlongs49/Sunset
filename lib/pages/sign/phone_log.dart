@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
   }
 
   String phone = '';
+  String verCode = '';
 
   // 输入值
   void inputChange(String type, String str) {
@@ -38,19 +40,30 @@ class _PhoneLoginState extends State<PhoneLogin> {
         phone = '';
       });
     }
+    if (type == 'code') {
+      setState(() {
+        verCode = str;
+      });
+    }
   }
+
   Sign sign = new Sign();
+
   // 登录
   void handleLogin() async {
-    Map<String,String> map = new Map();
+    print(phone);
+    print(verCode);
+    Map<String, String> map = new Map();
     map["phone"] = "18794388410";
     map["verCode"] = "123";
-    final res= await sign.codeLogin(map);
-    print(res);
+    Map res = await sign.codeLogin(map);
+    print(">>${res["data"]}");
   }
 
   // 验证码
-  void onCode() {}
+  void onCode() {
+
+  }
 
   void toPage(dynamic item) {
     Navigator.pushNamed(context, item);
@@ -196,7 +209,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
                                         hintStyle: TextStyle(
                                             color: Color(0xffacacac))),
                                     onChanged: (value) =>
-                                        inputChange("", value)))),
+                                        inputChange("code", value)))),
                         Container(
                           width: 1,
                           height: 16,

@@ -25,7 +25,7 @@ dependencies:
   url_launcher: ^6.0.0 #跳转浏览器
   permission_handler: ^8.0.0 # 权限申请
   dio: ^3.0.0 # 网络请求
-  #shared_preferences: ^2.0.0 # 缓存处理
+  shared_preferences: ^2.0.0 # 缓存处理
   #camera: ^0.5.8
   #scan: ^1.6.0
 #path_provider: ^1.6.8 # 获取缓存

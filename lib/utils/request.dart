@@ -9,7 +9,7 @@ class Http {
   Future<Dio> createInstace(String method) async {
     options = new BaseOptions(
       baseUrl: baseUrl,
-      connectTimeout: 10000,
+      connectTimeout: 60000,
       responseType: ResponseType.json,
       method: method,
     );
@@ -32,12 +32,14 @@ class Http {
   get(url, data) async {
     Map<String, dynamic> map = data;
     Dio dios = await createInstace("GET");
-    return await dios.get(url, queryParameters: map);
+    Response response = await dios.get(url, queryParameters: map);
+    return response.data;
   }
 
   post(url, data) async {
     Map<String, dynamic> map = data;
     Dio dios = await createInstace("POST");
-    return await dios.post(url,data:map);
+    Response response = await dios.post(url, data: map);
+    return response.data;
   }
 }
