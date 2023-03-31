@@ -10,7 +10,7 @@ import 'package:flutter_pickers/style/picker_style.dart';
 import 'package:flutter_pickers/time_picker/model/date_mode.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/local_data/info.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:image_picker/image_picker.dart';
 
 class MyInfo extends StatefulWidget {
   const MyInfo({Key? key}) : super(key: key);
@@ -20,7 +20,7 @@ class MyInfo extends StatefulWidget {
 }
 
 class _MyInfoState extends State<MyInfo> {
-  final ImagePicker imgPicker = ImagePicker(); // 相机，图库权限
+  // final ImagePicker imgPicker = ImagePicker(); // 相机，图库权限
   String headimg = "";
   List sexList = ["女", "男"];
   int sexActive = 0; // 默认索引对应值 女
@@ -71,23 +71,23 @@ class _MyInfoState extends State<MyInfo> {
                     InkWell(child: Text("拍照", style: TextStyle(fontSize: 18))),
               ),
               onTap: () async {
-                try {
-                  final XFile? imgFile = await imgPicker.pickImage(
-                      source: ImageSource.camera);
-                  if (imgFile != null) {
-                    print("拍摄图片>> ${imgFile.path}");
-                    File file = File(imgFile.path);
-                    final imageBytes = await file.readAsBytes();
-                    String base64Img = base64Encode(imageBytes);
-                    setState(() {
-                      headimg = base64Img;
-                    });
-                    Navigator.pop(context); // 用于底部弹框关闭
-                    print("图片base64 >> $base64Img");
-                  }
-                } catch (e) {
-                  print("异常>> $e");
-                }
+                // try {
+                //   final XFile? imgFile = await imgPicker.pickImage(
+                //       source: ImageSource.camera);
+                //   if (imgFile != null) {
+                //     print("拍摄图片>> ${imgFile.path}");
+                //     File file = File(imgFile.path);
+                //     final imageBytes = await file.readAsBytes();
+                //     String base64Img = base64Encode(imageBytes);
+                //     setState(() {
+                //       headimg = base64Img;
+                //     });
+                //     Navigator.pop(context); // 用于底部弹框关闭
+                //     print("图片base64 >> $base64Img");
+                //   }
+                // } catch (e) {
+                //   print("异常>> $e");
+                // }
               },
             ),
             InkWell(
@@ -101,18 +101,18 @@ class _MyInfoState extends State<MyInfo> {
                 ),
               ),
               onTap: () async {
-                final XFile? imgFile = await imgPicker.pickImage(source: ImageSource.gallery);
-                if (imgFile != null) {
-                  print("选择图片>> ${imgFile.path}");
-                  File file = File(imgFile.path);
-                  final imageBytes = await file.readAsBytes();
-                  String base64Img = base64Encode(imageBytes);
-                  setState(() {
-                    headimg = base64Img;
-                  });
-                  Navigator.pop(context); // 用于底部弹框关闭
-                  print("图片base64 >> $base64Img");
-                }
+                // final XFile? imgFile = await imgPicker.pickImage(source: ImageSource.gallery);
+                // if (imgFile != null) {
+                //   print("选择图片>> ${imgFile.path}");
+                //   File file = File(imgFile.path);
+                //   final imageBytes = await file.readAsBytes();
+                //   String base64Img = base64Encode(imageBytes);
+                //   setState(() {
+                //     headimg = base64Img;
+                //   });
+                //   Navigator.pop(context); // 用于底部弹框关闭
+                //   print("图片base64 >> $base64Img");
+                // }
               },
             ),
           ],

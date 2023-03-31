@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:sunset/utils/api/sign_req.dart';
 
 class PhoneLogin extends StatefulWidget {
   const PhoneLogin({Key? key}) : super(key: key);
@@ -38,9 +39,15 @@ class _PhoneLoginState extends State<PhoneLogin> {
       });
     }
   }
-
+  Sign sign = new Sign();
   // 登录
-  void handleLogin() {}
+  void handleLogin() async {
+    Map<String,String> map = new Map();
+    map["phone"] = "18794388410";
+    map["verCode"] = "123";
+    final res= await sign.codeLogin(map);
+    print(res);
+  }
 
   // 验证码
   void onCode() {}

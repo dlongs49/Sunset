@@ -31,7 +31,7 @@ import 'package:sunset/pages/sign/bind_phone.dart'; // 更换绑定手机号
 import 'package:sunset/pages/Test.dart'; // 测试页面
 final Map<String, WidgetBuilder> routes = {
   // "/":(BuildContext context) => Test(),
-  "/":(BuildContext context) => App(), // 说明：这里如果指定了页面那么在 main中 home: HomePage() 不能存在
+  // "/":(BuildContext context) => App(), // 说明：这里如果指定了页面那么在 main中 home: HomePage() 不能存在
   "aboutApp": (BuildContext context) => AboutApp(),
   "myDevice": (BuildContext context,{arguments}) => MyDevice(arguments:arguments),
   "bindDevice": (BuildContext context,{arguments}) => BindDevice(arguments:arguments),
@@ -50,7 +50,7 @@ final Map<String, WidgetBuilder> routes = {
   "shopDetail":(BuildContext context)=> ShopDetail(),
   "dsyAccnum":(BuildContext context)=> DsyAccnum(),//dsyAccnum
   "forgetPwd":(BuildContext context)=> ForgetPwd(),//forgetPwd
-  "phoneLog":(BuildContext context)=> PhoneLogin(),//phoneLog
+  "/":(BuildContext context)=> PhoneLogin(),//phoneLog
   "pwdLogin":(BuildContext context)=> PwdLogin(), // pwdLogin
   "setPwd":(BuildContext context)=> SetPwd(),//setPwd
   "bindPhone":(BuildContext context)=> BindPhone(),//bindPhone

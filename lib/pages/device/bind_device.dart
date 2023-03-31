@@ -53,6 +53,7 @@ class _BindDeviceState extends State<BindDevice> with TickerProviderStateMixin {
     flutterBlue.scanResults.listen((results) async {
       print('蓝牙扫描开始>>');
       for (ScanResult r in results) {
+        print(r.device);
         var obj = r.device;
         // Bb-AM-D6-0  10:96:1A:6C:B6:50
         print(obj.name);

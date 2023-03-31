@@ -1,10 +1,11 @@
 buildscript {
     ext.kotlin_version = '1.4.32'
     repositories {
-        google()
-        jcenter()
-//        maven { url 'https://maven.aliyun.com/repository/public/' }
-//        maven { url 'https://maven.aliyun.com/repository/spring/' }
+        //google()
+        //jcenter()
+		maven{ url 'https://maven.aliyun.com/repository/google' }
+        maven{ url 'https://maven.aliyun.com/repository/jcenter' }
+        maven{url 'http://maven.aliyun.com/nexus/content/groups/public'}
         mavenLocal()
         mavenCentral()
     }
@@ -17,10 +18,11 @@ buildscript {
 
 allprojects {
     repositories {
-        google()
-        jcenter()
-//        maven { url 'https://maven.aliyun.com/repository/public/' }
-//        maven { url 'https://maven.aliyun.com/repository/spring/' }
+        //google()
+        //jcenter()
+		maven{ url 'https://maven.aliyun.com/repository/google' }
+        maven{ url 'https://maven.aliyun.com/repository/jcenter' }
+        maven{url 'http://maven.aliyun.com/nexus/content/groups/public'}
         mavenLocal()
         mavenCentral()
 
