@@ -56,7 +56,7 @@ class Http {
   post(url, data) async {
     Map<String, dynamic> map = data;
     Dio dios = await createInstace("POST");
-    Response response = await dios.post(url, data: map);
+    Response response = await dios.post(url, data: map,queryParameters:map);
     return response.data;
   }
 }
