@@ -1,8 +1,12 @@
+import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:sunset/components/toast.dart';
+import 'package:sunset/utils/api/sign_req.dart';
+import 'package:sunset/utils/request.dart';
 
 import '../aboutApp.dart';
 
@@ -26,6 +30,35 @@ class _MyState extends State<My> {
     {"icon": 0xe746, "title": "称重提醒", "path": ""},
     {"icon": 0xe625, "title": "我的收藏", "path": ""},
   ];
+
+  @override
+  void initState() {
+    getUInfo();
+  }
+
+  Sign sign = new Sign();
+
+  Map<String, dynamic> uinfo = {"nickname":"未登录","avator":"http://192.168.2.102:801/avator/sunset202303311711.png",};
+  // 个人信息
+  void getUInfo() async {
+    try {
+      Map res = await sign.getUInfo();
+      print("data>>> ${res["code"]} ${res["data"]}");
+      if (res["code"] == 200) {
+        setState(() {
+          uinfo = res["data"];
+          uinfo["avator"] = baseUrl+res["data"]["avator"];
+        });
+        print(uinfo);
+      }
+      if (res['code'] == 401) {
+        Navigator.pushNamed(context, 'phoneLog');
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
 
   //设置 个人信息
   void toPages(String path) {
@@ -91,7 +124,7 @@ class _MyState extends State<My> {
                                   IconData(0xe601, fontFamily: 'sunfont'),
                                   color: Colors.white,
                                   size: 24.0)),
-                          onTap: () =>toPages("scan")),
+                          onTap: () => toPages("scan")),
                       Text("我的",
                           style: TextStyle(color: Colors.white, fontSize: 18)),
                       Row(
@@ -105,7 +138,7 @@ class _MyState extends State<My> {
                                       IconData(0xe636, fontFamily: 'sunfont'),
                                       color: Colors.white,
                                       size: 22.0)),
-                              onTap: ()=>toPages("setting")),
+                              onTap: () => toPages("setting")),
                           InkWell(
                               child: Container(
                                   width: 40,
@@ -157,53 +190,54 @@ class _MyState extends State<My> {
                                 Row(
                                   children: [
                                     InkWell(
-                                      child:Container(
+                                      child: Container(
                                         width: 70,
                                         height: 70,
                                         child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(70),
-                                          child: Image.network(
-                                              "https://image.findlinked.cn/xiangrui/2022-06-13/53e425a3-e1e5-4b4b-91e2-e989d102b219.jpeg"),
+                                          borderRadius:
+                                              BorderRadius.circular(70),
+                                          child: Image.network(uinfo["avator"]),
                                         ),
                                         decoration: BoxDecoration(
                                             borderRadius:
-                                            BorderRadius.circular(70),
+                                                BorderRadius.circular(70),
                                             color: Colors.white),
                                       ),
-                                      onTap: ()=>toPages("myInfo"),
+                                      onTap: () => toPages("myInfo"),
                                     ),
                                     SizedBox(width: 15),
                                     InkWell(
-                                      child:Column(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          Text("书本书华",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 22,
-                                                  fontWeight: FontWeight.w800)),
-                                          Row(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                            children: [
-                                              Text("个人主页",
-                                                  style: TextStyle(
-                                                      color: Color(0xb7ffffff))),
-                                              SizedBox(width: 4),
-                                              Icon(
-                                                  IconData(0xeb8a,
-                                                      fontFamily: 'sunfont'),
-                                                  color: Color(0xb7ffffff),
-                                                  size: 10)
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                      onTap:()=>toPages("userInfo")
-                                    ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(uinfo["nickname"],
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 22,
+                                                    fontWeight:
+                                                        FontWeight.w800)),
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text("个人主页",
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xb7ffffff))),
+                                                SizedBox(width: 4),
+                                                Icon(
+                                                    IconData(0xeb8a,
+                                                        fontFamily: 'sunfont'),
+                                                    color: Color(0xb7ffffff),
+                                                    size: 10)
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                        onTap: () => toPages("userInfo")),
                                     Spacer(flex: 1),
                                     Container(
                                       width: 30,
@@ -344,15 +378,18 @@ class _MyState extends State<My> {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
                                                 children: [
-                                                  item['icon'] == 0xeeee ? Image.asset("assets/images/author.png", width:30,
-                                                          height:30,)
-                                                      :
-                                                  Icon(
-                                                      IconData(item["icon"],
-                                                          fontFamily:
-                                                              'sunfont'),
-                                                      size: 20,
-                                                      color: Colors.black),
+                                                  item['icon'] == 0xeeee
+                                                      ? Image.asset(
+                                                          "assets/images/author.png",
+                                                          width: 30,
+                                                          height: 30,
+                                                        )
+                                                      : Icon(
+                                                          IconData(item["icon"],
+                                                              fontFamily:
+                                                                  'sunfont'),
+                                                          size: 20,
+                                                          color: Colors.black),
                                                   SizedBox(width: 8),
                                                   Text(item["title"],
                                                       style: TextStyle(

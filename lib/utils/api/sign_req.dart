@@ -26,4 +26,14 @@ class Sign {
     Map<String, String> data = params;
     return await http.post("/sign/reset_pwd", data);
   }
+
+  // 个人信息
+  Future<Map> getUInfo() async {
+    return await http.get("/sign/get/userinfo", null);
+  }
+  // 更新个人信息
+  Future<Map> updateUInfo(params) async {
+    Map<String, String> data = params;
+    return await http.post("/sign/update/userinfo", data);
+  }
 }

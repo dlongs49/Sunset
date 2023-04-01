@@ -107,6 +107,8 @@ class _PhoneLoginState extends State<PhoneLogin> {
       // 将 token 存在缓存中
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString("ms_token", res["data"]);
+      FocusManager.instance.primaryFocus?.unfocus(); // 收起键盘
+      Navigator.pushNamed(context, '/');
     } catch (e) {
       errToast();
     }

@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:sunset/components/toast.dart';
 import 'package:sunset/local_data/home.dart';
+import 'package:sunset/utils/api/sign_req.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Home extends StatefulWidget {
@@ -17,11 +19,41 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   ScrollController navController = ScrollController();
 
+  @override
+  void initState() {
+    navController.addListener(() {
+      double _barScrollX =
+          (navController.offset * navTrackWidth) / listViewWidth;
+      setState(() {
+        barScrollX = _barScrollX;
+      });
+      print("滑动的距离>> $barScrollX");
+    });
+    // startTimer();
+    getUInfo();
+  }
+
+  Sign sign = new Sign();
+
+  // 个人信息
+  void getUInfo() async {
+    try {
+      Map res = await sign.getUInfo();
+      print("data>>> ${res["code"]} ${res["data"]}");
+      if (res['code'] == 401) {
+        Navigator.pushNamed(context, 'phoneLog');
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
 
   // 页面跳转
-  void toPage(String url){
+  void toPage(String url) {
     Navigator.pushNamed(context, url);
   }
+
   // 轮播图跳转
   void toBanner(String url) async {
     if (await canLaunch(url)) {
@@ -308,7 +340,7 @@ class _HomeState extends State<Home> {
                         Icon(IconData(0xeb8a, fontFamily: 'sunfont'),
                             size: 10, color: Color.fromRGBO(120, 120, 120, 1))
                       ])),
-                  onTap: () =>toPage("myDevice"))
+                  onTap: () => toPage("myDevice"))
             ],
           ),
           Container(
@@ -385,7 +417,7 @@ class _HomeState extends State<Home> {
                           Icon(IconData(0xeb8a, fontFamily: 'sunfont'),
                               size: 10, color: Color.fromRGBO(120, 120, 120, 1))
                         ])),
-                       onTap: () =>toPage(""))
+                    onTap: () => toPage(""))
               ],
             ),
           ),
@@ -607,18 +639,6 @@ class _HomeState extends State<Home> {
   double listViewWidth = 76.0 * navList.length; // listView宽度
   double navTrackWidth = 30; // 轨道
   double navBarWidth = 15; // 滑块
-  @override
-  void initState() {
-    navController.addListener(() {
-      double _barScrollX =
-          (navController.offset * navTrackWidth) / listViewWidth;
-      setState(() {
-        barScrollX = _barScrollX;
-      });
-      print("滑动的距离>> $barScrollX");
-    });
-    // startTimer();
-  }
 
   // 公告滚动 [待修正]
   late PageController pageController;
