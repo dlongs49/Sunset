@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 
 class PhoneLogin extends StatefulWidget {
@@ -18,7 +19,6 @@ class _PhoneLoginState extends State<PhoneLogin> {
   TapGestureRecognizer useragreeall = TapGestureRecognizer();
   TapGestureRecognizer privacypolicy = TapGestureRecognizer();
   TextEditingController PhoneController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -58,6 +58,11 @@ class _PhoneLoginState extends State<PhoneLogin> {
     map["verCode"] = "123";
     Map res = await sign.codeLogin(map);
     print(">>${res["data"]}");
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString("ms_token", res["data"]);
+    final String? ms_token = prefs.getString("ms_token");
+    print(ms_token);
+
   }
 
   // 验证码

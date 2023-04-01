@@ -15,15 +15,15 @@ class Http {
     );
     dio = new Dio(options);
     dio.interceptors
-        .add(InterceptorsWrapper(onRequest: (RequestOptions options) {
+        .add(InterceptorsWrapper(onRequest: (options,handler) {
       // options.headers["ms_token"] =
       // "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJDOEZDMjY2Mi04QzM1LTQwNUMtQTY0NC1CNzExM0UwMTQxODciLCJzdGFtcCI6MTY4MDI3MTg5ODkwNywiZXhwIjoxNjgwNDg3ODk4fQ.MlyKrVqSjBBiPM1oTTGm-JmDtcs-EFfoUi2pRI_HG1A";
       print("开始请求：${options.baseUrl}");
-      return options;
-    }, onResponse: (Response response) {
+      return handler.next(options);
+    }, onResponse: (response,handler) {
       print("请求成功");
-      return response;
-    }, onError: (DioError e) {
+      return handler.next(response);
+    }, onError: (DioError e,handler) {
       print("请求失败>> $e");
     }));
     return dio;

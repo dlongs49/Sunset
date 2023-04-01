@@ -3,9 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/routes/index.dart';
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.setMockInitialValues({});
   runApp(MyApp());
   //透明沉浸式状态栏
   // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(

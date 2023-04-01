@@ -16,15 +16,16 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   flutter_swiper: ^1.1.6 # 非常强大的轮播图插件
-  flutter_webview_plugin: ^0.4.0 # 内嵌 H5 网页插件
-  fluttertoast: ^3.0.6  # 提示插件
+  #flutter_webview_plugin: ^0.4.0 # 内嵌 H5 网页插件
+  webview_flutter: ^3.0.0
+  fluttertoast: ^7.1.8  # 提示插件
   flutter_pickers: ^2.1.9 # 选择器插件 类似于前端的select等选择器
-  #image_picker: ^0.8.3 # 图片选择，拍摄图片
+  image_picker: ^0.8.4 # 图片选择，拍摄图片
   flutter_qr_reader: ^1.0.5
   flutter_blue: ^0.8.0
   url_launcher: ^6.0.0 #跳转浏览器
   permission_handler: ^8.0.0 # 权限申请
-  dio: ^3.0.0 # 网络请求
+  dio: ^4.0.0 # 网络请求
   shared_preferences: ^2.0.0 # 缓存处理
   #camera: ^0.5.8
   #scan: ^1.6.0
