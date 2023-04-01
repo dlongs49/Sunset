@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +36,6 @@ class _PhoneLoginState extends State<PhoneLogin> {
   // 输入值
   void inputChange(String type, String str) {
     if (type == 'phone') {
-      print(str);
       isPhone = str != "" ? true : false; // 登录高亮
       phone = str;
       setState(() {});

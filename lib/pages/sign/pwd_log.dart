@@ -311,7 +311,8 @@ class _PwdLoginState extends State<PwdLogin> {
                                 BorderRadius.all(Radius.circular(50))),
                         child: InkWell(
                             borderRadius: BorderRadius.circular(50),
-                            highlightColor: Color(0xff11a55f), // 水波纹高亮颜色
+                            highlightColor: Color(isPhone && isPwd && isCheck ? 0xff11a55f
+                                    : 0xffebebeb), // 水波纹高亮颜色
                             child: Container(
                               alignment: Alignment(0, 0),
                               width: double.infinity,

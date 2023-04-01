@@ -15,4 +15,15 @@ class Sign {
     Map<String, String> data = params;
     return await http.post("/sign/pwd_login", data);
   }
+
+  // 忘记密码 -- 查询手机号
+  Future<Map> findPhone(params) async {
+    Map<String, String> data = params;
+    return await http.post("/sign/get_isPhone", data);
+  }
+  // 忘记密码 -- 重置密码
+  Future<Map> forgetPwd(params) async {
+    Map<String, String> data = params;
+    return await http.post("/sign/reset_pwd", data);
+  }
 }
