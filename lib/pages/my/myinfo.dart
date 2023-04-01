@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:core';
-import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,10 @@ import 'package:flutter_pickers/pickers.dart';
 import 'package:flutter_pickers/style/picker_style.dart';
 import 'package:flutter_pickers/time_picker/model/date_mode.dart';
 import 'package:sunset/components/tabbar.dart';
+import 'package:sunset/components/toast.dart';
 import 'package:sunset/local_data/info.dart';
+import 'package:sunset/utils/api/sign_req.dart';
+import 'package:sunset/utils/request.dart';
 // import 'package:image_picker/image_picker.dart';
 
 class MyInfo extends StatefulWidget {
@@ -23,10 +25,7 @@ class _MyInfoState extends State<MyInfo> {
   // final ImagePicker imgPicker = ImagePicker(); // 相机，图库权限
   String headimg = "";
   List sexList = ["女", "男"];
-  int sexActive = 0; // 默认索引对应值 女
-  int seleStature = 160; // 女：160cm 男：180cm
-  double seleWeight = 45.0; // 女：45.0kg 男：60.0kg
-  int seleWaistline = 60; // 女：60cm 男：80cm
+
   // 重写选择器的样式
   PickerStyle customPickStyle() {
     // 确定按钮样式
@@ -41,12 +40,57 @@ class _MyInfoState extends State<MyInfo> {
     );
   }
 
+  void initState() {
+    getUInfo();
+  }
+
+  Sign sign = new Sign();
+  Map<String, dynamic> uinfo = {
+    "nickname": "Sunset",
+    "avator": "http://192.168.2.102:801/avator/sunset202303311711.png",
+    "showid": "20230402", // 2023-4-2 AM2:02
+    "description": "暂无",
+    "sex": 1,
+    "height": "181",
+    "birthday": "1998-04-09",
+    "weight": "80",
+    "waistline": "80",
+  };
+
+  // 个人信息
+  void getUInfo() async {
+    try {
+      Map res = await sign.getUInfo();
+      print("data>>> ${res["code"]} ${res["data"]}");
+      if (res["code"] == 200) {
+        setState(() {
+          uinfo = res["data"];
+          uinfo["avator"] = baseUrl + res["data"]["avator"];
+        });
+        print(uinfo);
+      }
+      if (res['code'] == 401) {
+        Navigator.pushNamed(context, 'phoneLog');
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
+
   // 选择出生日期
   void changeBirth(BuildContext context) {
     Pickers.showDatePicker(context,
         mode: DateMode.YMD,
         pickerStyle: customPickStyle(),
-        onConfirm: (params) {},
+        onConfirm: (params) {
+          // 月数补零
+          final month = params.month! < 10 ? "0${params.month}" : params.month;
+          // 天数补零
+          final day = params.day! < 10 ? "0${params.day}" : params.day;
+          uinfo["birthday"] = "${params.year}-${month}-${day}";
+          setState(() {});
+        },
         onChanged: (val) => print('选择的出生日期为：$val'));
   }
 
@@ -137,8 +181,6 @@ class _MyInfoState extends State<MyInfo> {
 
   @override
   Widget build(BuildContext context) {
-    double topBarHeight =
-        MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -167,7 +209,7 @@ class _MyInfoState extends State<MyInfo> {
                                     borderRadius: BorderRadius.circular(36),
                                     child: headimg == ""
                                         ? Image.network(
-                                            "https://p.qqan.com/up/2021-5/16215608427768095.png",
+                                            uinfo["avator"],
                                             width: 36,
                                             height: 36,
                                           )
@@ -187,7 +229,7 @@ class _MyInfoState extends State<MyInfo> {
                               children: [
                                 Text("ID", style: TextStyle(fontSize: 17)),
                                 Spacer(flex: 1),
-                                Text("123456",
+                                Text(uinfo["showid"],
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400,
@@ -202,7 +244,7 @@ class _MyInfoState extends State<MyInfo> {
                                 Text("昵称", style: TextStyle(fontSize: 17)),
                                 Spacer(flex: 1),
                                 InkWell(
-                                    child: Text("冰消叶散",
+                                    child: Text(uinfo["nickname"],
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w400)),
@@ -222,7 +264,7 @@ class _MyInfoState extends State<MyInfo> {
                                     // 取消点击水波纹使用 InkResponse
                                     highlightColor: Colors.transparent,
                                     radius: 0.0,
-                                    child: Text("取半舍满",
+                                    child: Text(uinfo["description"],
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w400,
@@ -257,7 +299,7 @@ class _MyInfoState extends State<MyInfo> {
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 26, vertical: 5),
                                         decoration: BoxDecoration(
-                                          color: Color(sexActive == index
+                                          color: Color(uinfo["sex"] == index
                                               ? 0xff22d47e
                                               : 0xffe8e8f2),
                                           borderRadius: index == 0
@@ -275,17 +317,14 @@ class _MyInfoState extends State<MyInfo> {
                                           item,
                                           style: TextStyle(
                                               fontSize: 17,
-                                              color: Color(sexActive == index
+                                              color: Color(uinfo["sex"] == index
                                                   ? 0xffffffff
                                                   : 0xff747474)),
                                         ),
                                       ),
                                       onTap: () {
                                         setState(() {
-                                          sexActive = index;
-                                          seleStature = index == 0 ? 160 : 180;
-                                          seleWeight = index == 0 ? 45.0 : 60.0;
-                                          seleWaistline = index == 0 ? 60 : 80;
+                                          uinfo["sex"] = index;
                                         });
                                       });
                                 }).toList())
@@ -298,7 +337,7 @@ class _MyInfoState extends State<MyInfo> {
                                 Text("身高", style: TextStyle(fontSize: 17)),
                                 Spacer(flex: 1),
                                 InkWell(
-                                    child: Text(seleStature.toString() + ".CM",
+                                    child: Text(uinfo["height"] + ".CM",
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w400,
@@ -307,10 +346,11 @@ class _MyInfoState extends State<MyInfo> {
                                       Pickers.showSinglePicker(context,
                                           data: stature,
                                           pickerStyle: customPickStyle(),
-                                          selectData: seleStature,
+                                          selectData:
+                                              int.parse(uinfo["height"]),
                                           onConfirm: (val, i) {
                                             setState(() {
-                                              seleStature = val;
+                                              uinfo["height"] = val.toString();
                                             });
                                             print(val);
                                           },
@@ -329,7 +369,7 @@ class _MyInfoState extends State<MyInfo> {
                                 Text("生日", style: TextStyle(fontSize: 17)),
                                 Spacer(flex: 1),
                                 InkWell(
-                                    child: Text("1998-04-09",
+                                    child: Text(uinfo["birthday"],
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w400,
@@ -347,7 +387,7 @@ class _MyInfoState extends State<MyInfo> {
                                 Text("体重", style: TextStyle(fontSize: 17)),
                                 Spacer(flex: 1),
                                 InkWell(
-                                    child: Text(seleWeight.toString() + "公斤",
+                                    child: Text(uinfo["weight"] + "公斤",
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w400,
@@ -356,10 +396,11 @@ class _MyInfoState extends State<MyInfo> {
                                       Pickers.showSinglePicker(context,
                                           data: weight,
                                           pickerStyle: customPickStyle(),
-                                          selectData: seleWeight,
+                                          selectData:
+                                              double.parse(uinfo["weight"]),
                                           onConfirm: (val, i) {
                                             setState(() {
-                                              seleWeight = val;
+                                              uinfo["weight"] = val.toString();
                                             });
                                             print(val);
                                           },
@@ -378,8 +419,7 @@ class _MyInfoState extends State<MyInfo> {
                                 Text("腰围", style: TextStyle(fontSize: 17)),
                                 Spacer(flex: 1),
                                 InkWell(
-                                    child: Text(
-                                        seleWaistline.toString() + ".0CM",
+                                    child: Text(uinfo["waistline"] + ".0CM",
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w400,
@@ -388,10 +428,12 @@ class _MyInfoState extends State<MyInfo> {
                                       Pickers.showSinglePicker(context,
                                           data: waistLine,
                                           pickerStyle: customPickStyle(),
-                                          selectData: seleWaistline,
+                                          selectData:
+                                              int.parse(uinfo["waistline"]),
                                           onConfirm: (val, i) {
                                             setState(() {
-                                              seleWaistline = val;
+                                              uinfo["waistline"] =
+                                                  val.toString();
                                             });
                                             print(val);
                                           },
