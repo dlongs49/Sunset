@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -7,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/routes/index.dart';
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
-  SharedPreferences.setMockInitialValues({});
+  SharedPreferences.setMockInitialValues({}); // 缓存
   runApp(MyApp());
   //透明沉浸式状态栏
   // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -20,6 +21,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoApp (
       title: 'Sunset',
+      builder: BotToastInit(), // BotToast全局注册
+      navigatorObservers: [BotToastNavigatorObserver()],// BotToast全局注册
       localizationsDelegates: [
         // 语言代理
         GlobalMaterialLocalizations.delegate,

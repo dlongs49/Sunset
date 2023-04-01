@@ -9,7 +9,7 @@ class Http {
   Future<Dio> createInstace(String method) async {
     options = new BaseOptions(
       baseUrl: baseUrl,
-      connectTimeout: 60000,
+      connectTimeout: 6000,
       responseType: ResponseType.json,
       method: method,
     );
@@ -25,6 +25,7 @@ class Http {
       return handler.next(response);
     }, onError: (DioError e,handler) {
       print("请求失败>> $e");
+      return handler.next(e);
     }));
     return dio;
   }

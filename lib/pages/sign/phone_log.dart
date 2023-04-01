@@ -1,11 +1,13 @@
 import 'dart:ui';
-import 'package:dio/dio.dart';
+import 'dart:async';
+import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 
 class PhoneLogin extends StatefulWidget {
@@ -19,6 +21,8 @@ class _PhoneLoginState extends State<PhoneLogin> {
   TapGestureRecognizer useragreeall = TapGestureRecognizer();
   TapGestureRecognizer privacypolicy = TapGestureRecognizer();
   TextEditingController PhoneController = TextEditingController();
+  TextEditingController CodeController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -47,27 +51,70 @@ class _PhoneLoginState extends State<PhoneLogin> {
     }
   }
 
+  late Timer timer;
+  int seconds = 5;
+  bool isOnCode = true;
+
+  // 验证码
+  void onCode() {
+    if (phone == "") {
+      toast("手机号不能为空");
+      return;
+    }
+    // 模拟获取验证码 时间戳截取
+    String value = (new DateTime.now().millisecondsSinceEpoch).toString();
+    String code = value.substring(value.length - 6, value.length);
+    // 给 验证码 输入框赋值
+    CodeController = TextEditingController.fromValue(TextEditingValue(
+        text: code,
+        selection: TextSelection.fromPosition(TextPosition(
+            affinity: TextAffinity.downstream, offset: code.length))));
+    isOnCode = false;
+    setState(() {
+      verCode = code;
+    });
+    // 倒计时
+    const timeout = const Duration(seconds: 1);
+    timer = Timer.periodic(timeout, (t) {
+      seconds--;
+      if (seconds <= 0) {
+        isOnCode = true;
+        timer.cancel();
+        seconds = 5;
+      }
+      setState(() {});
+      print(seconds);
+    });
+  }
+
   Sign sign = new Sign();
 
   // 登录
   void handleLogin() async {
+    if (phone == "" || verCode == "") {
+      toast("手机号或验证码不能为空");
+      return;
+    }
+    if (!isCheck) {
+      toast("请阅读并勾选同意《阅读协议》和《隐藏政策》");
+      return;
+    }
     print(phone);
     print(verCode);
     Map<String, String> map = new Map();
-    map["phone"] = "18794388410";
-    map["verCode"] = "123";
-    Map res = await sign.codeLogin(map);
-    print(">>${res["data"]}");
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString("ms_token", res["data"]);
-    final String? ms_token = prefs.getString("ms_token");
-    print(ms_token);
-
-  }
-
-  // 验证码
-  void onCode() {
-
+    map["phone"] = phone;
+    map["verCode"] = verCode;
+    try {
+      Map res = await sign.codeLogin(map);
+      print(">>${res["data"]}");
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString("ms_token", res["data"]);
+      final String? ms_token = prefs.getString("ms_token");
+      print(ms_token);
+    } catch (e) {
+      print(e);
+      errToast();
+    }
   }
 
   void toPage(dynamic item) {
@@ -81,9 +128,16 @@ class _PhoneLoginState extends State<PhoneLogin> {
   bool isCheck = false;
 
   void handleCheck() {
-    setState(() {
-      isCheck = !isCheck;
-    });
+    isCheck = !isCheck;
+    setState(() {});
+  }
+
+// 页面卸载
+  @override
+  void dispose() {
+    // 清空获取验证码 定时器
+    timer.cancel();
+    super.dispose();
   }
 
   @override
@@ -155,6 +209,10 @@ class _PhoneLoginState extends State<PhoneLogin> {
                                     cursorColor: Color(0xff22d47e),
                                     autofocus: false,
                                     style: TextStyle(fontSize: 16),
+                                    // 下一步
+                                    textInputAction: TextInputAction.next,
+                                    // 数字键盘
+                                    keyboardType: TextInputType.number,
                                     inputFormatters: [
                                       LengthLimitingTextInputFormatter(11),
                                       //限制长度
@@ -167,7 +225,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
                                         contentPadding: EdgeInsets.all(8),
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide.none),
-                                        hintText: '手机号码',
+                                        hintText: '手机号码【随便填】',
                                         hintStyle: TextStyle(
                                             color: Color(0xffacacac))),
                                     onChanged: (value) =>
@@ -198,6 +256,10 @@ class _PhoneLoginState extends State<PhoneLogin> {
                                     cursorColor: Color(0xff22d47e),
                                     autofocus: false,
                                     style: TextStyle(fontSize: 16),
+                                    // 下一步
+                                    textInputAction: TextInputAction.next,
+                                    // 数字键盘
+                                    keyboardType: TextInputType.number,
                                     inputFormatters: [
                                       LengthLimitingTextInputFormatter(6),
                                       //限制长度
@@ -210,27 +272,38 @@ class _PhoneLoginState extends State<PhoneLogin> {
                                         contentPadding: EdgeInsets.all(8),
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide.none),
-                                        hintText: '随机生成验证码',
+                                        hintText: '随机生成验证码【随便填】',
                                         hintStyle: TextStyle(
                                             color: Color(0xffacacac))),
                                     onChanged: (value) =>
-                                        inputChange("code", value)))),
+                                        inputChange("code", value),
+                                    controller: CodeController))),
                         Container(
                           width: 1,
                           height: 16,
                           color: Color(0xffb4b4b4),
                         ),
                         SizedBox(width: 30),
-                        InkWell(
-                          borderRadius: BorderRadius.circular(30),
-                          child: Container(
-                              padding: EdgeInsets.all(5),
-                              color: Color(0xffffff),
-                              child: Text("获取验证码",
-                                  style: TextStyle(
-                                      fontSize: 16, color: Color(0xff22d47e)))),
-                          onTap: onCode,
-                        ),
+                        isOnCode
+                            ? InkWell(
+                                borderRadius: BorderRadius.circular(30),
+                                child: Container(
+                                    padding: EdgeInsets.all(5),
+                                    color: Color(0xffffff),
+                                    child: Text("获取验证码",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Color(0xff22d47e)))),
+                                onTap: onCode,
+                              )
+                            : Container(
+                                width: 50,
+                                padding: EdgeInsets.all(5),
+                                color: Color(0xffffff),
+                                child: Text("$seconds秒",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: Color(0xffbcbfc4))))
                       ],
                     ),
                   ),
@@ -239,12 +312,16 @@ class _PhoneLoginState extends State<PhoneLogin> {
                     margin: EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
                       children: [
-                        InkWell(
-                            child: Icon(
-                              IconData(isCheck ? 0xe645 : 0xe614,
-                                  fontFamily: 'sunfont'),
-                              size: 16,
-                              color: Color(isCheck ? 0xff22d47e : 0xffb4b3b3),
+                        GestureDetector(
+                            child: Container(
+                              width: 30,
+                              height: 30,
+                              child: Icon(
+                                IconData(isCheck ? 0xe645 : 0xe614,
+                                    fontFamily: 'sunfont'),
+                                size: 16,
+                                color: Color(isCheck ? 0xff22d47e : 0xffb4b3b3),
+                              ),
                             ),
                             onTap: handleCheck),
                         SizedBox(width: 5),
@@ -262,7 +339,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
                                     color: Color(0xff22d47e), fontSize: 14),
                                 recognizer: useragreeall
                                   ..onTap = () {
-                                    print(1);
+                                    toast("《用户协议》");
                                   }),
                             TextSpan(
                                 text: '和',
@@ -272,7 +349,9 @@ class _PhoneLoginState extends State<PhoneLogin> {
                                 text: '《隐私政策》',
                                 style: TextStyle(
                                     color: Color(0xff22d47e), fontSize: 14),
-                                recognizer: privacypolicy..onTap = () {}),
+                                recognizer: privacypolicy..onTap = () {
+                                  toast("《隐私政策》");
+                                }),
                           ]),
                         ))
                       ],
