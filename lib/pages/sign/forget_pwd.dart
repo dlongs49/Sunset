@@ -8,6 +8,7 @@ import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/tools.dart';
+
 class ForgetPwd extends StatefulWidget {
   const ForgetPwd({Key? key}) : super(key: key);
 
@@ -22,7 +23,7 @@ class _ForgetPwdState extends State<ForgetPwd> {
   @override
   void initState() {
     super.initState();
-    isNext = false;
+    isNext = false; // 下一步状态重置，防止直接进入重置密码界面
     setState(() {});
   }
 
@@ -87,11 +88,19 @@ class _ForgetPwdState extends State<ForgetPwd> {
     });
   }
 
+// 页面卸载
+  @override
+  void dispose() {
+    // 清空获取验证码 定时器
+    timer.cancel();
+    super.dispose();
+  }
+
   Sign sign = new Sign();
   bool isNext = false;
 
   // 下一步
-  void handleLogin() async{
+  void handleLogin() async {
     // 手机号 验证码 下一步按钮高亮
     if (!isPhone || !isCode) {
       return;
@@ -102,7 +111,8 @@ class _ForgetPwdState extends State<ForgetPwd> {
     try {
       loading(seconds: 3);
       Map res = await sign.findPhone(map);
-      if(res['code'] == 200){
+      if (res['code'] == 200) {
+        timer.cancel(); // 清空定时器
         setState(() {
           isNext = true;
         });
@@ -126,41 +136,42 @@ class _ForgetPwdState extends State<ForgetPwd> {
       });
     }
   }
+
   String password1 = "";
   bool isPwd1Value = false; // 控制确定操作高亮
   bool isPwd2Value = false; // 控制确定操作高亮
   // 密码输入控制
   void pwdChange(String type, String value) {
-    print(type);
-    print(value);
     if (type == 'pwd_1') {
       password1 = value;
       isPwd1Value = value != "" ? true : false; // 确定高亮
-    }else{
+    } else {
       password = value;
       isPwd2Value = value != "" ? true : false; // 确定高亮
     }
+    setState(() {});
   }
+
   bool isPwd1 = false; // 控制密码1明文显示
   bool isPwd2 = false; // 控制密码2明文显示
   String password = "";
-  // 修改密码
-  void handlePwd() async{
-    print("$password1 $password");
-    if(password1 != password){
 
+  // 修改密码
+  void handlePwd() async {
+    if (password1 != password) {
+      toast("两次输入的密码不一致");
+      return;
     }
-    return;
     final p = md5Tools(password); // 密码 md5 加密  后台在加一层密
     Map<String, String> map = new Map();
     map["phone"] = phone;
-    map["password"] = p;
+    map["password"] = p.toString();
     try {
       loading(seconds: 3);
       Map res = await sign.forgetPwd(map);
-      if(res['code'] == 200){
+      if (res['code'] == 200) {
         toast("密码重置成功");
-      }else{
+      } else {
         toast("密码重置失败");
       }
     } catch (e) {
@@ -459,13 +470,15 @@ class _ForgetPwdState extends State<ForgetPwd> {
                     Align(
                       child: Ink(
                           decoration: BoxDecoration(
-                              color: Color(isPwd1Value && isPwd2Value? 0xff22d47e
-                              : 0xffebebeb),
+                              color: Color(isPwd1Value && isPwd2Value
+                                  ? 0xff22d47e
+                                  : 0xffebebeb),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(50))),
                           child: InkWell(
                               borderRadius: BorderRadius.circular(50),
-                              highlightColor: Color(isPwd1Value && isPwd2Value?0xff11a55f
+                              highlightColor: Color(isPwd1Value && isPwd2Value
+                                  ? 0xff11a55f
                                   : 0xffebebeb), // 水波纹高亮颜色
                               child: Container(
                                 alignment: Alignment(0, 0),
@@ -475,7 +488,8 @@ class _ForgetPwdState extends State<ForgetPwd> {
                                     borderRadius: BorderRadius.circular(50)),
                                 child: Text("确定",
                                     style: TextStyle(
-                                        color: Color(isPwd1Value && isPwd2Value ? 0xffffffff
+                                        color: Color(isPwd1Value && isPwd2Value
+                                            ? 0xffffffff
                                             : 0xffcacaca),
                                         fontSize: 18,
                                         fontWeight: FontWeight.w800)),
