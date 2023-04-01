@@ -44,9 +44,9 @@ class _PhoneLoginState extends State<PhoneLogin> {
     }
     if (type == 'clear') {
       PhoneController.clear(); // 清除输入的值
-      setState(() {
-        phone = '';
-      });
+      isPhone = false;
+      phone = '';
+      setState(() {});
     }
     if (type == 'code') {
       isCode = str != "" ? true : false; // 登录高亮
@@ -95,7 +95,8 @@ class _PhoneLoginState extends State<PhoneLogin> {
 
   // 登录
   void handleLogin() async {
-    if (!isPhone && !isCode && !isCheck) {
+    // 手机号 验证码 选中协议 登录按钮高亮
+    if (!isPhone || !isCode || !isCheck) {
       return;
     }
     Map<String, String> map = new Map();
@@ -105,6 +106,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
       loading(seconds: 3);
       Map res = await sign.codeLogin(map);
       print("ms_token>>> ${res["data"]}");
+      // 将 token 存在缓存中
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString("ms_token", res["data"]);
     } catch (e) {

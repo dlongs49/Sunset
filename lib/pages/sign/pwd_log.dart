@@ -5,6 +5,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sunset/components/toast.dart';
+import 'package:sunset/utils/api/sign_req.dart';
+import 'package:sunset/utils/tools.dart';
+
 class PwdLogin extends StatefulWidget {
   const PwdLogin({Key? key}) : super(key: key);
 
@@ -15,49 +20,85 @@ class PwdLogin extends StatefulWidget {
 class _PwdLoginState extends State<PwdLogin> {
   TapGestureRecognizer useragreeall = TapGestureRecognizer();
   TapGestureRecognizer privacypolicy = TapGestureRecognizer();
-  TextEditingController PhoneController= TextEditingController();
+  TextEditingController PhoneController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
   }
+
   bool isShowPwd = true;
   String phone = '';
+  String password = '';
+  bool isPhone = false;
+  bool isPwd = false;
+
   // 输入值
-  void inputChange(String type,String str) {
-    if(type == 'phone'){
-      setState(() {
-        phone = str;
-      });
+  void inputChange(String type, String str) {
+    if (type == 'phone') {
+      isPhone = str != "" ? true : false; // 登录高亮
+      phone = str;
+      setState(() {});
     }
-    if(type == 'clear'){
+    if (type == 'pwd') {
+      password = str;
+      isPwd = str != "" ? true : false; // 登录高亮
+      setState(() {});
+    }
+    if (type == 'clear') {
       PhoneController.clear(); // 清除输入的值
-      setState(() {
-        phone = '';
-      });
+      isPhone = false;
+      phone = '';
+      setState(() {});
     }
   }
-  void phoneChange(String str) {}
-  void pwdChange(String str) {}
+
   // 密码是否可见
-  void handleIsShowPwd(bool isShowPwd) {
-    setState(() {
-      isShowPwd = !isShowPwd;
-    });
+  void handleIsShowPwd() {
+    isShowPwd = !isShowPwd;
+    setState(() {});
   }
+
+  Sign sign = new Sign();
+
   // 登录
-  void handleLogin() {}
+  Future<void> handleLogin() async {
+    // 手机号 验证码 选中协议 登录按钮高亮
+    if (!isPhone || !isPwd || !isCheck) {
+      return;
+    }
+    final p = md5Tools(password); // 密码 md5 加密  后台在加一层密
+    Map<String, String> map = new Map();
+    map["phone"] = phone;
+    map["password"] = p.toString();
+    try {
+      loading(seconds: 3);
+      Map res = await sign.pwdLogin(map);
+      print("ms_token>>> ${res["data"]}");
+      if (res["code"] == -1) {
+        toast(res["message"]);
+        return;
+      }
+      // 将 token 存在缓存中
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString("ms_token", res["data"]);
+    } catch (e) {
+      errToast();
+    }
+  }
+
   void toPage(dynamic item) {
     Navigator.pushNamed(context, item);
   }
 
   bool isCheck = false;
 
-  void handleCheck(){
+  void handleCheck() {
     setState(() {
       isCheck = !isCheck;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     double topBarHeight =
@@ -70,7 +111,7 @@ class _PwdLoginState extends State<PwdLogin> {
           Column(children: [
             Container(
               height: topBarHeight,
-              color: Color(0xffffffff),
+              color: Colors.white,
             ),
             Container(
               width: double.infinity,
@@ -112,7 +153,8 @@ class _PwdLoginState extends State<PwdLogin> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: EdgeInsets.only(left: 2, right: 8,top: 5,bottom: 8),
+                    padding:
+                        EdgeInsets.only(left: 2, right: 8, top: 5, bottom: 8),
                     decoration: BoxDecoration(
                         border: Border(
                             bottom: BorderSide(
@@ -126,19 +168,27 @@ class _PwdLoginState extends State<PwdLogin> {
                                     cursorColor: Color(0xff22d47e),
                                     autofocus: false,
                                     style: TextStyle(fontSize: 16),
+                                    // 下一步
+                                    textInputAction: TextInputAction.next,
+                                    // 数字键盘
+                                    keyboardType: TextInputType.number,
                                     inputFormatters: [
-                                      LengthLimitingTextInputFormatter(11), //限制长度
-                                      FilteringTextInputFormatter.allow(RegExp("[0-9]")) // 数字键盘
+                                      LengthLimitingTextInputFormatter(11),
+                                      //限制长度
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp("[0-9]"))
+                                      // 数字键盘
                                     ],
                                     decoration: InputDecoration(
                                         isCollapsed: true,
                                         contentPadding: EdgeInsets.all(8),
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide.none),
-                                        hintText: '手机号码',
+                                        hintText: '手机号码【随便填】',
                                         hintStyle: TextStyle(
                                             color: Color(0xffacacac))),
-                                    onChanged: (value)=>inputChange('phone',value)))),
+                                    onChanged: (value) =>
+                                        inputChange('phone', value)))),
                         InkWell(
                           borderRadius: BorderRadius.circular(30),
                           child: Container(
@@ -146,7 +196,7 @@ class _PwdLoginState extends State<PwdLogin> {
                               child: Icon(Icons.cancel,
                                   size: 16, color: Color(0xff8b8b8b))),
                           onTap: () {
-                            print(123);
+                            inputChange('clear', '');
                           },
                         )
                       ],
@@ -154,7 +204,8 @@ class _PwdLoginState extends State<PwdLogin> {
                   ),
                   SizedBox(height: 20),
                   Container(
-                    padding: EdgeInsets.only(left: 2, right: 8,top: 5,bottom: 8),
+                    padding:
+                        EdgeInsets.only(left: 2, right: 8, top: 5, bottom: 8),
                     decoration: BoxDecoration(
                         border: Border(
                             bottom: BorderSide(
@@ -168,6 +219,10 @@ class _PwdLoginState extends State<PwdLogin> {
                                     autofocus: false,
                                     style: TextStyle(fontSize: 16),
                                     obscureText: isShowPwd,
+                                    // 下一步
+                                    textInputAction: TextInputAction.next,
+                                    // 数字键盘
+                                    keyboardType: TextInputType.number,
                                     inputFormatters: [
                                       FilteringTextInputFormatter.allow(
                                           RegExp('[0-9a-zA-Z]')),
@@ -180,9 +235,10 @@ class _PwdLoginState extends State<PwdLogin> {
                                           borderSide: BorderSide.none),
                                       hintText: '请输入密码',
                                       hintStyle:
-                                      TextStyle(color: Color(0xffacacac)),
+                                          TextStyle(color: Color(0xffacacac)),
                                     ),
-                                    onChanged: (value) =>pwdChange(value)))),
+                                    onChanged: (value) =>
+                                        inputChange('pwd', value)))),
                         InkWell(
                           borderRadius: BorderRadius.circular(30),
                           child: Container(
@@ -192,7 +248,7 @@ class _PwdLoginState extends State<PwdLogin> {
                                       fontFamily: 'sunfont'),
                                   size: 24,
                                   color: Color(0xffbababa))),
-                          onTap: () => handleIsShowPwd(isShowPwd),
+                          onTap: handleIsShowPwd,
                         )
                       ],
                     ),
@@ -203,12 +259,16 @@ class _PwdLoginState extends State<PwdLogin> {
                     child: Row(
                       children: [
                         InkWell(
-                          child: Icon(IconData(isCheck ? 0xe645 :0xe614,fontFamily: 'sunfont'),size: 16,color: Color(
-                              isCheck ? 0xff22d47e :0xffb4b3b3),),
-                          onTap:handleCheck
-                        ),
+                            child: Icon(
+                              IconData(isCheck ? 0xe645 : 0xe614,
+                                  fontFamily: 'sunfont'),
+                              size: 16,
+                              color: Color(isCheck ? 0xff22d47e : 0xffb4b3b3),
+                            ),
+                            onTap: handleCheck),
                         SizedBox(width: 5),
-                        Expanded(child: RichText(
+                        Expanded(
+                            child: RichText(
                           textAlign: TextAlign.start,
                           text: TextSpan(children: [
                             TextSpan(
@@ -221,7 +281,7 @@ class _PwdLoginState extends State<PwdLogin> {
                                     color: Color(0xff22d47e), fontSize: 14),
                                 recognizer: useragreeall
                                   ..onTap = () {
-                                    print(1);
+                                    toast("《用户协议》");
                                   }),
                             TextSpan(
                                 text: '和',
@@ -231,7 +291,10 @@ class _PwdLoginState extends State<PwdLogin> {
                                 text: '《隐私政策》',
                                 style: TextStyle(
                                     color: Color(0xff22d47e), fontSize: 14),
-                                recognizer: privacypolicy..onTap = () {}),
+                                recognizer: privacypolicy
+                                  ..onTap = () {
+                                    toast("《隐私政策》");
+                                  }),
                           ]),
                         ))
                       ],
@@ -241,9 +304,11 @@ class _PwdLoginState extends State<PwdLogin> {
                   Align(
                     child: Ink(
                         decoration: BoxDecoration(
-                            color: Color(0xff22d47e),
+                            color: Color(isPhone && isPwd && isCheck
+                                ? 0xff22d47e
+                                : 0xffebebeb),
                             borderRadius:
-                            BorderRadius.all(Radius.circular(50))),
+                                BorderRadius.all(Radius.circular(50))),
                         child: InkWell(
                             borderRadius: BorderRadius.circular(50),
                             highlightColor: Color(0xff11a55f), // 水波纹高亮颜色
@@ -255,7 +320,9 @@ class _PwdLoginState extends State<PwdLogin> {
                                   borderRadius: BorderRadius.circular(50)),
                               child: Text("登录",
                                   style: TextStyle(
-                                      color: Color(0xffffffff),
+                                      color: Color(isPhone && isPwd && isCheck
+                                          ? 0xffffffff
+                                          : 0xffcacaca),
                                       fontSize: 18,
                                       fontWeight: FontWeight.w800)),
                             ),
@@ -270,7 +337,7 @@ class _PwdLoginState extends State<PwdLogin> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Color(0xff22d47e), fontSize: 14)),
-                          onTap: ()=>toPage('forgetPwd')),
+                          onTap: () => toPage('forgetPwd')),
                       SizedBox(width: 20),
                       Container(
                         width: 1,
@@ -283,7 +350,7 @@ class _PwdLoginState extends State<PwdLogin> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Color(0xff22d47e), fontSize: 14)),
-                          onTap: ()=>toPage('/'))
+                          onTap: () => toPage('/'))
                     ],
                   )
                 ],
