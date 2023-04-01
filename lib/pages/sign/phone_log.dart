@@ -31,12 +31,16 @@ class _PhoneLoginState extends State<PhoneLogin> {
   String phone = '';
   String verCode = '';
 
+  bool isPhone = false;
+  bool isCode = false;
+
   // 输入值
   void inputChange(String type, String str) {
     if (type == 'phone') {
-      setState(() {
-        phone = str;
-      });
+      print(str);
+      isPhone = str != "" ? true : false; // 登录高亮
+      phone = str;
+      setState(() {});
     }
     if (type == 'clear') {
       PhoneController.clear(); // 清除输入的值
@@ -45,6 +49,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
       });
     }
     if (type == 'code') {
+      isCode = str != "" ? true : false; // 登录高亮
       setState(() {
         verCode = str;
       });
@@ -52,7 +57,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
   }
 
   late Timer timer;
-  int seconds = 5;
+  int seconds = 5; // 倒计时
   bool isOnCode = true;
 
   // 验证码
@@ -69,10 +74,10 @@ class _PhoneLoginState extends State<PhoneLogin> {
         text: code,
         selection: TextSelection.fromPosition(TextPosition(
             affinity: TextAffinity.downstream, offset: code.length))));
-    isOnCode = false;
-    setState(() {
-      verCode = code;
-    });
+    isOnCode = false; // 切换获取验证码 和 倒计时
+    isCode = true; // 判断验证码是否赋值，登录高亮
+    verCode = code;
+    setState(() {});
     // 倒计时
     const timeout = const Duration(seconds: 1);
     timer = Timer.periodic(timeout, (t) {
@@ -83,7 +88,6 @@ class _PhoneLoginState extends State<PhoneLogin> {
         seconds = 5;
       }
       setState(() {});
-      print(seconds);
     });
   }
 
@@ -91,28 +95,19 @@ class _PhoneLoginState extends State<PhoneLogin> {
 
   // 登录
   void handleLogin() async {
-    if (phone == "" || verCode == "") {
-      toast("手机号或验证码不能为空");
+    if (!isPhone && !isCode && !isCheck) {
       return;
     }
-    if (!isCheck) {
-      toast("请阅读并勾选同意《阅读协议》和《隐藏政策》");
-      return;
-    }
-    print(phone);
-    print(verCode);
     Map<String, String> map = new Map();
     map["phone"] = phone;
     map["verCode"] = verCode;
     try {
+      loading(seconds: 3);
       Map res = await sign.codeLogin(map);
-      print(">>${res["data"]}");
+      print("ms_token>>> ${res["data"]}");
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString("ms_token", res["data"]);
-      final String? ms_token = prefs.getString("ms_token");
-      print(ms_token);
     } catch (e) {
-      print(e);
       errToast();
     }
   }
@@ -349,9 +344,10 @@ class _PhoneLoginState extends State<PhoneLogin> {
                                 text: '《隐私政策》',
                                 style: TextStyle(
                                     color: Color(0xff22d47e), fontSize: 14),
-                                recognizer: privacypolicy..onTap = () {
-                                  toast("《隐私政策》");
-                                }),
+                                recognizer: privacypolicy
+                                  ..onTap = () {
+                                    toast("《隐私政策》");
+                                  }),
                           ]),
                         ))
                       ],
@@ -361,7 +357,9 @@ class _PhoneLoginState extends State<PhoneLogin> {
                   Align(
                     child: Ink(
                         decoration: BoxDecoration(
-                            color: Color(0xff22d47e),
+                            color: Color(isPhone && isCode && isCheck
+                                ? 0xff22d47e
+                                : 0xffebebeb),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(50))),
                         child: InkWell(
@@ -375,7 +373,9 @@ class _PhoneLoginState extends State<PhoneLogin> {
                                   borderRadius: BorderRadius.circular(50)),
                               child: Text("登录",
                                   style: TextStyle(
-                                      color: Color(0xffffffff),
+                                      color: Color(isPhone && isCode && isCheck
+                                          ? 0xffffffff
+                                          : 0xffcacaca),
                                       fontSize: 18,
                                       fontWeight: FontWeight.w800)),
                             ),

@@ -13,7 +13,7 @@ void toast(text,{double y = -0.5}) {
       animationDuration: Duration(milliseconds: 1) // 动画执行
       );
 }
-// 服务器 Toast
+// 服务器异常 Toast
 void errToast({double y = -0.5}) {
   BotToast.showText(
       text: "服务器异常",
@@ -26,7 +26,7 @@ void errToast({double y = -0.5}) {
   );
 }
 //加载 Toast
-void loading({double y = 0}) {
+void loading({double y = 0, final seconds = null}) {
   BotToast.showCustomLoading(
     toastBuilder: (cancelFunc) {
       return Container(
@@ -43,6 +43,6 @@ void loading({double y = 0}) {
     },
     backgroundColor: Color(0x0),
     align: Alignment(0, y),
-    duration: Duration(seconds: 3)
+    duration: seconds == null ? null : Duration(seconds: seconds)
   );
 }

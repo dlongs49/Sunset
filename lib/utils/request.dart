@@ -16,6 +16,8 @@ class Http {
     dio = new Dio(options);
     dio.interceptors
         .add(InterceptorsWrapper(onRequest: (options,handler) {
+      // final String? ms_token = prefs.getString("ms_token");
+      // print(ms_token);
       // options.headers["ms_token"] =
       // "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJDOEZDMjY2Mi04QzM1LTQwNUMtQTY0NC1CNzExM0UwMTQxODciLCJzdGFtcCI6MTY4MDI3MTg5ODkwNywiZXhwIjoxNjgwNDg3ODk4fQ.MlyKrVqSjBBiPM1oTTGm-JmDtcs-EFfoUi2pRI_HG1A";
       print("开始请求：${options.baseUrl}");
