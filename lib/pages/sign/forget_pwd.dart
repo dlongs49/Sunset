@@ -158,6 +158,10 @@ class _ForgetPwdState extends State<ForgetPwd> {
 
   // 修改密码
   void handlePwd() async {
+    print("两次密码>> $password1 $password");
+    if (password == "" || password1 == "") {
+      return;
+    }
     if (password1 != password) {
       toast("两次输入的密码不一致");
       return;
