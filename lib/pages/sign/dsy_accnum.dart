@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:sunset/components/tabbar.dart';
+import 'package:sunset/components/toast.dart';
+import 'package:sunset/utils/api/sign_req.dart';
 
 class DsyAccnum extends StatefulWidget {
   const DsyAccnum({Key? key}) : super(key: key);
@@ -17,7 +19,23 @@ class _DsyAccnumState extends State<DsyAccnum> {
 
   void handleChecked(bool val) {}
 
-  void handleDsy() {}
+  Sign sign = new Sign();
+
+  // 注销账号
+  Future<void> handleDsy() async {
+    try {
+      loading(seconds: 3);
+      Map res = await sign.distryUInfo();
+      print("ms_token>>> ${res["data"]}");
+      if (res["code"] == -1) {
+        toast(res["message"]);
+        return;
+      }
+      Navigator.pushNamed(context, '/');
+    } catch (e) {
+      errToast();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

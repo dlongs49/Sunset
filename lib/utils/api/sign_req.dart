@@ -44,4 +44,8 @@ class Sign {
     Map<String, dynamic> data = params;
     return await http.post("/sign/update/userinfo", data);
   }
+  // 注销账号
+  Future<Map> distryUInfo() async {
+    return await http.post("/sign/distry_info", {});
+  }
 }
