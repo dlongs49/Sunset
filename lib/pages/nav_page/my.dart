@@ -38,18 +38,16 @@ class _MyState extends State<My> {
 
   Sign sign = new Sign();
 
-  Map<String, dynamic> uinfo = {"nickname":"未登录","avator":"http://192.168.2.102:801/avator/sunset202303311711.png",};
+  Map<String, dynamic> uinfo = {"nickname":"未登录","avator":"/avator/sunset202303311711.png",};
   // 个人信息
   void getUInfo() async {
     try {
       Map res = await sign.getUInfo();
-      print("data>>> ${res["code"]} ${res["data"]}");
+      print("个人信息>>> $res");
       if (res["code"] == 200) {
         setState(() {
           uinfo = res["data"];
-          uinfo["avator"] = baseUrl+res["data"]["avator"];
         });
-        print(uinfo);
       }
       if (res['code'] == 401) {
         Navigator.pushNamed(context, 'phoneLog');
@@ -196,7 +194,7 @@ class _MyState extends State<My> {
                                         child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(70),
-                                          child: Image.network(uinfo["avator"]),
+                                          child: Image.network(baseUrl + uinfo["avator"]),
                                         ),
                                         decoration: BoxDecoration(
                                             borderRadius:

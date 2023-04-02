@@ -3,50 +3,74 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sunset/components/toast.dart';
+import 'package:sunset/utils/api/sign_req.dart';
 
 class MyProfile extends StatefulWidget {
-  const MyProfile({Key? key}) : super(key: key);
+  const MyProfile({Key? key, arguments}) : super(key: key);
 
   @override
   _MyProfileState createState() => _MyProfileState();
 }
 
 class _MyProfileState extends State<MyProfile> {
+  TextEditingController ProfileController = TextEditingController();
   String maxTextNum = "0/50";
-  String inpText = "";
   int maxnum = 51;
+
+  // state 为 1 代表仅更新用户简介
+  Map<String, dynamic> uinfo = {"description": "", "state": 1};
+
+  @override
+  void initState() {
+    super.initState();
+    getStotageInfo();
+  }
+
+  // 从缓存中取 简介信息
+  void getStotageInfo() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final List<String>? descInfo = prefs.getStringList("descInfo");
+    uinfo["id"] = descInfo![0];
+    uinfo["description"] = descInfo[1];
+    maxTextNum = "${descInfo[1].length.toString()}/50";
+    // 给 文本框 输入框赋值
+    ProfileController = TextEditingController.fromValue(TextEditingValue(
+        text: descInfo[1],
+        selection: TextSelection.fromPosition(TextPosition(
+            affinity: TextAffinity.downstream, offset: descInfo[1].length))));
+    setState(() {});
+  }
 
   // 监听文字输入
   void textChanged(text) {
-    print("TextLen>> ${text.length} >> $maxnum");
     setState(() {
-      inpText = text;
+      uinfo["description"] = text;
       maxTextNum = "${text.length.toString()}/50";
     });
-    print(maxTextNum.runtimeType); // 检测数据类型
-    print("Text>>$text >>> $maxTextNum");
   }
 
+  Sign sign = new Sign();
+
   // 保存
-  void saveProfile() {
-    Fluttertoast.showToast(
-        msg: "保存成功",
-        toastLength: Toast.LENGTH_SHORT,
-        // 停留时长短 & 长
-        gravity: ToastGravity.CENTER,
-        // 弹框是否居中
-        backgroundColor: Color(0xd23b3b3b),
-        textColor: Colors.white,
-        fontSize: 16.0);
-    Navigator.of(context).pop();
+  void saveProfile(context) async {
+    try {
+      Map res = await sign.updateUInfo(uinfo);
+      print("更新简介>>> ${res}");
+      if (res["code"] == 200) {
+        FocusManager.instance.primaryFocus?.unfocus(); // 收起键盘
+        Navigator.pop(context, uinfo["description"]);
+      }
+    } catch (e) {
+      errToast();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     double topBarHeight =
         MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
-    double mWidth = MediaQuery.of(context).size.width; // 屏幕宽度
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -94,7 +118,7 @@ class _MyProfileState extends State<MyProfile> {
                           child: Text("保存",
                               style: TextStyle(
                                   fontSize: 14, color: Color(0xff22d47e)))),
-                      onTap: saveProfile)
+                      onTap: () => saveProfile(context))
                 ],
               ),
             )
@@ -121,6 +145,7 @@ class _MyProfileState extends State<MyProfile> {
                   inputFormatters: <TextInputFormatter>[
                     LengthLimitingTextInputFormatter(maxnum) //限制长度
                   ],
+                  controller: ProfileController,
                   onChanged: textChanged),
             ),
             Positioned(

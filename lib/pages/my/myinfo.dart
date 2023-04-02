@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:ui';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_pickers/pickers.dart';
 import 'package:flutter_pickers/style/picker_style.dart';
 import 'package:flutter_pickers/time_picker/model/date_mode.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/local_data/info.dart';
@@ -15,7 +17,7 @@ import 'package:sunset/utils/request.dart';
 // import 'package:image_picker/image_picker.dart';
 
 class MyInfo extends StatefulWidget {
-  const MyInfo({Key? key}) : super(key: key);
+  const MyInfo({Key? key, arguments}) : super(key: key);
 
   @override
   _MyInfoState createState() => _MyInfoState();
@@ -42,6 +44,30 @@ class _MyInfoState extends State<MyInfo> {
 
   void initState() {
     getUInfo();
+
+    var isShow = BotToast.showWidget(toastBuilder: (context) {
+      return Center(
+        child: Container(
+          color: Color(0xa3000000),
+          child: Center(
+              child: Container(
+            width: 300,
+            height: 200,
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 6),
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(8)),
+            child: Column(children: [
+              Text("修改昵称",
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+              SizedBox(height: 6),
+              Text("最多支持7个汉字或12个字母",style: TextStyle(fontSize: 14)),
+
+            ]),
+          )),
+        ),
+      );
+    });
+    isShow();
   }
 
   Sign sign = new Sign();
@@ -75,10 +101,10 @@ class _MyInfoState extends State<MyInfo> {
       print(e);
       errToast();
     }
-
   }
+
   // 更新用户信息
-  void handleInfo() async{
+  void handleInfo() async {
     try {
       Map res = await sign.updateUInfo(uinfo);
       print("data>>> ${res["code"]} ${res["message"]}");
@@ -90,6 +116,7 @@ class _MyInfoState extends State<MyInfo> {
       errToast();
     }
   }
+
   // 选择出生日期
   void changeBirth(BuildContext context) {
     Pickers.showDatePicker(context,
@@ -188,20 +215,23 @@ class _MyInfoState extends State<MyInfo> {
   }
 
   // 个人简介
-  void toPage(String path) {
+  void toPage(String path) async {
+    // 将个人简介存在缓存中 在简介页面获取
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs
+        .setStringList("descInfo", <String>[uinfo['id'], uinfo['description']]);
     Navigator.pushNamed(context, path);
   }
+
   // 图片加载失败 【待定】
-  Widget initImage(){
+  Widget initImage() {
     Image images;
     images = Image.network(
-      "http://192.168.2.102:801/avator/sunset202303311711.png",
-      width: 36,
-      height: 36);
+        "http://192.168.2.102:801/avator/sunset202303311711.png",
+        width: 36,
+        height: 36);
     var resolve = images.image.resolve(ImageConfiguration.empty);
-    resolve.addListener(ImageStreamListener((_,__){
-
-    },onError: (e,s){
+    resolve.addListener(ImageStreamListener((_, __) {}, onError: (e, s) {
       print("失败");
       setState(() {
         images = Image.asset(
@@ -213,8 +243,11 @@ class _MyInfoState extends State<MyInfo> {
     }));
     return images;
   }
+
   @override
   Widget build(BuildContext context) {
+    // final value = ModalRoute.of(context)?.settings.arguments;
+    // print(">$value");
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -241,10 +274,9 @@ class _MyInfoState extends State<MyInfo> {
                                 InkWell(
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(36),
-                                    child:
-                                    headimg == ""
+                                    child: headimg == ""
                                         ? Image.network(
-                                        baseUrl + uinfo["avator"],
+                                            baseUrl + uinfo["avator"],
                                             width: 36,
                                             height: 36)
                                         : Image.memory(base64.decode(headimg),
