@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/pages/sign/phone_log.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/tools.dart';
 
@@ -82,6 +83,7 @@ class _PwdLoginState extends State<PwdLogin> {
       // 将 token 存在缓存中
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString("ms_token", res["data"]);
+      Navigator.pushNamed(context, '/');
     } catch (e) {
       errToast();
     }
@@ -91,6 +93,15 @@ class _PwdLoginState extends State<PwdLogin> {
     Navigator.pushNamed(context, item);
   }
 
+  //跳转并关闭当前页面 验证码登录页面
+  void toPhoneLog(context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      new CupertinoPageRoute(builder: (context) => new PhoneLogin()),
+      (route) => route == null,
+    );
+  }
+
   bool isCheck = false;
 
   void handleCheck() {
@@ -98,6 +109,7 @@ class _PwdLoginState extends State<PwdLogin> {
       isCheck = !isCheck;
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +147,7 @@ class _PwdLoginState extends State<PwdLogin> {
                         child: Text("手机登录",
                             style: TextStyle(
                                 color: Color(0xff22d47e), fontSize: 14)),
-                        onTap: () => toPage("phoneLog")),
+                        onTap: () => toPhoneLog(context)),
                   )
                 ],
               ),
@@ -311,8 +323,9 @@ class _PwdLoginState extends State<PwdLogin> {
                                 BorderRadius.all(Radius.circular(50))),
                         child: InkWell(
                             borderRadius: BorderRadius.circular(50),
-                            highlightColor: Color(isPhone && isPwd && isCheck ? 0xff11a55f
-                                    : 0xffebebeb), // 水波纹高亮颜色
+                            highlightColor: Color(isPhone && isPwd && isCheck
+                                ? 0xff11a55f
+                                : 0xffebebeb), // 水波纹高亮颜色
                             child: Container(
                               alignment: Alignment(0, 0),
                               width: double.infinity,

@@ -22,8 +22,8 @@ class Http {
       final String? ms_token = prefs.getString("ms_token");
       print("[ms_token]>>>$ms_token");
       // 赋值请求头
-      // options.headers["ms_token"] = ms_token;
-      options.headers["ms_token"] = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJDOEZDMjY2Mi04QzM1LTQwNUMtQTY0NC1CNzExM0UwMTQxODciLCJzdGFtcCI6MTY4MDM2NzEyMjkyNiwiZXhwIjoxNjgwNTgzMTIyfQ.rQICx_5N9-u6ZyoBfqFgBxWpVPEYK7xdy6MKthHSGoU";
+      options.headers["ms_token"] = ms_token;
+      // options.headers["ms_token"] = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJDOEZDMjY2Mi04QzM1LTQwNUMtQTY0NC1CNzExM0UwMTQxODciLCJzdGFtcCI6MTY4MDM2NzEyMjkyNiwiZXhwIjoxNjgwNTgzMTIyfQ.rQICx_5N9-u6ZyoBfqFgBxWpVPEYK7xdy6MKthHSGoU";
 
       print("开始请求：${options.baseUrl}");
       return handler.next(options);

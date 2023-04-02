@@ -49,94 +49,7 @@ class _MyInfoState extends State<MyInfo> {
 
   void showNickDialog(BuildContext context) {
     final width = MediaQueryData.fromWindow(window).size.width;
-    showDialog(
-        context: context,
-        builder: (ctx) => Container(
-              color: Color(0x7e000000),
-              child: Center(
-                  child: Container(
-                width: width - 80,
-                height: 200,
-                padding:
-                    EdgeInsets.only(right: 24, left: 24, top: 20, bottom: 0),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8)),
-                child: Column(children: [
-                  Text("修改昵称",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 18)),
-                  SizedBox(height: 10),
-                  Text("最多支持7个汉字或12个字母",
-                      style: TextStyle(color: Color(0xff808080), fontSize: 16)),
-                  SizedBox(height: 20),
-                  Container(
-                      width: double.infinity,
-                      child: Material(
-                          borderRadius: BorderRadius.circular(8),
-                          color: Color(0xffefefef),
-                          child: TextField(
-                              cursorColor: Color(0xff22d47e),
-                              autofocus: true,
-                              style: TextStyle(fontSize: 16),
-                              inputFormatters: [
-                                //限制长度
-                                LengthLimitingTextInputFormatter(11),
-                              ],
-                              decoration: InputDecoration(
-                                  isCollapsed: true,
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 12),
-                                  border: OutlineInputBorder(
-                                      borderSide: BorderSide.none),
-                                  hintText: '',
-                                  hintStyle:
-                                      TextStyle(color: Color(0xffacacac))),
-                              onChanged: (value) => inputChange(value)))),
-                  SizedBox(height: 12),
-                  Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Material(
-                            color: Colors.white,
-                            child: InkWell(
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 10),
-                                child: Text("取消",
-                                    style: TextStyle(
-                                        color: Color(0xffb8b8b8),
-                                        fontSize: 16)),
-                              ),
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ),
-                          Material(
-                            color: Colors.white,
-                            child: InkWell(
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 10),
-                                child: Text("确定",
-                                    style: TextStyle(
-                                        color: Color(0xff22d47e),
-                                        fontSize: 16)),
-                              ),
-                              onTap: () => handleNickDialog(context),
-                            ),
-                            //   onTap: () {},
-                          )
-                        ],
-                      ))
-                ]),
-              )),
-            ));
+
   }
 
   // 昵称输入确定
@@ -331,6 +244,12 @@ class _MyInfoState extends State<MyInfo> {
       });
     }));
     return images;
+  }
+
+  // 页面卸载
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override

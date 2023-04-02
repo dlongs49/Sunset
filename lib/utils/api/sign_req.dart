@@ -33,7 +33,6 @@ class Sign {
   }
   // 换绑手机号
   Future<Map> changePhone(params) async {
-    // Map<String, String> data = params;
     return await http.post("/sign/change_phone", params);
   }
   // 个人信息

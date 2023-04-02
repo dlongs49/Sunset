@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/pages/sign/pwd_log.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 
 class PhoneLogin extends StatefulWidget {
@@ -114,11 +115,16 @@ class _PhoneLoginState extends State<PhoneLogin> {
     }
   }
 
-  void toPage(dynamic item) {
-    Navigator.pushNamed(context, item);
+  //跳转并关闭当前页面 密码登录页面
+  void toPwdLog(context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      new CupertinoPageRoute(builder: (context) => new PwdLogin()),
+      (route) => route == null,
+    );
   }
 
-  void toLook() {
+  void toLook(context) {
     Navigator.pushNamed(context, '/');
   }
 
@@ -127,14 +133,6 @@ class _PhoneLoginState extends State<PhoneLogin> {
   void handleCheck() {
     isCheck = !isCheck;
     setState(() {});
-  }
-
-// 页面卸载
-  @override
-  void dispose() {
-    // 清空获取验证码 定时器
-    timer.cancel();
-    super.dispose();
   }
 
   @override
@@ -173,7 +171,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
                         child: Text("密码登录",
                             style: TextStyle(
                                 color: Color(0xffb8b8b8), fontSize: 14)),
-                        onTap: () => toPage("pwdLogin")),
+                        onTap: () => toPwdLog(context)),
                   )
                 ],
               ),
@@ -392,7 +390,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Color(0xff22d47e), fontSize: 15)),
-                          onTap: toLook))
+                          onTap: ()=>toLook(context)))
                 ],
               ))
         ],
