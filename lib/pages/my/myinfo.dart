@@ -5,6 +5,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_pickers/pickers.dart';
 import 'package:flutter_pickers/style/picker_style.dart';
 import 'package:flutter_pickers/time_picker/model/date_mode.dart';
@@ -44,30 +45,118 @@ class _MyInfoState extends State<MyInfo> {
 
   void initState() {
     getUInfo();
+  }
 
-    var isShow = BotToast.showWidget(toastBuilder: (context) {
-      return Center(
-        child: Container(
-          color: Color(0xa3000000),
-          child: Center(
-              child: Container(
-            width: 300,
-            height: 200,
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 6),
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(8)),
-            child: Column(children: [
-              Text("修改昵称",
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
-              SizedBox(height: 6),
-              Text("最多支持7个汉字或12个字母",style: TextStyle(fontSize: 14)),
+  void showNickDialog(BuildContext context) {
+    final width = MediaQueryData.fromWindow(window).size.width;
+    showDialog(
+        context: context,
+        builder: (ctx) => Container(
+              color: Color(0x7e000000),
+              child: Center(
+                  child: Container(
+                width: width - 80,
+                height: 200,
+                padding:
+                    EdgeInsets.only(right: 24, left: 24, top: 20, bottom: 0),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8)),
+                child: Column(children: [
+                  Text("修改昵称",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 18)),
+                  SizedBox(height: 10),
+                  Text("最多支持7个汉字或12个字母",
+                      style: TextStyle(color: Color(0xff808080), fontSize: 16)),
+                  SizedBox(height: 20),
+                  Container(
+                      width: double.infinity,
+                      child: Material(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Color(0xffefefef),
+                          child: TextField(
+                              cursorColor: Color(0xff22d47e),
+                              autofocus: true,
+                              style: TextStyle(fontSize: 16),
+                              inputFormatters: [
+                                //限制长度
+                                LengthLimitingTextInputFormatter(11),
+                              ],
+                              decoration: InputDecoration(
+                                  isCollapsed: true,
+                                  contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 12),
+                                  border: OutlineInputBorder(
+                                      borderSide: BorderSide.none),
+                                  hintText: '',
+                                  hintStyle:
+                                      TextStyle(color: Color(0xffacacac))),
+                              onChanged: (value) => inputChange(value)))),
+                  SizedBox(height: 12),
+                  Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Material(
+                            color: Colors.white,
+                            child: InkWell(
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 10),
+                                child: Text("取消",
+                                    style: TextStyle(
+                                        color: Color(0xffb8b8b8),
+                                        fontSize: 16)),
+                              ),
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ),
+                          Material(
+                            color: Colors.white,
+                            child: InkWell(
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 10),
+                                child: Text("确定",
+                                    style: TextStyle(
+                                        color: Color(0xff22d47e),
+                                        fontSize: 16)),
+                              ),
+                              onTap: () => handleNickDialog(context),
+                            ),
+                            //   onTap: () {},
+                          )
+                        ],
+                      ))
+                ]),
+              )),
+            ));
+  }
 
-            ]),
-          )),
-        ),
-      );
-    });
-    isShow();
+  // 昵称输入确定
+  void handleNickDialog(BuildContext context) async {
+    try {
+      Map res = await sign.updateUInfo(uinfo);
+      print("更新昵称>>> ${res}");
+      if (res["code"] == 200) {
+        FocusManager.instance.primaryFocus?.unfocus(); // 收起键盘
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      errToast();
+    }
+  }
+
+  // 昵称输入框
+  void inputChange(String value) {
+    uinfo["nickname"] = value;
+    setState(() {});
   }
 
   Sign sign = new Sign();
@@ -303,38 +392,53 @@ class _MyInfoState extends State<MyInfo> {
                                 SizedBox(width: 10)
                               ],
                             ),
-                            SizedBox(height: 36),
+                            SizedBox(height: 20),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text("昵称", style: TextStyle(fontSize: 17)),
                                 Spacer(flex: 1),
                                 InkWell(
-                                    child: Text(uinfo["nickname"],
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400)),
-                                    onTap: () {}),
+                                    // 取消点击水波纹使用 InkResponse
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    child: Container(
+                                        constraints:
+                                            BoxConstraints(minWidth: 160),
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 8),
+                                        alignment: Alignment(1, 0),
+                                        child: Text(uinfo["nickname"],
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w400))),
+                                    onTap: () => showNickDialog(context)),
                                 SizedBox(width: 5),
                                 Icon(IconData(0xeb8a, fontFamily: "sunfont"),
                                     size: 13, color: Color(0xffbababa))
                               ],
                             ),
-                            SizedBox(height: 36),
+                            SizedBox(height: 20),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text("个人简介", style: TextStyle(fontSize: 17)),
                                 Spacer(flex: 1),
-                                InkResponse(
+                                InkWell(
                                     // 取消点击水波纹使用 InkResponse
+                                    splashColor: Colors.transparent,
                                     highlightColor: Colors.transparent,
-                                    radius: 0.0,
-                                    child: Text(uinfo["description"],
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400,
-                                            color: Color(0xffb3b3b3))),
+                                    child: Container(
+                                        constraints:
+                                            BoxConstraints(minWidth: 160),
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 8),
+                                        alignment: Alignment(1, 0),
+                                        child: Text(uinfo["description"],
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w400,
+                                                color: Color(0xffb3b3b3)))),
                                     onTap: () => toPage("myProfile")),
                                 SizedBox(width: 5),
                                 Icon(IconData(0xeb8a, fontFamily: "sunfont"),

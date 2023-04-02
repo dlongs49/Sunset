@@ -15,7 +15,6 @@ void main() {
   //   statusBarColor: Colors.transparent,
   // ));
 }
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
