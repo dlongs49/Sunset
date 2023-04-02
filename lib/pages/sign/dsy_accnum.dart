@@ -17,6 +17,12 @@ class DsyAccnum extends StatefulWidget {
 class _DsyAccnumState extends State<DsyAccnum> {
   bool isChecked = false;
 
+  List<dynamic> list = [
+    {"title": "体验不好", "checked": false},
+    {"title": "页面不好看", "checked": false},
+    {"title": "其它", "checked": false}
+  ];
+
   void handleChecked(bool val) {}
 
   Sign sign = new Sign();
@@ -52,59 +58,30 @@ class _DsyAccnumState extends State<DsyAccnum> {
                     style:
                         TextStyle(fontWeight: FontWeight.w800, fontSize: 18)),
                 SizedBox(height: 50),
-                Row(
-                  children: [
-                    Checkbox(
-                        activeColor: Color(0xffb8b8b8),
-                        //选中的颜色
-                        fillColor: MaterialStateProperty.all(Color(0xff22d47e)),
-                        //打钩的颜色
-                        focusColor: Color(0xff22d47e),
-                        value: isChecked,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            isChecked = value!;
-                          });
-                        }),
-                    SizedBox(width: 4),
-                    Text("体验不好", style: TextStyle(fontSize: 16))
-                  ],
-                ),
-                Row(
-                  children: [
-                    Checkbox(
-                        activeColor: Color(0xffb8b8b8),
-                        //选中的颜色
-                        fillColor: MaterialStateProperty.all(Color(0xff22d47e)),
-                        //打钩的颜色
-                        focusColor: Color(0xff22d47e),
-                        value: isChecked,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            isChecked = value!;
-                          });
-                        }),
-                    SizedBox(width: 4),
-                    Text("体验不好", style: TextStyle(fontSize: 16))
-                  ],
-                ),
-                Row(
-                  children: [
-                    Checkbox(
-                        activeColor: Color(0xffb8b8b8),
-                        //选中的颜色
-                        fillColor: MaterialStateProperty.all(Color(0xff22d47e)),
-                        //打钩的颜色
-                        focusColor: Color(0xff22d47e),
-                        value: isChecked,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            isChecked = value!;
-                          });
-                        }),
-                    SizedBox(width: 4),
-                    Text("体验不好", style: TextStyle(fontSize: 16))
-                  ],
+                Column(
+                  children: list.asMap().entries.map((entry) {
+                    int index = entry.key;
+                    final item = entry.value;
+                    print(item["title"]);
+                    return Row(
+                      children: [
+                        Checkbox(
+                            activeColor: Color(0xffb8b8b8),
+                            //选中的颜色
+                            fillColor:
+                                MaterialStateProperty.all(Color(0xff22d47e)),
+                            //打钩的颜色
+                            focusColor: Color(0xff22d47e),
+                            value: item.checked,
+                            onChanged: (bool? value) {
+                              item["checked"] = value!;
+                              setState(() {});
+                            }),
+                        SizedBox(width: 4),
+                        Text(item["title"], style: TextStyle(fontSize: 16))
+                      ],
+                    );
+                  }).toList(),
                 ),
                 SizedBox(height: 30),
                 Align(
