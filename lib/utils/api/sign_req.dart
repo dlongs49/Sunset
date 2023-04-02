@@ -46,6 +46,7 @@ class Sign {
   }
   // 注销账号
   Future<Map> distryUInfo() async {
-    return await http.post("/sign/distry_info", {});
+    DateTime currentTime = DateTime.now();
+    return await http.post("/sign/distry_info", {"stamp": currentTime.microsecondsSinceEpoch});
   }
 }

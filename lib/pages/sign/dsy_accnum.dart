@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/sign_req.dart';
@@ -23,22 +24,40 @@ class _DsyAccnumState extends State<DsyAccnum> {
     {"title": "其它", "checked": false}
   ];
 
-  void handleChecked(bool val) {}
-
   Sign sign = new Sign();
 
   // 注销账号
   Future<void> handleDsy() async {
+    bool flag = false;
+    // 是否勾选了至少一项
+    for (var i = 0; i < list.length; i++) {
+      if (list[i]["checked"] == true) {
+        flag = true;
+        break;
+      } else {
+        flag = false;
+      }
+    }
+    if(!flag){
+      toast("至少勾选一项");
+      return;
+    }
     try {
       loading(seconds: 3);
       Map res = await sign.distryUInfo();
-      print("ms_token>>> ${res["data"]}");
       if (res["code"] == -1) {
         toast(res["message"]);
         return;
       }
+
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      // 清除token
+      await prefs.remove('ms_token');
+      // 清除个人简介 --> 在我的信息页面传递的值用于在修改个人简介
+      await prefs.remove('descInfo');
       Navigator.pushNamed(context, '/');
     } catch (e) {
+      print(e);
       errToast();
     }
   }
@@ -60,7 +79,7 @@ class _DsyAccnumState extends State<DsyAccnum> {
                 SizedBox(height: 50),
                 Column(
                   children: list.asMap().entries.map((entry) {
-                    int index = entry.key;
+                    final index = entry.key;
                     final item = entry.value;
                     print(item["title"]);
                     return Row(
@@ -72,9 +91,9 @@ class _DsyAccnumState extends State<DsyAccnum> {
                                 MaterialStateProperty.all(Color(0xff22d47e)),
                             //打钩的颜色
                             focusColor: Color(0xff22d47e),
-                            value: item.checked,
+                            value: list[index]["checked"],
                             onChanged: (bool? value) {
-                              item["checked"] = value!;
+                              list[index]["checked"] = value!;
                               setState(() {});
                             }),
                         SizedBox(width: 4),
