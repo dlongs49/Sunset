@@ -115,7 +115,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
     }
   }
 
-  //跳转并关闭当前页面 密码登录页面
+  //跳转并关闭并销毁当前页面 密码登录页面
   void toPwdLog(context) {
     Navigator.pushAndRemoveUntil(
       context,
@@ -123,8 +123,12 @@ class _PhoneLoginState extends State<PhoneLogin> {
       (route) => route == null,
     );
   }
-
+  // 随便看看
   void toLook(context) {
+    if(!isCheck){
+      toast("勾选用户协议");
+      return;
+    }
     Navigator.pushNamed(context, '/');
   }
 

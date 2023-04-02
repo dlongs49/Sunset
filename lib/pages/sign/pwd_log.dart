@@ -93,7 +93,7 @@ class _PwdLoginState extends State<PwdLogin> {
     Navigator.pushNamed(context, item);
   }
 
-  //跳转并关闭当前页面 验证码登录页面
+  //跳转并关闭并销毁当前页面 验证码登录页面
   void toPhoneLog(context) {
     Navigator.pushAndRemoveUntil(
       context,
@@ -101,7 +101,14 @@ class _PwdLoginState extends State<PwdLogin> {
       (route) => route == null,
     );
   }
-
+  // 随便看看
+  void toLook(context) {
+    if(!isCheck){
+      toast("勾选用户协议");
+      return;
+    }
+    Navigator.pushNamed(context, '/');
+  }
   bool isCheck = false;
 
   void handleCheck() {
@@ -364,7 +371,7 @@ class _PwdLoginState extends State<PwdLogin> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Color(0xff22d47e), fontSize: 14)),
-                          onTap: () => toPage('/'))
+                          onTap: () => toLook(context))
                     ],
                   )
                 ],
