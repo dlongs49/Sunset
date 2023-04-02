@@ -42,7 +42,7 @@ class Sign {
   }
   // 更新个人信息
   Future<Map> updateUInfo(params) async {
-    Map<String, String> data = params;
+    Map<String, dynamic> data = params;
     return await http.post("/sign/update/userinfo", data);
   }
 }

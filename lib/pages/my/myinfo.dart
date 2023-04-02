@@ -47,8 +47,8 @@ class _MyInfoState extends State<MyInfo> {
   Sign sign = new Sign();
   Map<String, dynamic> uinfo = {
     "nickname": "Sunset",
-    "avator": "http://192.168.2.102:801/avator/sunset202303311711.png",
-    "showid": "20230402", // 2023-4-2 AM2:02
+    "avator": "/avator/sunset202303311711.png",
+    "showid": "20230402", // 2023-4-2 AM 2:02
     "description": "暂无",
     "sex": 1,
     "height": "181",
@@ -65,7 +65,6 @@ class _MyInfoState extends State<MyInfo> {
       if (res["code"] == 200) {
         setState(() {
           uinfo = res["data"];
-          uinfo["avator"] = baseUrl + res["data"]["avator"];
         });
         print(uinfo);
       }
@@ -76,8 +75,21 @@ class _MyInfoState extends State<MyInfo> {
       print(e);
       errToast();
     }
-  }
 
+  }
+  // 更新用户信息
+  void handleInfo() async{
+    try {
+      Map res = await sign.updateUInfo(uinfo);
+      print("data>>> ${res["code"]} ${res["message"]}");
+      if (res["code"] != 200) {
+        toast("更新信息失败");
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
   // 选择出生日期
   void changeBirth(BuildContext context) {
     Pickers.showDatePicker(context,
@@ -90,6 +102,7 @@ class _MyInfoState extends State<MyInfo> {
           final day = params.day! < 10 ? "0${params.day}" : params.day;
           uinfo["birthday"] = "${params.year}-${month}-${day}";
           setState(() {});
+          handleInfo();
         },
         onChanged: (val) => print('选择的出生日期为：$val'));
   }
@@ -178,7 +191,28 @@ class _MyInfoState extends State<MyInfo> {
   void toPage(String path) {
     Navigator.pushNamed(context, path);
   }
+  // 图片加载失败 【待定】
+  Widget initImage(){
+    Image images;
+    images = Image.network(
+      "http://192.168.2.102:801/avator/sunset202303311711.png",
+      width: 36,
+      height: 36);
+    var resolve = images.image.resolve(ImageConfiguration.empty);
+    resolve.addListener(ImageStreamListener((_,__){
 
+    },onError: (e,s){
+      print("失败");
+      setState(() {
+        images = Image.asset(
+          "assets/images/3044.jpg",
+          width: 36,
+          height: 36,
+        );
+      });
+    }));
+    return images;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -207,12 +241,12 @@ class _MyInfoState extends State<MyInfo> {
                                 InkWell(
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(36),
-                                    child: headimg == ""
+                                    child:
+                                    headimg == ""
                                         ? Image.network(
-                                            uinfo["avator"],
+                                        baseUrl + uinfo["avator"],
                                             width: 36,
-                                            height: 36,
-                                          )
+                                            height: 36)
                                         : Image.memory(base64.decode(headimg),
                                             width: 36, height: 36),
                                   ),
@@ -326,6 +360,7 @@ class _MyInfoState extends State<MyInfo> {
                                         setState(() {
                                           uinfo["sex"] = index;
                                         });
+                                        handleInfo();
                                       });
                                 }).toList())
                               ],
@@ -352,7 +387,7 @@ class _MyInfoState extends State<MyInfo> {
                                             setState(() {
                                               uinfo["height"] = val.toString();
                                             });
-                                            print(val);
+                                            handleInfo();
                                           },
                                           onChanged: (val, i) =>
                                               print('选择的身高为：$val'));
@@ -402,7 +437,7 @@ class _MyInfoState extends State<MyInfo> {
                                             setState(() {
                                               uinfo["weight"] = val.toString();
                                             });
-                                            print(val);
+                                            handleInfo();
                                           },
                                           onChanged: (val, i) =>
                                               print('选择的体重为：$val'));
@@ -435,7 +470,7 @@ class _MyInfoState extends State<MyInfo> {
                                               uinfo["waistline"] =
                                                   val.toString();
                                             });
-                                            print(val);
+                                            handleInfo();
                                           },
                                           onChanged: (val, i) =>
                                               print('选择的腰围为：$val'));
