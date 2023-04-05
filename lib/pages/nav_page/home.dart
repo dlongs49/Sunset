@@ -7,6 +7,8 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/local_data/home.dart';
 import 'package:sunset/utils/api/sign_req.dart';
+import 'package:sunset/utils/api/home_req.dart';
+import 'package:sunset/utils/request.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Home extends StatefulWidget {
@@ -31,6 +33,7 @@ class _HomeState extends State<Home> {
     });
     // startTimer();
     getUInfo();
+    getBanner();
   }
 
   Sign sign = new Sign();
@@ -42,6 +45,29 @@ class _HomeState extends State<Home> {
       print("data>>> ${res["code"]} ${res["data"]}");
       if (res['code'] == 401) {
         Navigator.pushNamed(context, 'phoneLog');
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
+
+  HomeReq homeReq = new HomeReq();
+  List<Map> banner = [];
+
+  // 轮播图
+  void getBanner() async {
+    try {
+      Map res = await homeReq.getBanner();
+      print("data>>> ${res}");
+      if (res['code'] == 200) {
+        res["data"].forEach((el) {
+          Map<String,String> map = new Map();
+          map["images"] = baseUrl+ el["images"];
+          map["url"] = el["url"];
+          banner.add(map);
+        });
+        setState(() {});
       }
     } catch (e) {
       print(e);
@@ -1128,13 +1154,15 @@ class _HomeState extends State<Home> {
                                                 child: ClipRRect(
                                                   borderRadius:
                                                       BorderRadius.circular(10),
-                                                  child: new Image.asset(
-                                                    bannerList[index]["image"],
+                                                  child: new Image.network(
+                                                    banner[index]["images"],
                                                     fit: BoxFit.fill,
                                                   ),
                                                 ),
                                                 onTap: () => toBanner(
-                                                    bannerList[index]['url']));
+                                                    banner[index]['url']
+                                                )
+                                            );
                                           },
                                           // 图片数量
                                           itemCount: bannerList.length,

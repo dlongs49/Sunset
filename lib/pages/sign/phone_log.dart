@@ -26,10 +26,18 @@ class _PhoneLoginState extends State<PhoneLogin> {
   @override
   void initState() {
     super.initState();
+    CodeController = TextEditingController.fromValue(TextEditingValue(
+        text: "1234",
+        selection: TextSelection.fromPosition(TextPosition(
+            affinity: TextAffinity.downstream, offset: 4))));
+    PhoneController = TextEditingController.fromValue(TextEditingValue(
+        text: "18794388410",
+        selection: TextSelection.fromPosition(TextPosition(
+            affinity: TextAffinity.downstream, offset: 4))));
   }
 
-  String phone = '';
-  String verCode = '';
+  String phone = '18794388410';
+  String verCode = '123456';
 
   bool isPhone = false;
   bool isCode = false;
