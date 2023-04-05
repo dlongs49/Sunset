@@ -9,4 +9,10 @@ class HomeReq {
     return await http.get(
         "/goods/get_banner", {"stamp": currentTime.microsecondsSinceEpoch});
   }
+  // 好物精选
+  Future<Map> getGoods() async {
+    DateTime currentTime = DateTime.now();
+    return await http.get(
+        "/goods/get_shopp", {"stamp": currentTime.microsecondsSinceEpoch});
+  }
 }

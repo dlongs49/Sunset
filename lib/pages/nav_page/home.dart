@@ -1165,7 +1165,7 @@ class _HomeState extends State<Home> {
                                             );
                                           },
                                           // 图片数量
-                                          itemCount: bannerList.length,
+                                          itemCount: banner.length,
                                           // 分页器
                                           pagination: new SwiperPagination(
                                             builder: DotSwiperPaginationBuilder(

@@ -1,8 +1,11 @@
-import 'dart:async';
 import 'dart:ui';
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:sunset/components/toast.dart';
+import 'package:sunset/utils/api/home_req.dart';
+import 'package:sunset/utils/request.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Find extends StatefulWidget {
@@ -13,17 +16,57 @@ class Find extends StatefulWidget {
 }
 
 class _FindState extends State<Find> {
-  List list = [];
+  HomeReq homeReq = new HomeReq();
+  List<Map<dynamic, dynamic>> goodList = [];
+
+  void initState() {
+    getBanner();
+    getGoods();
+  }
+
+  List<Map> banner = [];
+
+  // 轮播图
+  void getBanner() async {
+    try {
+      Map res = await homeReq.getBanner();
+      print("data>>> ${res}");
+      if (res['code'] == 200) {
+        Map<String, String> map = new Map();
+        map["images"] = baseUrl + res["data"][0]["images"];
+        map["url"] = res["data"][0]["url"];
+        banner.add(map);
+        setState(() {});
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
+
+  // 好物列表
+  void getGoods() async {
+    try {
+      Map res = await homeReq.getGoods();
+      print("好物精选>>> ${res}");
+      if (res['code'] == 200) {
+        goodList = res["data"].cast<Map<String, dynamic>>();
+        ;
+        setState(() {});
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
 
   void toPage(String path) {
     Navigator.pushNamed(context, path);
   }
 
   //跳转浏览器
-  void toLauncher() async {
+  void toLauncher(String url) async {
     // 跳转的 url 淘宝的链接
-    var url =
-        "https://detail.tmall.com/item.htm?id=556923025304&scene=taobao_shop&spm=a312a.7700824.w15913892-23209753121.1.74a332fdQym577";
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -75,8 +118,8 @@ class _FindState extends State<Find> {
                 removeBottom: true,
                 child: ListView.builder(
                     physics: BouncingScrollPhysics(), // IOS的回弹属性
-                    itemCount: 12,
-                    itemBuilder: (context, i) => Container(
+                    itemCount: banner.length,
+                    itemBuilder: (context, index) => Container(
                           padding: EdgeInsets.only(left: 15, right: 15),
                           child: Column(
                             children: [
@@ -84,125 +127,136 @@ class _FindState extends State<Find> {
                               InkWell(
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
-                                  child:
-                                      Image.asset("assets/images/banner_1.jpg"),
+                                  child: Image.network(banner[index]["images"]),
                                 ),
-                                onTap: toLauncher,
+                                onTap: () => toLauncher(banner[index]["url"]),
                               ),
                               SizedBox(height: 16),
-                              Row(
-                                children: [
-                                  Container(
-                                      width: 5,
-                                      height: 20,
-                                      decoration: BoxDecoration(
-                                          color: Color(0xffee602e),
-                                          borderRadius:
-                                              BorderRadius.circular(4))),
-                                  SizedBox(width: 6),
-                                  Text("饮品",
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w600))
-                                ],
-                              ),
-                              SizedBox(height: 20),
-                              GridView.builder(
+                              ListView.builder(
                                   shrinkWrap: true,
-                                  itemCount: 6,
-                                  physics: BouncingScrollPhysics(),
-                                  // IOS的回弹属性
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2, // 主轴一行的数量
-                                    mainAxisSpacing: 15, // 主轴每行间距
-                                    crossAxisSpacing: 10, // 交叉轴每行间距
-                                    childAspectRatio: 1 / 1.6, // item的宽高比
-                                  ),
-                                  itemBuilder: (context, index) => InkWell(
-                                      child: Container(
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
-                                          child: Column(children: [
-                                            AspectRatio(
-                                              aspectRatio: 1 / 1,
-                                              child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                          topLeft:
-                                                              Radius.circular(
-                                                                  10),
-                                                          topRight:
-                                                              Radius.circular(
-                                                                  10)),
-                                                  child: Image.network(
-                                                    "https://gw.alicdn.com/imgextra/i2/3086666176/O1CN01NTf5HW1vUerjT60Zq_!!3086666176.jpg_Q75.jpg_.webp",
-                                                    width: double.infinity,
-                                                    height: 170,
-                                                    fit: BoxFit.fitWidth,
-                                                  )),
-                                            ),
-                                            Container(
-                                                padding: EdgeInsets.only(
-                                                    left: 12, right: 12),
-                                                child: Column(children: [
-                                                  Text("真低脂，无淀粉，少添加，多快乐",
-                                                      softWrap: true,
-                                                      textAlign: TextAlign.left,
-                                                      overflow:
-                                                          TextOverflow.visible,
-                                                      maxLines: 1,
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 14,
-                                                          height: 2.0)),
-                                                  SizedBox(height: 4),
-                                                  Text("真低脂，无淀粉，少添加，多快乐",
-                                                      softWrap: true,
-                                                      textAlign: TextAlign.left,
-                                                      overflow:
-                                                          TextOverflow.visible,
-                                                      maxLines: 2,
-                                                      style: TextStyle(
-                                                          color:
-                                                              Color(0xff9c9c9c),
-                                                          fontSize: 12,
-                                                          height: 1.4)),
-                                                  SizedBox(height: 6),
-                                                  Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Text("￥14.8",
-                                                          style: TextStyle(
-                                                              color: Color(
-                                                                  0xffe46135),
-                                                              fontSize: 16,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600)),
-                                                      SizedBox(width: 6),
-                                                      Text("￥24.6",
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xffb8b7bd),
-                                                            fontSize: 13,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            decoration:
-                                                                TextDecoration
-                                                                    .lineThrough,
-                                                          ))
-                                                    ],
-                                                  )
-                                                ]))
-                                          ])),
-                                      onTap: () => toPage("shopDetail"))),
-                              SizedBox(height: 20)
+                                  physics: new NeverScrollableScrollPhysics(),
+                                  //禁用滑动事件
+                                  itemCount: goodList.length,
+                                  itemBuilder: (context, index) => Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Container(
+                                                  width: 5,
+                                                  height: 20,
+                                                  decoration: BoxDecoration(
+                                                      color: Color(0xffee602e),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              4))),
+                                              SizedBox(width: 6),
+                                              Text(goodList[index]["name"],
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w600))
+                                            ],
+                                          ),
+                                          SizedBox(height: 20),
+                                          GridView.builder(
+                                              shrinkWrap: true,
+                                              itemCount: goodList[index]
+                                                      ["listItem"]
+                                                  .length,
+                                              physics: BouncingScrollPhysics(),
+                                              // IOS的回弹属性
+                                              gridDelegate:
+                                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 2, // 主轴一行的数量
+                                                mainAxisSpacing: 15, // 主轴每行间距
+                                                crossAxisSpacing: 10, // 交叉轴每行间距
+                                                childAspectRatio:
+                                                    1 / 1.6, // item的宽高比
+                                              ),
+                                              itemBuilder: (context, idx) =>
+                                                  InkWell(
+                                                      child: Container(
+                                                          width:
+                                                              double.infinity,
+                                                          decoration: BoxDecoration(
+                                                              color:
+                                                                  Colors.white,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10)),
+                                                          child: Column(
+                                                              children: [
+                                                                AspectRatio(
+                                                                  aspectRatio:
+                                                                      1 / 1,
+                                                                  child: ClipRRect(
+                                                                      borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                                                                      child: Image.network(
+                                                                        goodList[index]["listItem"][idx]
+                                                                            [
+                                                                            "icon"],
+                                                                        width: double
+                                                                            .infinity,
+                                                                        height:
+                                                                            170,
+                                                                        fit: BoxFit
+                                                                            .fitWidth,
+                                                                      )),
+                                                                ),
+                                                                Container(
+                                                                    padding: EdgeInsets.only(
+                                                                        left:
+                                                                            12,
+                                                                        right:
+                                                                            12),
+                                                                    child: Column(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment
+                                                                                .start,
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          Text(
+                                                                              goodList[index]["listItem"][idx]["title"],
+                                                                              softWrap: true,
+                                                                              textAlign: TextAlign.left,
+                                                                              overflow: TextOverflow.visible,
+                                                                              maxLines: 1,
+                                                                              style: TextStyle(color: Colors.black, fontSize: 14, height: 2.0)),
+                                                                          SizedBox(
+                                                                              height: 4),
+                                                                          Text(
+                                                                              goodList[index]["listItem"][idx]["subTitle"],
+                                                                              softWrap: true,
+                                                                              textAlign: TextAlign.left,
+                                                                              overflow: TextOverflow.visible,
+                                                                              maxLines: 2,
+                                                                              style: TextStyle(color: Color(0xff9c9c9c), fontSize: 12, height: 1.4)),
+                                                                          SizedBox(
+                                                                              height: 6),
+                                                                          Row(
+                                                                            crossAxisAlignment:
+                                                                                CrossAxisAlignment.center,
+                                                                            children: [
+                                                                              Text("￥${goodList[index]["listItem"][idx]["currentPrice"]}", textAlign: TextAlign.left, style: TextStyle(color: Color(0xffe46135), fontSize: 16, fontWeight: FontWeight.w600)),
+                                                                              SizedBox(width: 6),
+                                                                              Text("￥${goodList[index]["listItem"][idx]["originalPrice"]}",
+                                                                                  style: TextStyle(
+                                                                                    color: Color(0xffb8b7bd),
+                                                                                    fontSize: 13,
+                                                                                    fontWeight: FontWeight.w600,
+                                                                                    decoration: TextDecoration.lineThrough,
+                                                                                  ))
+                                                                            ],
+                                                                          )
+                                                                        ]))
+                                                              ])),
+                                                      onTap: () => toPage(
+                                                          "shopDetail"))),
+                                          SizedBox(height: 20)
+                                        ],
+                                      )),
                             ],
                           ),
                         ))))

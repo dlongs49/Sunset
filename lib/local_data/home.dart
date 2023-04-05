@@ -241,11 +241,6 @@ List mealsList = [
   {"id": 3, "icon": 0xe60c, "title": "加餐"},
   {"id": 4, "icon": 0xe719, "title": "运动"}
 ];
-// 轮播图
-List<Map> bannerList = [
-  {"id":0,"image":"assets/images/banner_1.jpg","url":"https://main.m.taobao.com/"},
-  {"id":1,"image":"assets/images/banner_2.jpg","url":"https://main.m.taobao.com/"}
-];
 // 我的设备
 List deviceList = [
   {"id": 0, "image": "assets/images/01.png", "title": "智能跳绳"},
