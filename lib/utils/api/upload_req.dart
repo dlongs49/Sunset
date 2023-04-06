@@ -7,4 +7,8 @@ class UploadReq{
   Future<Map> uploadAvator(params) async {
     return await http.uploadPost("/upload/avator", params);
   }
+  // 上传多图
+  Future<Map> uploadImages(params) async {
+    return await http.uploadPost("/upload/image_s", params);
+  }
 }

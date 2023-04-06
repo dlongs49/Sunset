@@ -59,6 +59,7 @@ class Http {
     Response response = await dios.post(url, data: map,queryParameters:map);
     return response.data;
   }
+  // 图片上传接口
   uploadPost(url, data) async {
     Dio dios = await createInstace("POST");
     Response response = await dios.post(url, data: data);

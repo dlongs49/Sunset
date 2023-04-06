@@ -1,14 +1,16 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/toast.dart';
-import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/api/trends_req.dart';
 import 'package:sunset/utils/api/upload_req.dart';
-
 class PubTrends extends StatefulWidget {
   const PubTrends({Key? key, arguments}) : super(key: key);
 
@@ -18,6 +20,7 @@ class PubTrends extends StatefulWidget {
 
 class _PubTrendsState extends State<PubTrends> {
   TextEditingController ProfileController = TextEditingController();
+  final ImagePicker imgPicker = ImagePicker(); // 相机，图库权限
   String maxTextNum = "0/140";
   int maxnum = 140;
   Map<String, dynamic> map = new Map();
@@ -38,9 +41,108 @@ class _PubTrendsState extends State<PubTrends> {
   TrendsReq trendsReq = new TrendsReq();
   UploadReq uploadReq = new UploadReq();
 
-  // 上传图片
-  void handleImg() {}
+  // 重写 showModalBottomSheet 布局样式
+  Widget CustomBottomSheet(BuildContext context) {
+    return Container(
+        width: double.infinity,
+        height: 130,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+            color: Colors.white),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            InkWell(
+              child: Container(
+                width: double.infinity,
+                alignment: Alignment(0, 0),
+                height: 130 / 2 - 4,
+                child:
+                InkWell(child: Text("拍照", style: TextStyle(fontSize: 18))),
+              ),
+              onTap: ()=>handleCamera(true),
+            ),
+            InkWell(
+                child: Container(
+                  width: double.infinity,
+                  alignment: Alignment(0, 0),
+                  height: 55,
+                  child: Text(
+                    "选取相册照片",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+                onTap: ()=>handleCamera(false)
+            ),
+          ],
+        ));
+  }
+  // 拍照 相册调用
+  void handleCamera(bool flag) async {
+    Navigator.pop(context); // 用于底部弹框关闭
+    try {
+      final camera = ImageSource.camera;
+      // 拍照
+      if(flag){
+      final XFile? imgFile = await imgPicker.pickImage(source: camera);
+      if (imgFile != null) {
+        File file = File(imgFile.path);
+        // 转换为 Base64 用于展示
+        final imageBytes = await file.readAsBytes();
+        String base64Img = base64Encode(imageBytes);
+        // setState(() {
+        //   headimg = base64Img;
+        // });
 
+
+        // 转换为 FormData
+        FormData formData = new FormData.fromMap({
+          "file":await MultipartFile.fromFile(imgFile.path,filename: imgFile.name),
+        });
+        Map res = await uploadReq.uploadImages(formData);
+
+      }
+      }else{
+        // 相册多选
+        final List<XFile>? imgList = await imgPicker.pickMultiImage();
+        if (imgList != null) {
+          print(imgList);
+          // 存放遍历完的多图
+          List<MultipartFile> mf = [];
+          // 遍历选取的多图
+          for(var i = 0; i < imgList.length; i++){
+            mf.add(MultipartFile.fromFileSync(imgList[i].path, filename: imgList[i].name));
+          }
+          // File file = File(imgFileList.path);
+          // // 转换为 Base64 用于展示
+          // final imageBytes = await file.readAsBytes();
+          // String base64Img = base64Encode(imageBytes);
+          // 转换为 FormData
+          FormData formData = new FormData.fromMap({
+            "file":mf
+          });
+          Map res = await uploadReq.uploadImages(formData);
+
+        }
+      }
+
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
+
+  // 拍照 相册选择项
+  void onHeadImg(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: false, // 是否滚动
+        backgroundColor: Colors.transparent, // 透明是为了自定义样式，例如圆角等
+        builder: (context) {
+          return CustomBottomSheet(context);
+        });
+  }
   // 发布动态
   void saveProfile(context) async {
     print(map["text"]);
@@ -130,7 +232,7 @@ class _PubTrendsState extends State<PubTrends> {
                       Text("上传图片", style: TextStyle(fontSize: 14))
                     ],
                   ),
-                  onTap: handleImg),
+                  onTap:  () => onHeadImg(context)),
             ),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 18, vertical: 20),
