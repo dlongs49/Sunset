@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:core';
+import 'dart:io';
 import 'dart:ui';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -14,8 +16,9 @@ import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/local_data/info.dart';
 import 'package:sunset/utils/api/sign_req.dart';
+import 'package:sunset/utils/api/upload_req.dart';
 import 'package:sunset/utils/request.dart';
-// import 'package:image_picker/image_picker.dart';
+import 'package:image_picker/image_picker.dart';
 
 class MyInfo extends StatefulWidget {
   const MyInfo({Key? key, arguments}) : super(key: key);
@@ -25,7 +28,7 @@ class MyInfo extends StatefulWidget {
 }
 
 class _MyInfoState extends State<MyInfo> {
-  // final ImagePicker imgPicker = ImagePicker(); // 相机，图库权限
+  final ImagePicker imgPicker = ImagePicker(); // 相机，图库权限
   String headimg = "";
   List sexList = ["女", "男"];
 
@@ -243,25 +246,7 @@ class _MyInfoState extends State<MyInfo> {
                 child:
                     InkWell(child: Text("拍照", style: TextStyle(fontSize: 18))),
               ),
-              onTap: () async {
-                // try {
-                //   final XFile? imgFile = await imgPicker.pickImage(
-                //       source: ImageSource.camera);
-                //   if (imgFile != null) {
-                //     print("拍摄图片>> ${imgFile.path}");
-                //     File file = File(imgFile.path);
-                //     final imageBytes = await file.readAsBytes();
-                //     String base64Img = base64Encode(imageBytes);
-                //     setState(() {
-                //       headimg = base64Img;
-                //     });
-                //     Navigator.pop(context); // 用于底部弹框关闭
-                //     print("图片base64 >> $base64Img");
-                //   }
-                // } catch (e) {
-                //   print("异常>> $e");
-                // }
-              },
+              onTap: handleCamera,
             ),
             InkWell(
               child: Container(
@@ -291,8 +276,38 @@ class _MyInfoState extends State<MyInfo> {
           ],
         ));
   }
+  UploadReq uploadReq = new UploadReq();
+  // 拍照 相册调用
+  void handleCamera() async {
+    Navigator.pop(context); // 用于底部弹框关闭
+    try {
+      final XFile? imgFile =
+          await imgPicker.pickImage(source: ImageSource.camera);
+      if (imgFile != null) {
+        File file = File(imgFile.path);
+        // 转换为 Base64 用于展示
+        final imageBytes = await file.readAsBytes();
+        String base64Img = base64Encode(imageBytes);
+        setState(() {
+          headimg = base64Img;
+        });
+        // 转换为 FormData
+        FormData formData = new FormData.fromMap({
+          "file":await MultipartFile.fromFile(imgFile.path,filename: imgFile.name),
+        });
+        Map res = await uploadReq.uploadAvator(formData);
+        if (res['code'] == 200) {
+          uinfo["avator"] = res["data"]["path"];
+          handleInfo();
+        }
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
 
-  // 头像
+  // 拍照 相册选择项
   void onHeadImg(BuildContext context) {
     showModalBottomSheet(
         context: context,
@@ -367,7 +382,9 @@ class _MyInfoState extends State<MyInfo> {
                                             width: 36,
                                             height: 36)
                                         : Image.memory(base64.decode(headimg),
-                                            width: 36, height: 36),
+                                            fit: BoxFit.fill,
+                                            width: 36,
+                                            height: 36),
                                   ),
                                   onTap: () => onHeadImg(context),
                                 ),
@@ -506,7 +523,7 @@ class _MyInfoState extends State<MyInfo> {
                                 Text("身高", style: TextStyle(fontSize: 17)),
                                 Spacer(flex: 1),
                                 InkWell(
-                                    child: Text(uinfo["height"] + ".CM",
+                                    child: Text(uinfo["height"] + "CM",
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w400,

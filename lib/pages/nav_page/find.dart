@@ -51,7 +51,6 @@ class _FindState extends State<Find> {
       print("好物精选>>> ${res}");
       if (res['code'] == 200) {
         goodList = res["data"].cast<Map<String, dynamic>>();
-        ;
         setState(() {});
       }
     } catch (e) {
