@@ -246,7 +246,7 @@ class _MyInfoState extends State<MyInfo> {
                 child:
                     InkWell(child: Text("拍照", style: TextStyle(fontSize: 18))),
               ),
-              onTap: handleCamera,
+              onTap: ()=>handleCamera(true),
             ),
             InkWell(
               child: Container(
@@ -258,31 +258,20 @@ class _MyInfoState extends State<MyInfo> {
                   style: TextStyle(fontSize: 18),
                 ),
               ),
-              onTap: () async {
-                // final XFile? imgFile = await imgPicker.pickImage(source: ImageSource.gallery);
-                // if (imgFile != null) {
-                //   print("选择图片>> ${imgFile.path}");
-                //   File file = File(imgFile.path);
-                //   final imageBytes = await file.readAsBytes();
-                //   String base64Img = base64Encode(imageBytes);
-                //   setState(() {
-                //     headimg = base64Img;
-                //   });
-                //   Navigator.pop(context); // 用于底部弹框关闭
-                //   print("图片base64 >> $base64Img");
-                // }
-              },
+              onTap: ()=>handleCamera(false)
             ),
           ],
         ));
   }
   UploadReq uploadReq = new UploadReq();
   // 拍照 相册调用
-  void handleCamera() async {
+  void handleCamera(bool flag) async {
     Navigator.pop(context); // 用于底部弹框关闭
     try {
+      final camera = ImageSource.camera;
+      final gallery = ImageSource.gallery;
       final XFile? imgFile =
-          await imgPicker.pickImage(source: ImageSource.camera);
+          await imgPicker.pickImage(source: flag ? camera : gallery);
       if (imgFile != null) {
         File file = File(imgFile.path);
         // 转换为 Base64 用于展示
@@ -297,6 +286,7 @@ class _MyInfoState extends State<MyInfo> {
         });
         Map res = await uploadReq.uploadAvator(formData);
         if (res['code'] == 200) {
+          print("头像更换成功>>");
           uinfo["avator"] = res["data"]["path"];
           handleInfo();
         }
