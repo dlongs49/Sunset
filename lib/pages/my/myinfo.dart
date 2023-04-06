@@ -176,19 +176,12 @@ class _MyInfoState extends State<MyInfo> {
   void getUInfo() async {
     try {
       Map res = await sign.getUInfo();
-      print("data>>> ${res["code"]} ${res["data"]}");
+      print("个人信息>>> ${res["data"]}");
       if (res["code"] == 200) {
         uinfo = res["data"];
         uinfo['description'] =
             uinfo['description'] != null ? uinfo['description'] : '暂无';
-        uinfo['height'] = uinfo['height'] != null ? uinfo['height'] : '00';
-        uinfo['birthday'] =
-            uinfo['birthday'] != null ? uinfo['birthday'] : "1998-04-09";
-        uinfo['weight'] = uinfo['weight'] != null ? uinfo['weight'] : '00';
-        uinfo['waistline'] =
-            uinfo['waistline'] != null ? uinfo['waistline'] : '00';
         setState(() {});
-        print(uinfo);
       }
       if (res['code'] == 401) {
         Navigator.pushNamed(context, 'phoneLog');
@@ -203,7 +196,7 @@ class _MyInfoState extends State<MyInfo> {
   void handleInfo() async {
     try {
       Map res = await sign.updateUInfo(uinfo);
-      print("data>>> ${res["code"]} ${res["message"]}");
+      print("更新信息>>> ${res["data"]}");
       if (res["code"] != 200) {
         toast("更新信息失败");
       }
