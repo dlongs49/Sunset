@@ -6,7 +6,7 @@ class TrendsReq {
   // 发表动态
   Future<Map> publishTrends(params) async {
     Map<String, dynamic> data = params;
-    return await http.get(
+    return await http.post(
         "/trends/pub_trends", data);
   }
 

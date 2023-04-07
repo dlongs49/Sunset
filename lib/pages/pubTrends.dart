@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/trends_req.dart';
 import 'package:sunset/utils/api/upload_req.dart';
+
 class PubTrends extends StatefulWidget {
   const PubTrends({Key? key, arguments}) : super(key: key);
 
@@ -28,6 +29,72 @@ class _PubTrendsState extends State<PubTrends> {
   @override
   void initState() {
     super.initState();
+    imgWidgetList.add(uImgWidget());
+  }
+
+  // 上传图片 Widget
+  Widget uImgWidget() {
+    return Container(
+      width: 120,
+      height: 120,
+      decoration: BoxDecoration(
+          color: Color(0xffeaeaea), borderRadius: BorderRadius.circular(8)),
+      child: InkWell(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(Icons.photo_camera, size: 46, color: Color(0xff22d47e)),
+              SizedBox(height: 4),
+              Text("上传图片", style: TextStyle(fontSize: 14))
+            ],
+          ),
+          onTap: () => onHeadImg(context)),
+    );
+  }
+
+  // 删除图片
+  void delWidget(int index) {
+    imgWidgetList.removeAt(index);
+    setState(() {});
+    print(imgWidgetList.length);
+      // imgWidgetList.insert(imgWidgetList.length,uImgWidget());
+    if (imgWidgetList.length  == 5) {
+    }
+  }
+
+  List<Widget> imgWidgetList = [];
+
+  // 图片列表 Widget
+  Widget imgWidget(String value, int i) {
+    return Container(
+        decoration: BoxDecoration(
+            color: Color(0xfff3f3f3), borderRadius: BorderRadius.circular(8)),
+        child: Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.memory(base64.decode(value),
+                  width: 120, height: 120, fit: BoxFit.fitHeight),
+            ),
+            Positioned(
+                right: 0,
+                top: 0,
+                child: InkWell(
+                    child: Container(
+                      alignment: Alignment(1, -1),
+                      width: 40,
+                      height: 40,
+                      child: Image.asset(
+                        "assets/images/close.png",
+                        width: 24,
+                        height: 24,
+                        scale: 0.5,
+                      ),
+                    ),
+                    onTap: () => delWidget(i)))
+          ],
+        ));
   }
 
   // 监听文字输入
@@ -59,9 +126,9 @@ class _PubTrendsState extends State<PubTrends> {
                 alignment: Alignment(0, 0),
                 height: 130 / 2 - 4,
                 child:
-                InkWell(child: Text("拍照", style: TextStyle(fontSize: 18))),
+                    InkWell(child: Text("拍照", style: TextStyle(fontSize: 18))),
               ),
-              onTap: ()=>handleCamera(true),
+              onTap: () => handleCamera(true),
             ),
             InkWell(
                 child: Container(
@@ -73,60 +140,60 @@ class _PubTrendsState extends State<PubTrends> {
                     style: TextStyle(fontSize: 18),
                   ),
                 ),
-                onTap: ()=>handleCamera(false)
-            ),
+                onTap: () => handleCamera(false)),
           ],
         ));
   }
+  // 待上传的图
+  List<MultipartFile> mf = [];
+
   // 拍照 相册调用
   void handleCamera(bool flag) async {
+    // 防止键盘遮挡
+    FocusManager.instance.primaryFocus?.unfocus();
     Navigator.pop(context); // 用于底部弹框关闭
     try {
       final camera = ImageSource.camera;
       // 拍照
-      if(flag){
-      final XFile? imgFile = await imgPicker.pickImage(source: camera);
-      if (imgFile != null) {
-        File file = File(imgFile.path);
-        // 转换为 Base64 用于展示
-        final imageBytes = await file.readAsBytes();
-        String base64Img = base64Encode(imageBytes);
-        // setState(() {
-        //   headimg = base64Img;
-        // });
+      if (flag) {
+        final XFile? imgFile = await imgPicker.pickImage(source: camera);
+        if (imgFile != null) {
+          File file = File(imgFile.path);
+          // 转换为 Base64 用于展示
+          final imageBytes = await file.readAsBytes();
+          String base64Img = base64Encode(imageBytes);
+          // setState(() {
+          //   headimg = base64Img;
+          // });
 
-
-        // 转换为 FormData
-        FormData formData = new FormData.fromMap({
-          "file":await MultipartFile.fromFile(imgFile.path,filename: imgFile.name),
-        });
-        Map res = await uploadReq.uploadImages(formData);
-
-      }
-      }else{
+          // 转换为 FormData
+          FormData formData = new FormData.fromMap({
+            "file": await MultipartFile.fromFile(imgFile.path,
+                filename: imgFile.name),
+          });
+          Map res = await uploadReq.uploadImages(formData);
+        }
+      } else {
         // 相册多选
         final List<XFile>? imgList = await imgPicker.pickMultiImage();
         if (imgList != null) {
-          print(imgList);
-          // 存放遍历完的多图
-          List<MultipartFile> mf = [];
           // 遍历选取的多图
-          for(var i = 0; i < imgList.length; i++){
-            mf.add(MultipartFile.fromFileSync(imgList[i].path, filename: imgList[i].name));
-          }
-          // File file = File(imgFileList.path);
-          // // 转换为 Base64 用于展示
-          // final imageBytes = await file.readAsBytes();
-          // String base64Img = base64Encode(imageBytes);
-          // 转换为 FormData
-          FormData formData = new FormData.fromMap({
-            "file":mf
-          });
-          Map res = await uploadReq.uploadImages(formData);
+          for (var i = 0; i < imgList.length; i++) {
+            final imgs = imgList[i];
+            mf.add(MultipartFile.fromFileSync(imgs.path, filename: imgs.name));
+            File file = File(imgs.path);
+            // 转换为 Base64
+            final imageBytes = await file.readAsBytes();
+            String base64Img = base64Encode(imageBytes);
 
+            imgWidgetList.insert(0, imgWidget(base64Img, i));
+            if (imgWidgetList.length > 6) {
+              imgWidgetList.removeAt(imgWidgetList.length - 1);
+            }
+            setState(() {});
+          }
         }
       }
-
     } catch (e) {
       print(e);
       errToast();
@@ -143,13 +210,17 @@ class _PubTrendsState extends State<PubTrends> {
           return CustomBottomSheet(context);
         });
   }
+
   // 发布动态
   void saveProfile(context) async {
     print(map["text"]);
-    return;
     try {
+      // 转换为 FormData
+      FormData formData = new FormData.fromMap({"file": mf});
+      // 先上传图片
+      Map imgRes = await uploadReq.uploadImages(formData);
+      map["images"] = imgRes["data"];
       Map res = await trendsReq.publishTrends(map);
-      print("立即发布>>> ${res}");
       if (res["code"] == 200) {
         FocusManager.instance.primaryFocus?.unfocus(); // 收起键盘
         // Navigator.pop(context);
@@ -213,64 +284,65 @@ class _PubTrendsState extends State<PubTrends> {
             )
           ]),
           SizedBox(height: 20),
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Container(
-              width: 120,
-              height: 120,
-              margin: EdgeInsets.only(left: 20),
-              decoration: BoxDecoration(
-                  color: Color(0xffeaeaea),
-                  borderRadius: BorderRadius.circular(8)),
-              child: InkWell(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(Icons.photo_camera,
-                          size: 46, color: Color(0xff22d47e)),
-                      SizedBox(height: 4),
-                      Text("上传图片", style: TextStyle(fontSize: 14))
-                    ],
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 15),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              GridView(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  physics: BouncingScrollPhysics(),
+                  // IOS的回弹属性
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3, // 主轴一行的数量
+                    mainAxisSpacing: 10, // 主轴每行间距
+                    crossAxisSpacing: 10, // 交叉轴每行间距
+                    childAspectRatio: 1, // item的宽高比
                   ),
-                  onTap:  () => onHeadImg(context)),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 18, vertical: 20),
-              decoration: BoxDecoration(
-                  border: Border(
-                      top: BorderSide(width: 1, color: Color(0xfff5f5f5)))),
-              child: TextField(
-                  // 光标颜色
-                  cursorColor: Color(0xff22d47e),
-                  // 取消自动获取焦点
-                  autofocus: false,
-                  maxLines: 6,
-                  style: TextStyle(fontSize: 16),
-                  decoration: InputDecoration(
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 0, vertical: 15),
-                      // 取消内边距 isDense不可忽略
-                      isDense: true,
-                      // 取消边框
-                      border: OutlineInputBorder(borderSide: BorderSide.none),
-                      hintText: '发表动态也是一种收获',
-                      hintStyle:
-                          TextStyle(color: Color(0xffd9d9d9), fontSize: 16)),
-                  inputFormatters: <TextInputFormatter>[
-                    LengthLimitingTextInputFormatter(maxnum) //限制长度
-                  ],
-                  controller: ProfileController,
-                  onChanged: textChanged),
-            ),
-            Container(
-                margin: EdgeInsets.symmetric(horizontal: 15),
-                child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      maxTextNum,
-                      style: TextStyle(color: Color(0xff8d8d8d), fontSize: 14),
-                    )))
-          ])
+                  children: imgWidgetList.asMap().entries.map((entry) {
+                    int index = entry.key;
+                    Widget widget = entry.value;
+                    return widget;
+                  }).toList()),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 18, vertical: 20),
+                decoration: BoxDecoration(
+                    border: Border(
+                        top: BorderSide(width: 1, color: Color(0xfff5f5f5)))),
+                child: TextField(
+                    // 光标颜色
+                    cursorColor: Color(0xff22d47e),
+                    // 取消自动获取焦点
+                    autofocus: false,
+                    maxLines: 6,
+                    style: TextStyle(fontSize: 16),
+                    decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 0, vertical: 15),
+                        // 取消内边距 isDense不可忽略
+                        isDense: true,
+                        // 取消边框
+                        border: OutlineInputBorder(borderSide: BorderSide.none),
+                        hintText: '发表动态也是一种收获',
+                        hintStyle:
+                            TextStyle(color: Color(0xffd9d9d9), fontSize: 16)),
+                    inputFormatters: <TextInputFormatter>[
+                      LengthLimitingTextInputFormatter(maxnum) //限制长度
+                    ],
+                    controller: ProfileController,
+                    onChanged: textChanged),
+              ),
+              Container(
+                  margin: EdgeInsets.symmetric(horizontal: 15),
+                  child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        maxTextNum,
+                        style:
+                            TextStyle(color: Color(0xff8d8d8d), fontSize: 14),
+                      )))
+            ]),
+          )
         ],
       ),
     );
