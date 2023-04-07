@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:sunset/components/toast.dart';
+import 'package:sunset/utils/api/trends_req.dart';
 
 class Community extends StatefulWidget {
   const Community({Key? key}) : super(key: key);
@@ -14,6 +16,8 @@ class Community extends StatefulWidget {
 class _CommunityState extends State<Community> with TickerProviderStateMixin {
   List tabBar = ["最新", "精选", "关注"];
   List list = ['', '', '', ''];
+  int total = 0; // 动态总数
+  Map<String, dynamic> pageMap = new Map();
   int activeBar = 0;
   double tranBar = 75; // 初始值为头像宽度+右边距
 
@@ -21,11 +25,31 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
   late Animation<Offset> offsetAnimation;
   double sx = 2.7;
   double ex = 2.7;
+  TrendsReq trendsReq = new TrendsReq();
 
   @override
   void initState() {
     super.initState();
     changeTabBarAn(0);
+    getTrends();
+  }
+
+  // 最新的动态列表
+  void getTrends() async {
+    try {
+      pageMap["page_num"] = "1";
+      pageMap["page_rows"] = "2";
+      Map res = await trendsReq.getTrends(pageMap);
+      if (res["code"] == 200) {
+        print("动态列表>>" + res["data"]);
+        // list = res["data"]["list"];
+        // total = res["data"]["total"];
+        setState(() {});
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
   }
 
   @override
@@ -54,9 +78,15 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
   }
 
   Widget build(BuildContext context) {
-    double mWidth = MediaQuery.of(context).size.width; // 屏幕宽度
+    double mWidth = MediaQuery
+        .of(context)
+        .size
+        .width; // 屏幕宽度
     double topBarHeight =
-        MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
+        MediaQueryData
+            .fromWindow(window)
+            .padding
+            .top; // 沉浸栏高度
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -92,52 +122,57 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                       ),
                       Expanded(
                           child: Container(
-                        child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: tabBar.asMap().entries.map((entry) {
-                              int index = entry.key;
-                              String item = entry.value;
-                              return Expanded(
-                                  child: InkWell(
-                                      child: Container(
-                                          alignment: index == 0
-                                              ? Alignment.centerLeft
-                                              : index == 1
+                            child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceBetween,
+                                children: tabBar
+                                    .asMap()
+                                    .entries
+                                    .map((entry) {
+                                  int index = entry.key;
+                                  String item = entry.value;
+                                  return Expanded(
+                                      child: InkWell(
+                                          child: Container(
+                                              alignment: index == 0
+                                                  ? Alignment.centerLeft
+                                                  : index == 1
                                                   ? Alignment.center
                                                   : Alignment.centerRight,
-                                          height: 34,
-                                          child: Text(item,
-                                              style: TextStyle(
-                                                  color: Color(
-                                                      activeBar == index
-                                                          ? 0xff000000
-                                                          : 0xffc2c2c2),
-                                                  fontSize: activeBar == index
-                                                      ? 20
-                                                      : 16,
-                                                  fontWeight:
+                                              height: 34,
+                                              child: Text(item,
+                                                  style: TextStyle(
+                                                      color: Color(
+                                                          activeBar == index
+                                                              ? 0xff000000
+                                                              : 0xffc2c2c2),
+                                                      fontSize: activeBar ==
+                                                          index
+                                                          ? 20
+                                                          : 16,
+                                                      fontWeight:
                                                       FontWeight.w800))),
-                                      onTap: () {
-                                        setState(() {
-                                          activeBar = index;
-                                          if (index == 0) {
-                                            tranBar = 75; // 初始值为头像宽度+右边距
-                                          } else if (index == 1) {
-                                            tranBar = (mWidth / 2) -
-                                                26; // 26：变粗字体的宽度，粗略估计
-                                          } else if (index == 2) {
-                                            tranBar = mWidth -
-                                                55 -
-                                                44 -
-                                                8 -
-                                                20; // 55：左边头像宽度+左边距  44：右边铃铛宽度+右边距  10：字体的宽度取半 粗略估计
-                                          }
-                                        });
-                                        changeTabBarAn(activeBar);
-                                      }));
-                            }).toList()),
-                      )),
+                                          onTap: () {
+                                            setState(() {
+                                              activeBar = index;
+                                              if (index == 0) {
+                                                tranBar = 75; // 初始值为头像宽度+右边距
+                                              } else if (index == 1) {
+                                                tranBar = (mWidth / 2) -
+                                                    26; // 26：变粗字体的宽度，粗略估计
+                                              } else if (index == 2) {
+                                                tranBar = mWidth -
+                                                    55 -
+                                                    44 -
+                                                    8 -
+                                                    20; // 55：左边头像宽度+左边距  44：右边铃铛宽度+右边距  10：字体的宽度取半 粗略估计
+                                              }
+                                            });
+                                            changeTabBarAn(activeBar);
+                                          }));
+                                }).toList()),
+                          )),
                       Container(
                         margin: EdgeInsets.only(left: 40),
                         width: 24,
@@ -194,12 +229,9 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
         ]),
         Expanded(
             child: Stack(children: [
-          MediaQuery.removePadding(
-              // 去除顶部留白
-              context: context,
-              removeTop: true,
-              removeBottom: true,
-              child: ListView.builder(
+              ListView.builder(
+                // 取消顶部留白
+                  padding: EdgeInsets.zero,
                   physics: BouncingScrollPhysics(),
                   // ClampingScrollPhysics 安卓滑动效果 BouncingScrollPhysics IOS滑动效果
                   itemCount: list.length,
@@ -208,8 +240,8 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                         width: double.infinity,
                         color: Colors.white,
                         margin: EdgeInsets.only(bottom: 8),
-                        padding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 15, horizontal: 15),
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -220,8 +252,8 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                       height: 38,
                                       margin: EdgeInsets.only(right: 8),
                                       child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(38),
+                                          borderRadius: BorderRadius.circular(
+                                              38),
                                           child: Image.asset(
                                               "assets/images/400x400.jpg",
                                               fit: BoxFit.cover))),
@@ -252,11 +284,9 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Icon(
-                                          IconData(0xeaf3,
-                                              fontFamily: 'sunfont'),
-                                          size: 10,
-                                          color: Color(0xff22d47e)),
+                                      Icon(IconData(
+                                          0xeaf3, fontFamily: 'sunfont'),
+                                          size: 10, color: Color(0xff22d47e)),
                                       Text("关注",
                                           style: TextStyle(
                                               fontSize: 12,
@@ -267,12 +297,11 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                               ]),
                               SizedBox(height: 10),
                               InkWell(
-                                child: Text(
-                                    "浔阳江头夜送客，枫叶荻花秋瑟瑟，主人下马客在船，举酒欲饮无管弦。醉不成欢惨将别，别时茫茫江浸月。忽闻水上琵琶声，主人忘归客不发。寻声暗问弹者谁？琵琶声停欲语迟。",
-                                    style:
-                                        TextStyle(fontSize: 14, height: 1.7)),
-                                onTap: () => toPage("dynamicDetail", {})
-                              ),
+                                  child: Text(
+                                      "浔阳江头夜送客，枫叶荻花秋瑟瑟，主人下马客在船，举酒欲饮无管弦。醉不成欢惨将别，别时茫茫江浸月。忽闻水上琵琶声，主人忘归客不发。寻声暗问弹者谁？琵琶声停欲语迟。",
+                                      style: TextStyle(
+                                          fontSize: 14, height: 1.7)),
+                                  onTap: () => toPage("dynamicDetail", {})),
                               Container(
                                   margin: EdgeInsets.only(top: 20),
                                   child: GridView.builder(
@@ -281,7 +310,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                       physics: NeverScrollableScrollPhysics(),
                                       // 禁止滑动
                                       gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                      SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 3, // 主轴一行的数量
                                         mainAxisSpacing: 6, // 主轴每行间距
                                         crossAxisSpacing: 6, // 交叉轴每行间距
@@ -296,8 +325,8 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                                     fit: BoxFit.fitWidth),
                                                 shape: RoundedRectangleBorder(
                                                     borderRadius:
-                                                        BorderRadiusDirectional
-                                                            .circular(6)))));
+                                                    BorderRadiusDirectional
+                                                        .circular(6)))));
                                       })),
                               Container(
                                   margin: EdgeInsets.only(top: 12, bottom: 10),
@@ -312,16 +341,16 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                           fontSize: 12))),
                               InkWell(
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment
+                                      .spaceBetween,
                                   children: [
                                     Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .center,
                                       children: [
                                         Icon(
-                                            IconData(0xec7f,
-                                                fontFamily: 'sunfont'),
+                                            IconData(
+                                                0xec7f, fontFamily: 'sunfont'),
                                             size: 18,
                                             color: Color(0xffbbbbbb)),
                                         SizedBox(width: 6),
@@ -339,12 +368,12 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                       ],
                                     ),
                                     Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .center,
                                       children: [
                                         Icon(
-                                            IconData(0xe600,
-                                                fontFamily: 'sunfont'),
+                                            IconData(
+                                                0xe600, fontFamily: 'sunfont'),
                                             size: 20,
                                             color: Color(0xffbbbbbb)),
                                         SizedBox(width: 6),
@@ -363,8 +392,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                     ),
                                     Icon(
                                         IconData(0xe617, fontFamily: 'sunfont'),
-                                        size: 18,
-                                        color: Color(0xffbbbbbb)),
+                                        size: 18, color: Color(0xffbbbbbb)),
                                   ],
                                 ),
                                 onTap: () => toPage("dynamicDetail", {}),
@@ -380,8 +408,8 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                         color: Color(0xfff3f3f3),
                                         borderRadius: BorderRadius.circular(8)),
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .start,
                                       children: [
                                         RichText(
                                             text: TextSpan(
@@ -390,12 +418,12 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                                     color: Color(0xff22d47e),
                                                     fontSize: 12),
                                                 children: <TextSpan>[
-                                              TextSpan(
-                                                  text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 12)),
-                                            ])),
+                                                  TextSpan(
+                                                      text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 12)),
+                                                ])),
                                         SizedBox(height: 8),
                                         RichText(
                                             text: TextSpan(
@@ -404,12 +432,12 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                                     color: Color(0xff22d47e),
                                                     fontSize: 12),
                                                 children: <TextSpan>[
-                                              TextSpan(
-                                                  text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 12)),
-                                            ])),
+                                                  TextSpan(
+                                                      text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 12)),
+                                                ])),
                                         SizedBox(height: 8),
                                         Text("查看全部评论",
                                             style: TextStyle(
@@ -420,34 +448,35 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                   ),
                                   onTap: () => toPage("dynamicDetail", {}))
                             ]));
-                  })),
-          Positioned(
-              bottom: 50,
-              right: 30,
-              child: InkWell(
-                  borderRadius: new BorderRadius.all(
-                      new Radius.circular(70.0)), // 点击水波纹是圆角的，默认是矩形的
-                  child: Container(
-                      width: 70,
-                      height: 70,
-                      decoration: BoxDecoration(
-                          color: Color(0xff22d47e),
-                          borderRadius: BorderRadius.circular(70),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.5), // 阴影颜色
-                              offset: Offset(10, 20), // 阴影与容器的距离 x,y
-                              blurRadius: 40.0, // 高斯模糊值。
-                              spreadRadius: 2.0, // 阴影范围量
-                            ),
-                          ]),
-                      child: Align(
-                          child: Icon(IconData(0xe609, fontFamily: 'sunfont'),
-                              size: 34, color: Colors.white))),
-                  onTap: () {
-                    print("发布");
-                  }))
-        ]))
+                  }),
+              Positioned(
+                  bottom: 50,
+                  right: 30,
+                  child: InkWell(
+                      borderRadius: new BorderRadius.all(
+                          new Radius.circular(70.0)), // 点击水波纹是圆角的，默认是矩形的
+                      child: Container(
+                          width: 70,
+                          height: 70,
+                          decoration: BoxDecoration(
+                              color: Color(0xff22d47e),
+                              borderRadius: BorderRadius.circular(70),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.5), // 阴影颜色
+                                  offset: Offset(10, 20), // 阴影与容器的距离 x,y
+                                  blurRadius: 40.0, // 高斯模糊值。
+                                  spreadRadius: 2.0, // 阴影范围量
+                                ),
+                              ]),
+                          child: Align(
+                              child: Icon(
+                                  IconData(0xe609, fontFamily: 'sunfont'),
+                                  size: 34, color: Colors.white))),
+                      onTap: () {
+                        print("发布");
+                      }))
+            ]))
       ],
     );
   }
