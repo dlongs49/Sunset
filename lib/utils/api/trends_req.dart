@@ -27,4 +27,16 @@ class TrendsReq {
     return await http.get(
         "/trends/user/follow", data);
   }
+  // 发送评论
+  Future<Map> getComment(params) async {
+    Map<String, dynamic> data = params;
+    return await http.post(
+        "/trends/pub/comment", data);
+  }
+  // 获取评论列表
+  Future<Map> getComment(params) async {
+    Map<String, dynamic> data = params;
+    return await http.post(
+        "/trends/get/comment", data);
+  }
 }
