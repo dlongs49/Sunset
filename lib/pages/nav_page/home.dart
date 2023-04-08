@@ -95,8 +95,16 @@ class _HomeState extends State<Home> {
   }
 
   // 页面跳转
-  void toPage(String url) {
-    Navigator.pushNamed(context, url);
+  void toPage(String url, dynamic arg) {
+    if (url == "community") {
+      // Navigator.pushNamed(context, url);
+    }
+    if (url == "dynamicDetail") {
+      Navigator.pushNamed(context, url, arguments: {"trends_id": arg["id"]});
+    }
+    if(url == "myDevice"){
+      Navigator.pushNamed(context, url);
+    }
   }
 
   // 轮播图跳转
@@ -385,7 +393,7 @@ class _HomeState extends State<Home> {
                         Icon(IconData(0xeb8a, fontFamily: 'sunfont'),
                             size: 10, color: Color.fromRGBO(120, 120, 120, 1))
                       ])),
-                  onTap: () => toPage("myDevice"))
+                  onTap: () => toPage("myDevice",null))
             ],
           ),
           Container(
@@ -462,7 +470,7 @@ class _HomeState extends State<Home> {
                           Icon(IconData(0xeb8a, fontFamily: 'sunfont'),
                               size: 10, color: Color.fromRGBO(120, 120, 120, 1))
                         ])),
-                    onTap: () => toPage(""))
+                    onTap: () => toPage("community", null))
               ],
             ),
           ),
@@ -488,7 +496,8 @@ class _HomeState extends State<Home> {
                                   borderRadius: BorderRadius.circular(8),
                                   child: Stack(
                                     children: [
-                                      Image.network("${baseUrl}${trendsList[index]['images'][0]}",
+                                      Image.network(
+                                          "${baseUrl}${trendsList[index]['images'][0]}",
                                           fit: BoxFit.cover,
                                           width: 120,
                                           height: 120)
@@ -561,7 +570,7 @@ class _HomeState extends State<Home> {
                             )
                           ],
                         )),
-                    onTap: () {});
+                    onTap: () => toPage("dynamicDetail", trendsList[index]));
               },
             ),
           ),

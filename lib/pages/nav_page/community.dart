@@ -18,7 +18,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
   List tabBar = ["最新", "精选", "关注"];
   List<dynamic> list = [];
   int total = 0; // 动态总数
-  Map<String, dynamic> pageMap = {"page_num": 1, "page_rows": 1};
+  Map<String, dynamic> pageMap = {"page_num": 1, "page_rows": 6};
   int activeBar = 0;
   double tranBar = 75; // 初始值为头像宽度+右边距
 
@@ -301,32 +301,35 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                               ),
                               onTap: () =>
                                   toPage("dynamicDetail", list[index])),
-                          Container(
-                              child: GridView.builder(
-                                  padding: EdgeInsets.zero,
-                                  shrinkWrap: true,
-                                  itemCount: list[index]["images"].length,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  // 禁止滑动
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3, // 主轴一行的数量
-                                    mainAxisSpacing: 6, // 主轴每行间距
-                                    crossAxisSpacing: 6, // 交叉轴每行间距
-                                    childAspectRatio: 1, // item的宽高比
-                                  ),
-                                  itemBuilder: (context, idx) {
-                                    return (Container(
-                                        decoration: ShapeDecoration(
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    "$baseUrl${list[index]["images"][idx]}"),
-                                                fit: BoxFit.fitWidth),
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadiusDirectional
-                                                        .circular(6)))));
-                                  })),
+                          list[index]["images"] != null &&
+                                  list[index]["images"].length != 0
+                              ? Container(
+                                  child: GridView.builder(
+                                      padding: EdgeInsets.zero,
+                                      shrinkWrap: true,
+                                      itemCount: list[index]["images"].length,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      // 禁止滑动
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3, // 主轴一行的数量
+                                        mainAxisSpacing: 6, // 主轴每行间距
+                                        crossAxisSpacing: 6, // 交叉轴每行间距
+                                        childAspectRatio: 1, // item的宽高比
+                                      ),
+                                      itemBuilder: (context, idx) {
+                                        return (Container(
+                                            decoration: ShapeDecoration(
+                                                image: DecorationImage(
+                                                    image: NetworkImage(
+                                                        "$baseUrl${list[index]["images"][idx]}"),
+                                                    fit: BoxFit.fitWidth),
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadiusDirectional
+                                                            .circular(6)))));
+                                      }))
+                              : Container(),
                           Container(
                               margin: EdgeInsets.only(top: 12, bottom: 10),
                               padding: EdgeInsets.symmetric(
@@ -393,55 +396,61 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                   size: 18, color: Color(0xffbbbbbb)),
                             ],
                           ),
-                          InkWell(
-                              child: Container(
-                                width: double.infinity,
-                                margin: EdgeInsets.only(top: 14),
-                                constraints: BoxConstraints(minHeight: 50),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 10),
-                                decoration: BoxDecoration(
-                                    color: Color(0xfff3f3f3),
-                                    borderRadius: BorderRadius.circular(8)),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Column(
-                                      children: list[index]["comment_list"]
-                                          .asMap()
-                                          .entries
-                                          .map<Widget>((entry) {
-                                        final item = entry.value;
-                                        return Container(
-                                            alignment: Alignment.topLeft,
-                                            margin: EdgeInsets.only(bottom: 6),
-                                            child: RichText(
-                                                text: TextSpan(
-                                                    text:
-                                                        item["nickname"] + "：",
-                                                    style: TextStyle(
-                                                        color:
-                                                            Color(0xff22d47e),
-                                                        fontSize: 13),
-                                                    children: <TextSpan>[
-                                                  TextSpan(
-                                                      text: item["comment"],
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 12)),
-                                                ])));
-                                      }).toList(),
+                          list[index]["comment_num"] != 0
+                              ? InkWell(
+                                  child: Container(
+                                    width: double.infinity,
+                                    margin: EdgeInsets.only(top: 14),
+                                    constraints: BoxConstraints(minHeight: 50),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 10),
+                                    decoration: BoxDecoration(
+                                        color: Color(0xfff3f3f3),
+                                        borderRadius: BorderRadius.circular(8)),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Column(
+                                          children: list[index]["comment_list"]
+                                              .asMap()
+                                              .entries
+                                              .map<Widget>((entry) {
+                                            final item = entry.value;
+                                            return Container(
+                                                alignment: Alignment.topLeft,
+                                                margin:
+                                                    EdgeInsets.only(bottom: 6),
+                                                child: RichText(
+                                                    text: TextSpan(
+                                                        text: item["nickname"] +
+                                                            "：",
+                                                        style: TextStyle(
+                                                            color: Color(
+                                                                0xff22d47e),
+                                                            fontSize: 13),
+                                                        children: <TextSpan>[
+                                                      TextSpan(
+                                                          text: item["comment"],
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontSize: 12)),
+                                                    ])));
+                                          }).toList(),
+                                        ),
+                                        list[index]["comment_num"] > 3
+                                            ? Text("查看全部评论",
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Color(0xff7b7b7b)))
+                                            : Container()
+                                      ],
                                     ),
-                                    list[index]["comment_num"] > 3
-                                        ? Text("查看全部评论",
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: Color(0xff7b7b7b)))
-                                        : Container()
-                                  ],
-                                ),
-                              ),
-                              onTap: () => toPage("dynamicDetail", list[index]))
+                                  ),
+                                  onTap: () =>
+                                      toPage("dynamicDetail", list[index]))
+                              : Container()
                         ]));
               }),
           Positioned(
