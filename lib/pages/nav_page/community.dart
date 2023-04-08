@@ -75,6 +75,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
     Map<String,dynamic> arguments = new Map();
     if(path == "userInfo"){
       arguments["uid"] = arg["uid"];
+      arguments["trends_id"] = arg["id"];
     }
     Navigator.pushNamed(context, path, arguments:arguments);
   }

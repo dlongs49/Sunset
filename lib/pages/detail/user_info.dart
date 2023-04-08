@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/trends_req.dart';
+import 'package:sunset/utils/request.dart';
 
 class UserInfo extends StatefulWidget {
   final arguments; // 路由带的参数
@@ -22,17 +23,34 @@ class _UserInfoState extends State<UserInfo> {
 
   void initState(){
     super.initState();
-    getTrendsDetail();
+    getDetail();
   }
-  Map item = new Map();
-  Future<void> getTrendsDetail() async {
+  Map detail = new Map();
+  Map uinfo = {
+    "nickname": "",
+    "avator": "",
+    "description": "",
+    "constellation": "",
+    "following": "0",
+    "followers": "0",
+    "star": "0"
+  };
+  // 动态详情 & 粉丝，关注，获赞
+  Future<void> getDetail() async {
     try {
-      Map res = await trendsReq.getTrends({"trends_id":arguments["uid"]});
-      print("动态详情>>${res["data"]}");
-      if (res["code"] == 200) {
-        item = res["data"];
+      Map trendsRes = await trendsReq.getTrendsDetail({"trends_id":arguments["trends_id"]});
+      print("动态详情>>${trendsRes["data"]}");
+      if (trendsRes["code"] == 200) {
+        detail = trendsRes["data"];
         setState(() {});
       }
+      Map follRes = await trendsReq.getFollow({"uid":arguments["uid"]});
+      print("粉丝，关注，获赞>>${follRes}");
+      if (follRes["code"] == 200) {
+        uinfo = follRes["data"];
+        setState(() {});
+      }
+
     } catch (e) {
       print(e);
       errToast();
@@ -61,7 +79,7 @@ class _UserInfoState extends State<UserInfo> {
                   width: double.infinity,
                   height: 300,
                   child:
-                      Image.asset("assets/images/3044.jpg", fit: BoxFit.cover),
+                      Image.network("${baseUrl}${uinfo["avator"]}", fit: BoxFit.cover),
                 ),
                 BackdropFilter(
                   filter: ImageFilter.blur(
@@ -86,15 +104,15 @@ class _UserInfoState extends State<UserInfo> {
                                     Row(children: [
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(36),
-                                        child:Image.network(
-                                          "https://p.qqan.com/up/2021-5/16215608427768095.png",
+                                        child:Image.network("${baseUrl}${uinfo["avator"]}",
                                           width: 65,
                                           height: 65,
                                         )),
                                       SizedBox(width: 15),
                                       Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text("书本书华",style: TextStyle(color: Colors.white,fontSize: 22)),
+                                          Text(uinfo["nickname"],style: TextStyle(color: Colors.white,fontSize: 22)),
                                           SizedBox(height: 10),
                                           Container(
                                             padding: EdgeInsets.symmetric(vertical: 3,horizontal: 8),
@@ -104,10 +122,9 @@ class _UserInfoState extends State<UserInfo> {
                                             ),
                                             child: Row(
                                               children: [
-                                                // 0xe632 0xfffb859d
-                                                Icon(IconData(0xe612,fontFamily: "sunfont"),size:14,color: Color(0xff51aefe)),
+                                                Icon(IconData(uinfo["sex"] == 1 ? 0xe612 : 0xe632,fontFamily: "sunfont"),size:14,color: Color(uinfo["sex"] == 1 ? 0xff51aefe :0xfffb859d)),
                                                 SizedBox(width: 6),
-                                                Text("白羊座",style: TextStyle(fontSize: 13,color: Colors.white),)
+                                                Text(uinfo["constellation"],style: TextStyle(fontSize: 13,color: Colors.white),)
                                               ],
                                             )
                                           )
@@ -115,28 +132,28 @@ class _UserInfoState extends State<UserInfo> {
                                       )
                                     ],),
                                     SizedBox(height: 16),
-                                    Text("取半舍满，克己修身",style: TextStyle(fontSize: 14,color: Colors.white)),
+                                    Text(uinfo["description"] != null ? uinfo["description"] : "",style: TextStyle(fontSize: 14,color: Colors.white)),
                                     SizedBox(height: 25),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Row(children: [
                                           Column(children: [
-                                            Text("0",style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.w600)),
+                                            Text(uinfo["following"].toString(),style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.w600)),
                                             SizedBox(height: 5),
                                             Text("关注",style: TextStyle(color: Color(
                                                 0xfff3f3f3),fontSize: 14),)
                                           ]),
                                           SizedBox(width: 40),
                                           Column(children: [
-                                            Text("0",style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.w600)),
+                                            Text(uinfo["followers"].toString(),style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.w600)),
                                             SizedBox(height: 5),
                                             Text("粉丝",style: TextStyle(color: Color(
                                                 0xfff3f3f3),fontSize: 14),)
                                           ]),
                                           SizedBox(width: 40),
                                           Column(children: [
-                                            Text("0",style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.w600)),
+                                            Text(uinfo["star"].toString(),style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.w600)),
                                             SizedBox(height: 5),
                                             Text("获赞",style: TextStyle(color: Color(
                                                 0xfff3f3f3),fontSize: 14),)

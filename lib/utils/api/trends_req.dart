@@ -15,4 +15,16 @@ class TrendsReq {
     return await http.get(
         "/trends/get/list", data);
   }
+  // 动态详情
+  Future<Map> getTrendsDetail(params) async {
+    Map<String, dynamic> data = params;
+    return await http.get(
+        "/trends/get/detail", data);
+  }
+  // 粉丝，关注，获赞
+  Future<Map> getFollow(params) async {
+    Map<String, dynamic> data = params;
+    return await http.get(
+        "/trends/user/follow", data);
+  }
 }
