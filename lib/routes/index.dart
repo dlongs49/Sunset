@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:sunset/pages/nav_page/community.dart';
-import 'package:sunset/pages/nav_page/find.dart';
 import 'package:sunset/pages/pubTrends.dart';
 /* 内嵌H5 */
 import 'package:sunset/pages/webview/mall.dart'; // 我的-->香豆商城[淘宝]

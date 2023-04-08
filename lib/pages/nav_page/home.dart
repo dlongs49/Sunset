@@ -8,9 +8,7 @@ import 'package:sunset/components/toast.dart';
 import 'package:sunset/local_data/home.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/api/home_req.dart';
-import 'package:sunset/utils/api/trends_req.dart';
 import 'package:sunset/utils/request.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
