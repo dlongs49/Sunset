@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'dart:convert';
 import 'dart:ui';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
@@ -74,7 +72,11 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
   }
 
   void toPage(String path, dynamic arg) {
-    Navigator.pushNamed(context, path);
+    Map<String,dynamic> arguments = new Map();
+    if(path == "userInfo"){
+      arguments["uid"] = arg["uid"];
+    }
+    Navigator.pushNamed(context, path, arguments:arguments);
   }
 
   Widget build(BuildContext context) {
@@ -244,7 +246,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                       child: Image.network(
                                           "${baseUrl}${list[index]["avator"]}",
                                           fit: BoxFit.cover))),
-                              onTap: () => toPage("userInfo", {}),
+                              onTap: () => toPage("userInfo", list[index]),
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,

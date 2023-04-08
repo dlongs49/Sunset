@@ -3,15 +3,43 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
+import 'package:sunset/components/toast.dart';
+import 'package:sunset/utils/api/trends_req.dart';
 
 class UserInfo extends StatefulWidget {
-  const UserInfo({Key? key}) : super(key: key);
-
+  final arguments; // 路由带的参数
+  const UserInfo({Key? key, this.arguments}) : super(key: key);
   @override
-  _UserInfoState createState() => _UserInfoState();
+  _UserInfoState createState() => _UserInfoState(arguments: this.arguments);
 }
 
 class _UserInfoState extends State<UserInfo> {
+  /* 拿到路由传的值 */
+  final arguments;
+
+  _UserInfoState({this.arguments});
+  TrendsReq trendsReq = new TrendsReq();
+
+  void initState(){
+    super.initState();
+    getTrendsDetail();
+  }
+  Map item = new Map();
+  Future<void> getTrendsDetail() async {
+    try {
+      Map res = await trendsReq.getTrends({"trends_id":arguments["uid"]});
+      print("动态详情>>${res["data"]}");
+      if (res["code"] == 200) {
+        item = res["data"];
+        setState(() {});
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     double mWidth = MediaQuery.of(context).size.width; // 屏幕宽度
