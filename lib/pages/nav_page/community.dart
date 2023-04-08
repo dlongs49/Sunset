@@ -50,6 +50,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
       errToast();
     }
   }
+
   @override
   void changeTabBarAn(int index) {
     if (index == 0) {
@@ -72,12 +73,12 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
   }
 
   void toPage(String path, dynamic arg) {
-    Map<String,dynamic> arguments = new Map();
-    if(path == "userInfo"){
+    Map<String, dynamic> arguments = new Map();
+    if (path == "userInfo" || path == "dynamicDetail") {
       arguments["uid"] = arg["uid"];
       arguments["trends_id"] = arg["id"];
     }
-    Navigator.pushNamed(context, path, arguments:arguments);
+    Navigator.pushNamed(context, path, arguments: arguments);
   }
 
   Widget build(BuildContext context) {
@@ -287,13 +288,17 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                               ),
                             )
                           ]),
-                          SizedBox(height: 10),
                           InkWell(
-                              child: Text(list[index]["text"],
-                                  style: TextStyle(fontSize: 14, height: 1.7)),
-                              onTap: () => toPage("dynamicDetail", {})),
+                              child: Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.only(top: 10, bottom: 15),
+                                child: Text(list[index]["text"],
+                                    style:
+                                        TextStyle(fontSize: 14, height: 1.7)),
+                              ),
+                              onTap: () =>
+                                  toPage("dynamicDetail", list[index])),
                           Container(
-                              margin: EdgeInsets.only(top: 15),
                               child: GridView.builder(
                                   padding: EdgeInsets.zero,
                                   shrinkWrap: true,
@@ -311,7 +316,8 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                     return (Container(
                                         decoration: ShapeDecoration(
                                             image: DecorationImage(
-                                                image: NetworkImage("$baseUrl${list[index]["images"][idx]}"),
+                                                image: NetworkImage(
+                                                    "$baseUrl${list[index]["images"][idx]}"),
                                                 fit: BoxFit.fitWidth),
                                             shape: RoundedRectangleBorder(
                                                 borderRadius:
@@ -328,57 +334,60 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                               child: Text("#运动就是坚持#",
                                   style: TextStyle(
                                       color: Color(0xff22d47e), fontSize: 12))),
-                          InkWell(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                        IconData(0xec7f, fontFamily: 'sunfont'),
-                                        size: 18,
-                                        color: Color(0xffbbbbbb)),
-                                    SizedBox(width: 6),
-                                    Text("赞",
-                                        style: TextStyle(
-                                            color: Color(0xffbbbbbb),
-                                            height: 1.5,
-                                            fontSize: 14)),
-                                    SizedBox(width: 4),
-                                    Text(list[index]["star"] != null ? list[index]["star"] : "",
-                                        style: TextStyle(
-                                            color: Color(0xffbbbbbb),
-                                            height: 1.7,
-                                            fontSize: 14))
-                                  ],
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                        IconData(0xe600, fontFamily: 'sunfont'),
-                                        size: 20,
-                                        color: Color(0xffbbbbbb)),
-                                    SizedBox(width: 6),
-                                    Text("评论",
-                                        style: TextStyle(
-                                            color: Color(0xffbbbbbb),
-                                            height: 1.4,
-                                            fontSize: 14)),
-                                    SizedBox(width: 4),
-                                    Text("2",
-                                        style: TextStyle(
-                                            color: Color(0xffbbbbbb),
-                                            height: 1.4,
-                                            fontSize: 14))
-                                  ],
-                                ),
-                                Icon(IconData(0xe617, fontFamily: 'sunfont'),
-                                    size: 18, color: Color(0xffbbbbbb)),
-                              ],
-                            ),
-                            onTap: () => toPage("dynamicDetail", {}),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(IconData(0xec7f, fontFamily: 'sunfont'),
+                                      size: 18, color: Color(0xffbbbbbb)),
+                                  SizedBox(width: 6),
+                                  Text("赞",
+                                      style: TextStyle(
+                                          color: Color(0xffbbbbbb),
+                                          height: 1.5,
+                                          fontSize: 14)),
+                                  SizedBox(width: 4),
+                                  Text(
+                                      list[index]["star"] != null
+                                          ? list[index]["star"]
+                                          : "",
+                                      style: TextStyle(
+                                          color: Color(0xffbbbbbb),
+                                          height: 1.7,
+                                          fontSize: 14))
+                                ],
+                              ),
+                              InkWell(
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                          IconData(0xe600,
+                                              fontFamily: 'sunfont'),
+                                          size: 20,
+                                          color: Color(0xffbbbbbb)),
+                                      SizedBox(width: 6),
+                                      Text("评论",
+                                          style: TextStyle(
+                                              color: Color(0xffbbbbbb),
+                                              height: 1.4,
+                                              fontSize: 14)),
+                                      SizedBox(width: 4),
+                                      Text("2",
+                                          style: TextStyle(
+                                              color: Color(0xffbbbbbb),
+                                              height: 1.4,
+                                              fontSize: 14))
+                                    ],
+                                  ),
+                                  onTap: () =>
+                                      toPage("dynamicDetail", list[index])),
+                              Icon(IconData(0xe617, fontFamily: 'sunfont'),
+                                  size: 18, color: Color(0xffbbbbbb)),
+                            ],
                           ),
                           InkWell(
                               child: Container(
@@ -428,7 +437,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                   ],
                                 ),
                               ),
-                              onTap: () => toPage("dynamicDetail", {}))
+                              onTap: () => toPage("dynamicDetail", list[index]))
                         ]));
               }),
           Positioned(
@@ -454,7 +463,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                       child: Align(
                           child: Icon(IconData(0xe609, fontFamily: 'sunfont'),
                               size: 34, color: Colors.white))),
-                  onTap: ()=>toPage("pubTrends",null)))
+                  onTap: () => toPage("pubTrends", null)))
         ]))
       ],
     );

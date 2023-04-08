@@ -381,52 +381,55 @@ class _UserInfoState extends State<UserInfo> {
                                         size: 18, color: Color(0xffbbbbbb)),
                                   ],
                                 ),
-                                Container(
-                                  width: double.infinity,
-                                  margin: EdgeInsets.only(top: 14),
-                                  constraints: BoxConstraints(minHeight: 50),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 10),
-                                  decoration: BoxDecoration(
-                                      color: Color(0xfff3f3f3),
-                                      borderRadius: BorderRadius.circular(8)),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      RichText(
-                                          text: TextSpan(
-                                              text: '书本书华：',
-                                              style: TextStyle(
-                                                  color: Color(0xff22d47e),
-                                                  fontSize: 12),
-                                              children: <TextSpan>[
-                                                TextSpan(
-                                                    text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
-                                                    style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 12)),
-                                              ])),
-                                      SizedBox(height: 8),
-                                      RichText(
-                                          text: TextSpan(
-                                              text: '书本书华：',
-                                              style: TextStyle(
-                                                  color: Color(0xff22d47e),
-                                                  fontSize: 12),
-                                              children: <TextSpan>[
-                                                TextSpan(
-                                                    text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
-                                                    style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 12)),
-                                              ])),
-                                      SizedBox(height: 8),
-                                      Text("查看全部评论",
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              color: Color(0xff7b7b7b)))
-                                    ],
+                                InkWell(
+                                  child: Container(
+                                    width: double.infinity,
+                                    margin: EdgeInsets.only(top: 14),
+                                    constraints: BoxConstraints(minHeight: 50),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 10),
+                                    decoration: BoxDecoration(
+                                        color: Color(0xfff3f3f3),
+                                        borderRadius: BorderRadius.circular(8)),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        RichText(
+                                            text: TextSpan(
+                                                text: '书本书华：',
+                                                style: TextStyle(
+                                                    color: Color(0xff22d47e),
+                                                    fontSize: 12),
+                                                children: <TextSpan>[
+                                                  TextSpan(
+                                                      text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 12)),
+                                                ])),
+                                        SizedBox(height: 8),
+                                        RichText(
+                                            text: TextSpan(
+                                                text: '书本书华：',
+                                                style: TextStyle(
+                                                    color: Color(0xff22d47e),
+                                                    fontSize: 12),
+                                                children: <TextSpan>[
+                                                  TextSpan(
+                                                      text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 12)),
+                                                ])),
+                                        SizedBox(height: 8),
+                                        Text("查看全部评论",
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Color(0xff7b7b7b)))
+                                      ],
+                                    ),
                                   ),
+                                    onTap: ()=>toPage("dynamicDetail",list[index])
                                 )
                               ]));
                     })
