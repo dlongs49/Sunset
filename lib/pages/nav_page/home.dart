@@ -8,6 +8,7 @@ import 'package:sunset/components/toast.dart';
 import 'package:sunset/local_data/home.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/api/home_req.dart';
+import 'package:sunset/utils/api/trends_req.dart';
 import 'package:sunset/utils/request.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -34,6 +35,7 @@ class _HomeState extends State<Home> {
     // startTimer();
     getUInfo();
     getBanner();
+    getTrends();
   }
 
   Sign sign = new Sign();
@@ -62,11 +64,28 @@ class _HomeState extends State<Home> {
       print("data>>> ${res}");
       if (res['code'] == 200) {
         res["data"].forEach((el) {
-          Map<String,String> map = new Map();
-          map["images"] = baseUrl+ el["images"];
+          Map<String, String> map = new Map();
+          map["images"] = baseUrl + el["images"];
           map["url"] = el["url"];
           banner.add(map);
         });
+        setState(() {});
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
+
+  List trendsList = [];
+
+  // 人气动态
+  void getTrends() async {
+    try {
+      Map res = await homeReq.getTrends({"page_num": 1, "page_rows": 7});
+      print("动态列表>>${res["data"]}");
+      if (res["code"] == 200) {
+        trendsList = res["data"]["list"];
         setState(() {});
       }
     } catch (e) {
@@ -451,11 +470,12 @@ class _HomeState extends State<Home> {
             width: double.infinity,
             height: 200,
             margin: EdgeInsets.only(top: 18),
-            child: ListView(
+            child: ListView.builder(
               shrinkWrap: true,
               physics: BouncingScrollPhysics(),
               scrollDirection: Axis.horizontal,
-              children: popTrendList.map((item) {
+              itemCount: trendsList.length,
+              itemBuilder: (ctx, index) {
                 return InkWell(
                     child: Container(
                         margin: EdgeInsets.only(left: 15),
@@ -468,7 +488,7 @@ class _HomeState extends State<Home> {
                                   borderRadius: BorderRadius.circular(8),
                                   child: Stack(
                                     children: [
-                                      Image.network(item['fileList'][0]['url'],
+                                      Image.network("${baseUrl}${trendsList[index]['images'][0]}",
                                           fit: BoxFit.cover,
                                           width: 120,
                                           height: 120)
@@ -490,7 +510,7 @@ class _HomeState extends State<Home> {
                                             borderRadius:
                                                 BorderRadius.circular(3)),
                                         child: Text(
-                                            item["tagsNum"].toString() + "人点赞",
+                                            "${trendsList[index]["star"] != null ? trendsList[index]["star"] : "0"}人点赞",
                                             style: TextStyle(
                                                 fontSize: 10,
                                                 color: Colors.white))),
@@ -502,7 +522,7 @@ class _HomeState extends State<Home> {
                               margin: EdgeInsets.only(top: 10),
                               width: 120,
                               height: 34,
-                              child: Text(item["textShow"],
+                              child: Text(trendsList[index]["text"],
                                   maxLines: 2,
                                   softWrap: false,
                                   overflow: TextOverflow.ellipsis,
@@ -522,11 +542,12 @@ class _HomeState extends State<Home> {
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(30)),
-                                      child: Image.network(item["avatar"],
+                                      child: Image.network(
+                                          "${baseUrl}${trendsList[index]["avator"]}",
                                           fit: BoxFit.cover)),
                                   Container(
                                     width: 80,
-                                    child: Text(item["nickName"],
+                                    child: Text(trendsList[index]["nickname"],
                                         textAlign: TextAlign.left,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
@@ -541,7 +562,7 @@ class _HomeState extends State<Home> {
                           ],
                         )),
                     onTap: () {});
-              }).toList(),
+              },
             ),
           ),
         ],
@@ -1160,9 +1181,7 @@ class _HomeState extends State<Home> {
                                                   ),
                                                 ),
                                                 onTap: () => toBanner(
-                                                    banner[index]['url']
-                                                )
-                                            );
+                                                    banner[index]['url']));
                                           },
                                           // 图片数量
                                           itemCount: banner.length,

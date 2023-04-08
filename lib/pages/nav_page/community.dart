@@ -77,8 +77,11 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
     if (path == "userInfo" || path == "dynamicDetail") {
       arguments["uid"] = arg["uid"];
       arguments["trends_id"] = arg["id"];
+      Navigator.pushNamed(context, path, arguments: arguments);
     }
-    Navigator.pushNamed(context, path, arguments: arguments);
+    if (path == "pubTrends") {
+      Navigator.pushNamed(context, path);
+    }
   }
 
   Widget build(BuildContext context) {
@@ -376,7 +379,8 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                               height: 1.4,
                                               fontSize: 14)),
                                       SizedBox(width: 4),
-                                      Text(list[index]["comment_num"].toString(),
+                                      Text(
+                                          list[index]["comment_num"].toString(),
                                           style: TextStyle(
                                               color: Color(0xffbbbbbb),
                                               height: 1.4,
@@ -403,31 +407,37 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Column(
-                                      children: list[index]["comment_list"].asMap().entries.map<Widget>((entry){
+                                      children: list[index]["comment_list"]
+                                          .asMap()
+                                          .entries
+                                          .map<Widget>((entry) {
                                         final item = entry.value;
                                         return Container(
-                                          alignment: Alignment.topLeft,
-                                          margin: EdgeInsets.only(bottom: 6),
-                                          child: RichText(
-                                              text: TextSpan(
-                                                  text: item["nickname"]+"：",
-                                                  style: TextStyle(
-                                                      color: Color(0xff22d47e),
-                                                      fontSize: 13),
-                                                  children: <TextSpan>[
-                                                    TextSpan(
-                                                        text: item["comment"],
-                                                        style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 12)),
-                                                  ]))
-                                        );
+                                            alignment: Alignment.topLeft,
+                                            margin: EdgeInsets.only(bottom: 6),
+                                            child: RichText(
+                                                text: TextSpan(
+                                                    text:
+                                                        item["nickname"] + "：",
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xff22d47e),
+                                                        fontSize: 13),
+                                                    children: <TextSpan>[
+                                                  TextSpan(
+                                                      text: item["comment"],
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 12)),
+                                                ])));
                                       }).toList(),
                                     ),
-                                    list[index]["comment_num"] > 3 ? Text("查看全部评论",
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: Color(0xff7b7b7b))) :Container()
+                                    list[index]["comment_num"] > 3
+                                        ? Text("查看全部评论",
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Color(0xff7b7b7b)))
+                                        : Container()
                                   ],
                                 ),
                               ),

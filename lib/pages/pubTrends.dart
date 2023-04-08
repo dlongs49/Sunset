@@ -7,13 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/trends_req.dart';
 import 'package:sunset/utils/api/upload_req.dart';
 
 class PubTrends extends StatefulWidget {
-  const PubTrends({Key? key, arguments}) : super(key: key);
+  const PubTrends({Key? key}) : super(key: key);
 
   @override
   _PubTrendsState createState() => _PubTrendsState();
@@ -305,7 +304,7 @@ class _PubTrendsState extends State<PubTrends> {
                     return widget;
                   }).toList()),
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 18, vertical: 20),
+                margin: EdgeInsets.symmetric(horizontal: 8, vertical: 20),
                 decoration: BoxDecoration(
                     border: Border(
                         top: BorderSide(width: 1, color: Color(0xfff5f5f5)))),
