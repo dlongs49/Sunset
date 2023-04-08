@@ -132,7 +132,11 @@ class _DynamicDetailState extends State<DynamicDetail> {
 
   @override
   void toPage(String path, dynamic arg) {
-    Navigator.pushNamed(context, path);
+    Map<String,dynamic> arguments = new Map();
+    if(path == "userInfo"){
+      arguments["uid"] = arg["uid"];
+    }
+    Navigator.pushNamed(context, path,arguments:arguments);
   }
 
   @override
@@ -166,7 +170,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                         child: Image.network(
                                             "${baseUrl}${detail["avator"]}",
                                             fit: BoxFit.cover))),
-                                onTap: () => toPage("userInfo", {}),
+                                onTap: () => toPage("userInfo", {"uid":detail["uid"]}),
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -332,93 +336,93 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                               color: Color(0xffbbbbbb))
                                         ],
                                       ),
-                                      Container(
-                                          margin: EdgeInsets.only(top: 10),
-                                          padding: EdgeInsets.only(top: 10),
-                                          decoration: BoxDecoration(
-                                              border: Border(
-                                                  top: BorderSide(
-                                                      width: 1,
-                                                      color:
-                                                          Color(0xFFF1F1F1)))),
-                                          child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Container(
-                                                    width: 32,
-                                                    height: 32,
-                                                    margin: EdgeInsets.only(
-                                                        right: 8),
-                                                    child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(32),
-                                                        child: Image.asset(
-                                                            "assets/images/400x400.jpg",
-                                                            fit:
-                                                                BoxFit.cover))),
-                                                Expanded(
-                                                    child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                      Container(
-                                                          margin:
-                                                              EdgeInsets.only(
-                                                                  top: 5,
-                                                                  bottom: 6),
-                                                          child: Text("Sept",
-                                                              style: TextStyle(
-                                                                  fontSize: 13,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600))),
-                                                      Text(
-                                                          "浔阳江头夜送客，枫叶荻花秋瑟瑟。",
-                                                          style: TextStyle(
-                                                              fontSize: 13,
-                                                              height: 1.5)),
-                                                      SizedBox(height: 10),
-                                                      Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Text("2023-03-17",
-                                                              style: TextStyle(
-                                                                  color: Color(
-                                                                      0xffcccccc),
-                                                                  fontSize:
-                                                                      13)),
-                                                          Spacer(flex: 1),
-                                                          Text("0",
-                                                              style: TextStyle(
-                                                                  color: Color(
-                                                                      0xffbbbbbb),
-                                                                  fontSize:
-                                                                      14)),
-                                                          SizedBox(width: 10),
-                                                          Icon(
-                                                              IconData(0xec7f,
-                                                                  fontFamily:
-                                                                      'sunfont'),
-                                                              size: 16,
-                                                              color: Color(
-                                                                  0xffbbbbbb)),
-                                                          SizedBox(width: 10),
-                                                          Icon(
-                                                              IconData(0xe600,
-                                                                  fontFamily:
-                                                                      'sunfont'),
-                                                              size: 18,
-                                                              color: Color(
-                                                                  0xffbbbbbb))
-                                                        ],
-                                                      ),
-                                                    ]))
-                                              ]))
+                                      // Container(
+                                      //     margin: EdgeInsets.only(top: 10),
+                                      //     padding: EdgeInsets.only(top: 10),
+                                      //     decoration: BoxDecoration(
+                                      //         border: Border(
+                                      //             top: BorderSide(
+                                      //                 width: 1,
+                                      //                 color:
+                                      //                     Color(0xFFF1F1F1)))),
+                                      //     child: Row(
+                                      //         crossAxisAlignment:
+                                      //             CrossAxisAlignment.start,
+                                      //         children: [
+                                      //           Container(
+                                      //               width: 32,
+                                      //               height: 32,
+                                      //               margin: EdgeInsets.only(
+                                      //                   right: 8),
+                                      //               child: ClipRRect(
+                                      //                   borderRadius:
+                                      //                       BorderRadius
+                                      //                           .circular(32),
+                                      //                   child: Image.asset(
+                                      //                       "assets/images/400x400.jpg",
+                                      //                       fit:
+                                      //                           BoxFit.cover))),
+                                      //           Expanded(
+                                      //               child: Column(
+                                      //                   crossAxisAlignment:
+                                      //                       CrossAxisAlignment
+                                      //                           .start,
+                                      //                   children: [
+                                      //                 Container(
+                                      //                     margin:
+                                      //                         EdgeInsets.only(
+                                      //                             top: 5,
+                                      //                             bottom: 6),
+                                      //                     child: Text("Sept",
+                                      //                         style: TextStyle(
+                                      //                             fontSize: 13,
+                                      //                             fontWeight:
+                                      //                                 FontWeight
+                                      //                                     .w600))),
+                                      //                 Text(
+                                      //                     "浔阳江头夜送客，枫叶荻花秋瑟瑟。",
+                                      //                     style: TextStyle(
+                                      //                         fontSize: 13,
+                                      //                         height: 1.5)),
+                                      //                 SizedBox(height: 10),
+                                      //                 Row(
+                                      //                   crossAxisAlignment:
+                                      //                       CrossAxisAlignment
+                                      //                           .center,
+                                      //                   children: [
+                                      //                     Text("2023-03-17",
+                                      //                         style: TextStyle(
+                                      //                             color: Color(
+                                      //                                 0xffcccccc),
+                                      //                             fontSize:
+                                      //                                 13)),
+                                      //                     Spacer(flex: 1),
+                                      //                     Text("0",
+                                      //                         style: TextStyle(
+                                      //                             color: Color(
+                                      //                                 0xffbbbbbb),
+                                      //                             fontSize:
+                                      //                                 14)),
+                                      //                     SizedBox(width: 10),
+                                      //                     Icon(
+                                      //                         IconData(0xec7f,
+                                      //                             fontFamily:
+                                      //                                 'sunfont'),
+                                      //                         size: 16,
+                                      //                         color: Color(
+                                      //                             0xffbbbbbb)),
+                                      //                     SizedBox(width: 10),
+                                      //                     Icon(
+                                      //                         IconData(0xe600,
+                                      //                             fontFamily:
+                                      //                                 'sunfont'),
+                                      //                         size: 18,
+                                      //                         color: Color(
+                                      //                             0xffbbbbbb))
+                                      //                   ],
+                                      //                 ),
+                                      //               ]))
+                                      //         ]))
                                     ],
                                   ))
                                 ],

@@ -376,7 +376,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                               height: 1.4,
                                               fontSize: 14)),
                                       SizedBox(width: 4),
-                                      Text("2",
+                                      Text(list[index]["comment_num"].toString(),
                                           style: TextStyle(
                                               color: Color(0xffbbbbbb),
                                               height: 1.4,
@@ -402,38 +402,32 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    RichText(
-                                        text: TextSpan(
-                                            text: '书本书华：',
-                                            style: TextStyle(
-                                                color: Color(0xff22d47e),
-                                                fontSize: 12),
-                                            children: <TextSpan>[
-                                          TextSpan(
-                                              text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 12)),
-                                        ])),
-                                    SizedBox(height: 8),
-                                    RichText(
-                                        text: TextSpan(
-                                            text: '书本书华：',
-                                            style: TextStyle(
-                                                color: Color(0xff22d47e),
-                                                fontSize: 12),
-                                            children: <TextSpan>[
-                                          TextSpan(
-                                              text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 12)),
-                                        ])),
-                                    SizedBox(height: 8),
-                                    Text("查看全部评论",
+                                    Column(
+                                      children: list[index]["comment_list"].asMap().entries.map<Widget>((entry){
+                                        final item = entry.value;
+                                        return Container(
+                                          alignment: Alignment.topLeft,
+                                          margin: EdgeInsets.only(bottom: 6),
+                                          child: RichText(
+                                              text: TextSpan(
+                                                  text: item["nickname"]+"：",
+                                                  style: TextStyle(
+                                                      color: Color(0xff22d47e),
+                                                      fontSize: 13),
+                                                  children: <TextSpan>[
+                                                    TextSpan(
+                                                        text: item["comment"],
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 12)),
+                                                  ]))
+                                        );
+                                      }).toList(),
+                                    ),
+                                    list[index]["comment_num"] > 3 ? Text("查看全部评论",
                                         style: TextStyle(
                                             fontSize: 12,
-                                            color: Color(0xff7b7b7b)))
+                                            color: Color(0xff7b7b7b))) :Container()
                                   ],
                                 ),
                               ),
