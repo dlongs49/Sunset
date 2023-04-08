@@ -4,6 +4,7 @@ import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/trends_req.dart';
 import 'package:sunset/utils/request.dart';
@@ -21,9 +22,17 @@ class _UserInfoState extends State<UserInfo> {
 
   _UserInfoState({this.arguments});
   TrendsReq trendsReq = new TrendsReq();
-
+  String u_id = "";
   void initState(){
     super.initState();
+    getUid();
+  }
+  // 从缓存中获取 uid
+  Future<void> getUid()async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final action = prefs.getString('uid');
+    u_id = action != null ? action : "";
+    setState(() { });
     pageMap["uid"] = arguments["uid"];
     getFollow();
     getList();
@@ -77,6 +86,11 @@ class _UserInfoState extends State<UserInfo> {
       arguments["trends_id"] = arg["id"];
     }
     Navigator.pushNamed(context, path, arguments:arguments);
+  }
+  // 编辑资料
+  @override
+  void toEditUinfo(){
+    Navigator.pushNamed(context, "myInfo");
   }
   @override
   Widget build(BuildContext context) {
@@ -179,7 +193,7 @@ class _UserInfoState extends State<UserInfo> {
                                                 0xfff3f3f3),fontSize: 14),)
                                           ])
                                         ]),
-                                        Container(
+                                        u_id == "" ? Container(
                                           margin: EdgeInsets.only(right: 30),
                                           padding: EdgeInsets.symmetric(vertical: 2,horizontal: 16),
                                           decoration: BoxDecoration(
@@ -200,7 +214,15 @@ class _UserInfoState extends State<UserInfo> {
                                                       color: Color(0xffffffff)))
                                             ],
                                           ),
-                                        )
+                                        ) :InkWell(child:Container(
+                                          padding: EdgeInsets.symmetric(vertical: 5,horizontal: 12),
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(25),
+                                              border: Border.all(width: 1,color: Colors.white)
+                                          ),
+                                          child: Text("编辑资料",style: TextStyle(color: Colors.white,fontSize: 13)),
+                                        ),
+                                        onTap:toEditUinfo)
                                       ],
                                     )
                                   ],
@@ -381,56 +403,61 @@ class _UserInfoState extends State<UserInfo> {
                                         size: 18, color: Color(0xffbbbbbb)),
                                   ],
                                 ),
-                                InkWell(
-                                  child: Container(
-                                    width: double.infinity,
-                                    margin: EdgeInsets.only(top: 14),
-                                    constraints: BoxConstraints(minHeight: 50),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 10),
-                                    decoration: BoxDecoration(
-                                        color: Color(0xfff3f3f3),
-                                        borderRadius: BorderRadius.circular(8)),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        RichText(
-                                            text: TextSpan(
-                                                text: '书本书华：',
-                                                style: TextStyle(
-                                                    color: Color(0xff22d47e),
-                                                    fontSize: 12),
-                                                children: <TextSpan>[
-                                                  TextSpan(
-                                                      text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 12)),
-                                                ])),
-                                        SizedBox(height: 8),
-                                        RichText(
-                                            text: TextSpan(
-                                                text: '书本书华：',
-                                                style: TextStyle(
-                                                    color: Color(0xff22d47e),
-                                                    fontSize: 12),
-                                                children: <TextSpan>[
-                                                  TextSpan(
-                                                      text: '浔阳江头夜送客，枫叶荻花秋瑟瑟',
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 12)),
-                                                ])),
-                                        SizedBox(height: 8),
-                                        Text("查看全部评论",
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: Color(0xff7b7b7b)))
-                                      ],
+                                list[index]["comment_num"] != 0
+                                    ? InkWell(
+                                    child: Container(
+                                      width: double.infinity,
+                                      margin: EdgeInsets.only(top: 14),
+                                      constraints: BoxConstraints(minHeight: 50),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 10),
+                                      decoration: BoxDecoration(
+                                          color: Color(0xfff3f3f3),
+                                          borderRadius: BorderRadius.circular(8)),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Column(
+                                            children: list[index]["comment_list"]
+                                                .asMap()
+                                                .entries
+                                                .map<Widget>((entry) {
+                                              final item = entry.value;
+                                              return Container(
+                                                  alignment: Alignment.topLeft,
+                                                  margin:
+                                                  EdgeInsets.only(bottom: 6),
+                                                  child: RichText(
+                                                      text: TextSpan(
+                                                          text: item["nickname"] +
+                                                              "：",
+                                                          style: TextStyle(
+                                                              color: Color(
+                                                                  0xff22d47e),
+                                                              fontSize: 13),
+                                                          children: <TextSpan>[
+                                                            TextSpan(
+                                                                text: item["comment"],
+                                                                style: TextStyle(
+                                                                    color:
+                                                                    Colors.black,
+                                                                    fontSize: 12)),
+                                                          ])));
+                                            }).toList(),
+                                          ),
+                                          list[index]["comment_num"] > 3
+                                              ? Text("查看全部评论",
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Color(0xff7b7b7b)))
+                                              : Container()
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                    onTap: ()=>toPage("dynamicDetail",list[index])
-                                )
+                                    onTap: () =>
+                                        toPage("dynamicDetail", list[index]))
+                                    : Container()
                               ]));
                     })
               ],

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/request.dart';
@@ -62,7 +63,13 @@ class _MyState extends State<My> {
   void toPages(String path) {
     Navigator.pushNamed(context, path);
   }
-
+  void toUserinfo() async{
+    // 将用户 uid 存储在缓存中
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs
+        .setString("uid", uinfo["uid"]);
+    Navigator.pushNamed(context, "userInfo",arguments: {"uid":uinfo["uid"]});
+  }
   // 卡片跳转页面
   void toPage(dynamic val, int index) {
     Map item = Map<String, dynamic>.from(val);
@@ -235,7 +242,8 @@ class _MyState extends State<My> {
                                             )
                                           ],
                                         ),
-                                        onTap: () => toPages("userInfo")),
+                                        onTap: toUserinfo
+                                    ),
                                     Spacer(flex: 1),
                                     Container(
                                       width: 30,

@@ -124,6 +124,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
       if (res["code"] == 200) {
         commentList = res["data"]["list"];
         commentTotal = res["data"]["total"];
+        setState(() {});
       }
     } catch (e) {
       errToast();
