@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:sunset/pages/nav_page/community.dart';
+import 'package:sunset/pages/nav_page/find.dart';
 import 'package:sunset/pages/pubTrends.dart';
 /* 内嵌H5 */
 import 'package:sunset/pages/webview/mall.dart'; // 我的-->香豆商城[淘宝]
@@ -49,7 +50,7 @@ final Map<String, WidgetBuilder> routes = {
   "userInfo": (BuildContext context,{arguments}) => UserInfo(arguments:arguments),
   "setAccnum": (BuildContext context,{arguments}) => SetAccnum(arguments:arguments),
   "dynamicDetail":(BuildContext context,{arguments})=>DynamicDetail(arguments:arguments),
-  "shopDetail":(BuildContext context)=> ShopDetail(),
+  "shopDetail":(BuildContext context,{arguments})=> ShopDetail(arguments:arguments),
   "dsyAccnum":(BuildContext context)=> DsyAccnum(),//dsyAccnum
   "forgetPwd":(BuildContext context)=> ForgetPwd(),//forgetPwd
   "phoneLog":(BuildContext context)=> PhoneLogin(),//phoneLog

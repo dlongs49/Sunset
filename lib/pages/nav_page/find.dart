@@ -9,7 +9,7 @@ import 'package:sunset/utils/request.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Find extends StatefulWidget {
-  const Find({Key? key}) : super(key: key);
+  const Find({Key? key, arguments}) : super(key: key);
 
   @override
   _FindState createState() => _FindState();
@@ -59,11 +59,11 @@ class _FindState extends State<Find> {
     }
   }
 
-  void toPage(String path) {
-    Navigator.pushNamed(context, path);
+  void toPage(String path, dynamic arg) {
+    Navigator.pushNamed(context, path, arguments: arg);
   }
 
-  //跳转浏览器
+  //跳转浏览器 【废弃】
   void toLauncher(String url) async {
     // 跳转的 url 淘宝的链接
     if (await canLaunch(url)) {
@@ -128,7 +128,8 @@ class _FindState extends State<Find> {
                                   borderRadius: BorderRadius.circular(10),
                                   child: Image.network(banner[index]["images"]),
                                 ),
-                                onTap: () => toLauncher(banner[index]["url"]),
+                                onTap: () => toPage("shopDetail",
+                                    {"url": banner[index]["url"]}),
                               ),
                               SizedBox(height: 16),
                               ListView.builder(
@@ -252,7 +253,12 @@ class _FindState extends State<Find> {
                                                                         ]))
                                                               ])),
                                                       onTap: () => toPage(
-                                                          "shopDetail"))),
+                                                              "shopDetail", {
+                                                            "url": goodList[
+                                                                        index]
+                                                                    ["listItem"]
+                                                                [idx]["url"]
+                                                          }))),
                                           SizedBox(height: 20)
                                         ],
                                       )),

@@ -12,6 +12,7 @@ class Mall extends StatefulWidget {
 }
 
 class _MallState extends State<Mall> {
+  // H5 加载进度
   double progress = 0;
 
   @override
@@ -37,6 +38,7 @@ class _MallState extends State<Mall> {
                         javascriptMode: JavascriptMode.unrestricted,
                         onProgress: (int gress) {
                           progress = (gress / 100);
+                          setState(() {});
                         }))),
           ],
         ));

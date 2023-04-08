@@ -2,31 +2,58 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-class ShopDetail extends StatefulWidget {
-  const ShopDetail({Key? key}) : super(key: key);
+import 'package:sunset/components/tabbar.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
+class ShopDetail extends StatefulWidget {
+  final arguments;
+  const ShopDetail({Key? key, this.arguments}) : super(key: key);
   @override
-  State<ShopDetail> createState() => _ShopDetailState();
+  State<ShopDetail> createState() =>  _ShopDetailState(arguments:this.arguments);
 }
 
 class _ShopDetailState extends State<ShopDetail> {
+  final arguments;
+  _ShopDetailState({this.arguments});
+  String url = "";
+
+  @override
+  void initState() {
+    super.initState();
+    url = arguments["url"].toString();
+    setState(() {});
+  }
+
+  // H5 加载进度
+  double progress = 0;
+
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-        constraints: BoxConstraints.expand(),
-        // child:WebviewScaffold(
-        //     url: 'https://main.m.taobao.com/',
-        //     withZoom: false,
-        //     // 是否缩放
-        //     withLocalStorage: true,
-        //     withJavascript: true,
-        //     hidden: false,
-        //     //等待页面加载时显示其他小部件hiden配合initialChild使用
-        //     initialChild: Center(
-        //         child: CupertinoActivityIndicator(
-        //           radius: 15.0,
-        //           animating: true,
-        //         )))
-    );
+    return Scaffold(
+        backgroundColor: Colors.white,
+        body: Column(
+          children: [
+            CustomTabBar(title: "好物详情", bgColor: null, fontColor: null),
+            progress != 1.0
+                ? LinearProgressIndicator(
+                    value: progress,
+                    backgroundColor: Color(0xffffffff),
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Color(0xff22d47e)),
+                  )
+                : Container(height: 4),
+            Expanded(
+                child: Container(
+                    color: Color(0xFFF6F7FB),
+                    child: WebView(
+                        initialUrl:
+                            url != "" ? url : "https://main.m.taobao.com/",
+                        javascriptMode: JavascriptMode.unrestricted,
+                        onProgress: (int gress) {
+                          progress = (gress / 100);
+                          setState(() {});
+                        }))),
+          ],
+        ));
   }
 }
