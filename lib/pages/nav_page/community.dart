@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:ui';
+import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/trends_req.dart';
+import 'package:sunset/utils/request.dart';
 
 class Community extends StatefulWidget {
   const Community({Key? key}) : super(key: key);
@@ -15,9 +18,9 @@ class Community extends StatefulWidget {
 
 class _CommunityState extends State<Community> with TickerProviderStateMixin {
   List tabBar = ["最新", "精选", "关注"];
-  List list = ['', '', '', ''];
+  List<dynamic> list = [];
   int total = 0; // 动态总数
-  Map<String, dynamic> pageMap = new Map();
+  Map<String, dynamic> pageMap = {"page_num":1,"page_rows":1};
   int activeBar = 0;
   double tranBar = 75; // 初始值为头像宽度+右边距
 
@@ -37,13 +40,11 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
   // 最新的动态列表
   void getTrends() async {
     try {
-      pageMap["page_num"] = "1";
-      pageMap["page_rows"] = "2";
       Map res = await trendsReq.getTrends(pageMap);
+        print("动态列表>>${res["data"]}");
       if (res["code"] == 200) {
-        print("动态列表>>" + res["data"]);
-        // list = res["data"]["list"];
-        // total = res["data"]["total"];
+        list = res["data"]["list"];
+        total = res["data"]["total"];
         setState(() {});
       }
     } catch (e) {
@@ -235,7 +236,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                   physics: BouncingScrollPhysics(),
                   // ClampingScrollPhysics 安卓滑动效果 BouncingScrollPhysics IOS滑动效果
                   itemCount: list.length,
-                  itemBuilder: (ctx, i) {
+                  itemBuilder: (ctx, index) {
                     return Container(
                         width: double.infinity,
                         color: Colors.white,
@@ -254,20 +255,19 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                       child: ClipRRect(
                                           borderRadius: BorderRadius.circular(
                                               38),
-                                          child: Image.asset(
-                                              "assets/images/400x400.jpg",
+                                          child: Image.network("${baseUrl}${list[index]["avator"]}",
                                               fit: BoxFit.cover))),
                                   onTap: () => toPage("userInfo", {}),
                                 ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("书本书华",
+                                    Text(list[index]["nickname"],
                                         style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w800)),
                                     SizedBox(height: 2),
-                                    Text("2023.03.21",
+                                    Text(formatDate(DateTime.parse(list[index]["create_time"]), [yyyy, '.', mm, '.', dd]),
                                         style: TextStyle(
                                             fontSize: 11,
                                             color: Color(0xffc1c1c1)))
