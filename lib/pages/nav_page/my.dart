@@ -8,8 +8,6 @@ import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/request.dart';
 
-import '../aboutApp.dart';
-
 class My extends StatefulWidget {
   const My({Key? key}) : super(key: key);
 

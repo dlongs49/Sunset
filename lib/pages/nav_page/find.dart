@@ -16,10 +16,17 @@ class Find extends StatefulWidget {
 }
 
 class _FindState extends State<Find> {
+  ScrollController listViewController = ScrollController();
+
+
   HomeReq homeReq = new HomeReq();
   List<Map<dynamic, dynamic>> goodList = [];
 
   void initState() {
+    super.initState();
+    listViewController.addListener(() {
+      print(listViewController.offset);
+    });
     getBanner();
     getGoods();
   }
@@ -118,6 +125,7 @@ class _FindState extends State<Find> {
                 child: ListView.builder(
                     physics: BouncingScrollPhysics(), // IOS的回弹属性
                     itemCount: banner.length,
+                    controller: listViewController,
                     itemBuilder: (context, index) => Container(
                           padding: EdgeInsets.only(left: 15, right: 15),
                           child: Column(
