@@ -109,11 +109,7 @@ class _HomeState extends State<Home> {
 
   // 轮播图跳转
   void toBanner(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      print("异常");
-    }
+    Navigator.pushNamed(context, "shopDetail",arguments: {"url":url});
   }
 
   // 体秤信息
