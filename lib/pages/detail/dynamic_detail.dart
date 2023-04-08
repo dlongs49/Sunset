@@ -1,7 +1,9 @@
 import 'dart:ui';
+import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/trends_req.dart';
@@ -12,32 +14,41 @@ class DynamicDetail extends StatefulWidget {
   const DynamicDetail({Key? key, this.arguments}) : super(key: key);
 
   @override
-  State<DynamicDetail> createState() => _DynamicDetailState(arguments: this.arguments);
+  State<DynamicDetail> createState() =>
+      _DynamicDetailState(arguments: this.arguments);
 }
 
 class _DynamicDetailState extends State<DynamicDetail> {
+  TextEditingController ContentController = TextEditingController();
+
   /* 拿到路由传的值 */
   final arguments;
 
   _DynamicDetailState({this.arguments});
+
   TrendsReq trendsReq = new TrendsReq();
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
+    commParams["trends_id"] = pageMap["trends_id"] = arguments["trends_id"];
     getDetail();
+    getCommnet();
   }
+
   Map detail = {
-    "text":"",
-    "avator":"",
-    "nickname":"",
-    "create_time":"",
-    "images":[]
+    "text": "",
+    "avator": "",
+    "nickname": "",
+    "create_time": "",
+    "images": []
   };
-  // 动态列表
+
+  // 动态详情
   Future<void> getDetail() async {
     try {
-      Map res = await trendsReq.getTrendsDetail({"trends_id":arguments["trends_id"]});
+      Map res = await trendsReq
+          .getTrendsDetail({"trends_id": arguments["trends_id"]});
       print("动态详情>>${res["data"]}");
       if (res["code"] == 200) {
         detail = res["data"];
@@ -48,11 +59,78 @@ class _DynamicDetailState extends State<DynamicDetail> {
       errToast();
     }
   }
-  void textChanged(String txt){
-    print(txt);
+
+  // 监听输入的文本
+  @override
+  void textChanged(String value) {
+    if (value.length >= 50) {
+      toast("最多输入50个字符评语~");
+      return;
+    }
+    commParams["content"] = value;
+    print("输入的评论值>>>${value.length}-${value}");
   }
 
+  Map<String, dynamic> commParams = {};
 
+  // 发送评论
+  @override
+  Future<void> pubComment() async {
+    print(commParams);
+    if (commParams["content"].length <= 0) {
+      toast("请输入友善的评语");
+      return;
+    }
+    if (commParams["trends_id"] == null) {
+      return;
+    }
+    try {
+      Map res = await trendsReq.pubComment(commParams);
+      if (res["code"] == 200) {
+        commentList.insert(0,{
+          "avator":detail["avator"],
+          "nickname":detail["nickname"],
+          "content":commParams["content"],
+          "create_time":new DateTime.now().toString(),
+          "star":"",
+        });
+        // 重置输入框
+        ContentController = TextEditingController.fromValue(TextEditingValue(
+            text: "",
+            selection: TextSelection.fromPosition(
+                TextPosition(affinity: TextAffinity.downstream, offset: 0))));
+        commParams["content"] = "";
+        FocusManager.instance.primaryFocus?.unfocus();
+        setState(() {});
+      } else {
+        toast("评论失败");
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
+
+  List commentList = [];
+  int commentTotal = 0;
+  Map<String, dynamic> pageMap = {"page_num": 1, "page_rows": 10};
+
+  // 评论列表
+  @override
+  Future<void> getCommnet() async {
+    try {
+      Map res = await trendsReq.getComment(pageMap);
+      print("评论列表>>>${res["data"]["list"]}");
+      if (res["code"] == 200) {
+        commentList = res["data"]["list"];
+        commentTotal = res["data"]["total"];
+      }
+    } catch (e) {
+      errToast();
+    }
+  }
+
+  @override
   void toPage(String path, dynamic arg) {
     Navigator.pushNamed(context, path);
   }
@@ -85,7 +163,8 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                     margin: EdgeInsets.only(right: 8),
                                     child: ClipRRect(
                                         borderRadius: BorderRadius.circular(38),
-                                        child: Image.network("${baseUrl}${detail["avator"]}",
+                                        child: Image.network(
+                                            "${baseUrl}${detail["avator"]}",
                                             fit: BoxFit.cover))),
                                 onTap: () => toPage("userInfo", {}),
                               ),
@@ -129,7 +208,8 @@ class _DynamicDetailState extends State<DynamicDetail> {
                             SizedBox(height: 10),
                             Align(
                               alignment: Alignment.topLeft,
-                              child: Text(detail["text"],style: TextStyle(fontSize: 14, height: 1.7)),
+                              child: Text(detail["text"],
+                                  style: TextStyle(fontSize: 14, height: 1.7)),
                             ),
                             Container(
                                 margin: EdgeInsets.only(top: 20),
@@ -149,7 +229,8 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                       return (Container(
                                           decoration: ShapeDecoration(
                                               image: DecorationImage(
-                                                  image: NetworkImage("${baseUrl}${detail["images"][index]}"),
+                                                  image: NetworkImage(
+                                                      "${baseUrl}${detail["images"][index]}"),
                                                   fit: BoxFit.fitWidth),
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
@@ -163,13 +244,12 @@ class _DynamicDetailState extends State<DynamicDetail> {
                       Padding(
                           padding: EdgeInsets.only(left: 12, bottom: 12),
                           child:
-                              Text("全部评论(6)", style: TextStyle(fontSize: 14))),
+                              Text("全部评论(${commentList.length})", style: TextStyle(fontSize: 14))),
                       ListView.builder(
                           shrinkWrap: true, //解决无限高度问题
                           physics: new NeverScrollableScrollPhysics(), //禁用滑动事件
-                          itemCount: 3,
-                          itemBuilder: (ctx, i) {
-                            return Container(
+                          itemCount: commentList.length,
+                          itemBuilder: (ctx, index) => Container(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 15, vertical: 14),
                               decoration: BoxDecoration(
@@ -179,16 +259,19 @@ class _DynamicDetailState extends State<DynamicDetail> {
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
-                                      width: 32,
-                                      height: 32,
-                                      margin: EdgeInsets.only(right: 8),
-                                      child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(32),
-                                          child: Image.asset(
-                                              "assets/images/400x400.jpg",
-                                              fit: BoxFit.cover))),
+                                  InkWell(
+                                    child: Container(
+                                        width: 32,
+                                        height: 32,
+                                        margin: EdgeInsets.only(right: 8),
+                                        child: ClipRRect(
+                                            borderRadius:
+                                            BorderRadius.circular(32),
+                                            child: Image.network(
+                                                "${baseUrl}${commentList[index]["avator"]}",
+                                                fit: BoxFit.cover))),
+                                    onTap: () => toPage("userInfo", commentList[index]),
+                                  ),
                                   Expanded(
                                       child: Column(
                                     crossAxisAlignment:
@@ -197,13 +280,20 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                       Container(
                                           margin: EdgeInsets.only(
                                               top: 5, bottom: 6),
-                                          child: Text("书本书华",
+                                          child: Text(
+                                              commentList[index]["nickname"] !=
+                                                      null
+                                                  ? commentList[index]
+                                                      ["nickname"]
+                                                  : "",
                                               style: TextStyle(
                                                   fontSize: 13,
                                                   fontWeight:
                                                       FontWeight.w600))),
                                       Text(
-                                          "浔阳江头夜送客，枫叶荻花秋瑟瑟，主人下马客在船，举酒欲饮无管弦。醉不成欢惨将别，别时茫茫江浸月。忽闻水上琵琶声，主人忘归客不发。寻声暗问弹者谁？琵琶声停欲语迟。",
+                                          commentList[index]["content"] != null
+                                              ? commentList[index]["content"]
+                                              : "",
                                           style: TextStyle(
                                               fontSize: 13, height: 1.5)),
                                       SizedBox(height: 10),
@@ -211,12 +301,20 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Text("2023-03-17",
+                                          Text(
+                                              formatDate(
+                                                  DateTime.parse(
+                                                      commentList[index]
+                                                          ["create_time"]),
+                                                  [yyyy, '.', mm, '.', dd]),
                                               style: TextStyle(
                                                   color: Color(0xffcccccc),
                                                   fontSize: 13)),
                                           Spacer(flex: 1),
-                                          Text("0",
+                                          Text(
+                                              commentList[index]["star"] != null
+                                                  ? commentList[index]["star"]
+                                                  : "",
                                               style: TextStyle(
                                                   color: Color(0xffbbbbbb),
                                                   fontSize: 14)),
@@ -261,90 +359,99 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                                             fit:
                                                                 BoxFit.cover))),
                                                 Expanded(
-                                                  child: Column(
-                                                      crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .start,
-                                                      children: [
-                                                        Container(
-                                                            margin:
-                                                            EdgeInsets.only(
-                                                                top: 5,
-                                                                bottom: 6),
-                                                            child: Text("Sept",
-                                                                style: TextStyle(
-                                                                    fontSize: 13,
-                                                                    fontWeight:
-                                                                    FontWeight
-                                                                        .w600))),
-                                                        Text(
-                                                            "浔阳江头夜送客，枫叶荻花秋瑟瑟，主人下马客在船，举酒欲饮无管弦。醉不成欢惨将别，别时茫茫江浸月。忽闻水上琵琶声，主人忘归客不发。寻声暗问弹者谁？琵琶声停欲语迟。",
-                                                            style: TextStyle(
-                                                                fontSize: 13,
-                                                                height: 1.5)),
-                                                        SizedBox(height: 10),
-                                                        Row(
-                                                          crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                          children: [
-                                                            Text("2023-03-17",
-                                                                style: TextStyle(
-                                                                    color: Color(
-                                                                        0xffcccccc),
-                                                                    fontSize:
-                                                                    13)),
-                                                            Spacer(flex: 1),
-                                                            Text("0",
-                                                                style: TextStyle(
-                                                                    color: Color(
-                                                                        0xffbbbbbb),
-                                                                    fontSize:
-                                                                    14)),
-                                                            SizedBox(width: 10),
-                                                            Icon(
-                                                                IconData(0xec7f,
-                                                                    fontFamily:
-                                                                    'sunfont'),
-                                                                size: 16,
-                                                                color: Color(
-                                                                    0xffbbbbbb)),
-                                                            SizedBox(width: 10),
-                                                            Icon(
-                                                                IconData(0xe600,
-                                                                    fontFamily:
-                                                                    'sunfont'),
-                                                                size: 18,
-                                                                color: Color(
-                                                                    0xffbbbbbb))
-                                                          ],
-                                                        ),
-                                                      ])
-                                                )
-
+                                                    child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                      Container(
+                                                          margin:
+                                                              EdgeInsets.only(
+                                                                  top: 5,
+                                                                  bottom: 6),
+                                                          child: Text("Sept",
+                                                              style: TextStyle(
+                                                                  fontSize: 13,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600))),
+                                                      Text(
+                                                          "浔阳江头夜送客，枫叶荻花秋瑟瑟。",
+                                                          style: TextStyle(
+                                                              fontSize: 13,
+                                                              height: 1.5)),
+                                                      SizedBox(height: 10),
+                                                      Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text("2023-03-17",
+                                                              style: TextStyle(
+                                                                  color: Color(
+                                                                      0xffcccccc),
+                                                                  fontSize:
+                                                                      13)),
+                                                          Spacer(flex: 1),
+                                                          Text("0",
+                                                              style: TextStyle(
+                                                                  color: Color(
+                                                                      0xffbbbbbb),
+                                                                  fontSize:
+                                                                      14)),
+                                                          SizedBox(width: 10),
+                                                          Icon(
+                                                              IconData(0xec7f,
+                                                                  fontFamily:
+                                                                      'sunfont'),
+                                                              size: 16,
+                                                              color: Color(
+                                                                  0xffbbbbbb)),
+                                                          SizedBox(width: 10),
+                                                          Icon(
+                                                              IconData(0xe600,
+                                                                  fontFamily:
+                                                                      'sunfont'),
+                                                              size: 18,
+                                                              color: Color(
+                                                                  0xffbbbbbb))
+                                                        ],
+                                                      ),
+                                                    ]))
                                               ]))
                                     ],
                                   ))
                                 ],
                               ),
-                            );
-                          })
+                            ))
                     ],
-                  )
-                  ),
+                  )),
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
               height: 60,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    offset: Offset(5, 35), // 阴影与容器的距离
+                    blurRadius: 50.0, // 偏差值。
+                    spreadRadius: 0.0, // 膨胀量。
+                  ),
+                ],
+              ),
               child: Row(
                 children: [
-                  Expanded(child:  Container(
+                  Expanded(
+                      child: Container(
                     width: 200,
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
                         color: Color(0xffeeeff3),
                         borderRadius: BorderRadius.circular(20)),
                     child: TextField(
+                        controller: ContentController,
                         cursorHeight: 16,
                         // 光标颜色
                         cursorColor: Color(0xff22d47e),
@@ -352,28 +459,39 @@ class _DynamicDetailState extends State<DynamicDetail> {
                         autofocus: false,
                         maxLines: 1,
                         style: TextStyle(fontSize: 13),
+                        inputFormatters: [
+                          //限制长度
+                          LengthLimitingTextInputFormatter(50),
+                        ],
                         decoration: InputDecoration(
                             isCollapsed: true,
                             //可以设置自己的
                             contentPadding: EdgeInsets.all(10),
-                            border: OutlineInputBorder(borderSide: BorderSide.none),
+                            border:
+                                OutlineInputBorder(borderSide: BorderSide.none),
                             // 取消边框
                             hintText: '友善评论',
-                            helperStyle:
-                            TextStyle(color: Color(0xffd0d0d0), fontSize: 13)),
+                            helperStyle: TextStyle(
+                                color: Color(0xffd0d0d0), fontSize: 13)),
                         onChanged: textChanged),
                   )),
                   SizedBox(width: 10),
-                  Container(
-                    height: 34,
-                    padding: EdgeInsets.symmetric(vertical: 3,horizontal: 26),
-                    decoration: BoxDecoration(
-                      color:Color(0xff22d47e),
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    alignment: Alignment(0,0),
-                    child: Text("发送",style:TextStyle(color:Colors.white,fontSize: 12),
-                  ))
+                  InkWell(
+                    child: Container(
+                        height: 34,
+                        padding:
+                            EdgeInsets.symmetric(vertical: 3, horizontal: 26),
+                        decoration: BoxDecoration(
+                          color: Color(0xff22d47e),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        alignment: Alignment(0, 0),
+                        child: Text(
+                          "发送",
+                          style: TextStyle(color: Colors.white, fontSize: 12),
+                        )),
+                    onTap: pubComment,
+                  )
                 ],
               ),
             )
