@@ -28,12 +28,18 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
   double ex = 2.7;
   TrendsReq trendsReq = new TrendsReq();
   late ScrollController listViewController;
+
+
   @override
   void initState() {
     super.initState();
     listViewController = ScrollController();
     listViewController.addListener(() {
-      print(listViewController.offset);
+      double offset = listViewController.offset;
+      double maxOffset = listViewController.position.maxScrollExtent;
+      if(offset >= maxOffset){
+        toast("到底了");
+      }
     });
     changeTabBarAn(0);
     getTrends();
