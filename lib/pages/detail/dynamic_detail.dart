@@ -3,15 +3,51 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:sunset/components/tabbar.dart';
+import 'package:sunset/components/toast.dart';
+import 'package:sunset/utils/api/trends_req.dart';
+import 'package:sunset/utils/request.dart';
 
 class DynamicDetail extends StatefulWidget {
-  const DynamicDetail({Key? key}) : super(key: key);
+  final arguments; // 路由带的参数
+  const DynamicDetail({Key? key, this.arguments}) : super(key: key);
 
   @override
-  State<DynamicDetail> createState() => _DynamicDetailState();
+  State<DynamicDetail> createState() => _DynamicDetailState(arguments: this.arguments);
 }
 
 class _DynamicDetailState extends State<DynamicDetail> {
+  /* 拿到路由传的值 */
+  final arguments;
+
+  _DynamicDetailState({this.arguments});
+  TrendsReq trendsReq = new TrendsReq();
+
+  @override
+  void initState(){
+    super.initState();
+    getDetail();
+  }
+  Map detail = {
+    "text":"",
+    "avator":"",
+    "nickname":"",
+    "create_time":"",
+    "images":[]
+  };
+  // 动态列表
+  Future<void> getDetail() async {
+    try {
+      Map res = await trendsReq.getTrendsDetail({"trends_id":arguments["trends_id"]});
+      print("动态详情>>${res["data"]}");
+      if (res["code"] == 200) {
+        detail = res["data"];
+        setState(() {});
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
   void textChanged(String txt){
     print(txt);
   }
@@ -49,20 +85,19 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                     margin: EdgeInsets.only(right: 8),
                                     child: ClipRRect(
                                         borderRadius: BorderRadius.circular(38),
-                                        child: Image.asset(
-                                            "assets/images/400x400.jpg",
+                                        child: Image.network("${baseUrl}${detail["avator"]}",
                                             fit: BoxFit.cover))),
                                 onTap: () => toPage("userInfo", {}),
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("书本书华",
+                                  Text(detail["nickname"],
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w800)),
                                   SizedBox(height: 2),
-                                  Text("2023.03.21",
+                                  Text(detail["create_time"],
                                       style: TextStyle(
                                           fontSize: 11,
                                           color: Color(0xffc1c1c1)))
@@ -92,14 +127,15 @@ class _DynamicDetailState extends State<DynamicDetail> {
                               )
                             ]),
                             SizedBox(height: 10),
-                            Text(
-                                "浔阳江头夜送客，枫叶荻花秋瑟瑟，主人下马客在船，举酒欲饮无管弦。醉不成欢惨将别，别时茫茫江浸月。忽闻水上琵琶声，主人忘归客不发。寻声暗问弹者谁？琵琶声停欲语迟。",
-                                style: TextStyle(fontSize: 14, height: 1.7)),
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Text(detail["text"],style: TextStyle(fontSize: 14, height: 1.7)),
+                            ),
                             Container(
                                 margin: EdgeInsets.only(top: 20),
                                 child: GridView.builder(
                                     shrinkWrap: true,
-                                    itemCount: 6,
+                                    itemCount: detail["images"].length,
                                     physics: NeverScrollableScrollPhysics(),
                                     // 禁止滑动
                                     gridDelegate:
@@ -113,8 +149,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                       return (Container(
                                           decoration: ShapeDecoration(
                                               image: DecorationImage(
-                                                  image: AssetImage(
-                                                      "assets/images/400x400.jpg"),
+                                                  image: NetworkImage("${baseUrl}${detail["images"][index]}"),
                                                   fit: BoxFit.fitWidth),
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
@@ -300,7 +335,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
-              height: 48,
+              height: 60,
               child: Row(
                 children: [
                   Expanded(child:  Container(
@@ -320,7 +355,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
                         decoration: InputDecoration(
                             isCollapsed: true,
                             //可以设置自己的
-                            contentPadding: EdgeInsets.all(6),
+                            contentPadding: EdgeInsets.all(10),
                             border: OutlineInputBorder(borderSide: BorderSide.none),
                             // 取消边框
                             hintText: '友善评论',
@@ -328,10 +363,10 @@ class _DynamicDetailState extends State<DynamicDetail> {
                             TextStyle(color: Color(0xffd0d0d0), fontSize: 13)),
                         onChanged: textChanged),
                   )),
-                  SizedBox(width: 16),
+                  SizedBox(width: 10),
                   Container(
-                    height: 28,
-                    padding: EdgeInsets.symmetric(vertical: 3,horizontal: 20),
+                    height: 34,
+                    padding: EdgeInsets.symmetric(vertical: 3,horizontal: 26),
                     decoration: BoxDecoration(
                       color:Color(0xff22d47e),
                       borderRadius: BorderRadius.circular(30),

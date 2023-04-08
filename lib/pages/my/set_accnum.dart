@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class SetAccnum extends StatefulWidget {
-  const SetAccnum({Key? key}) : super(key: key);
+  const SetAccnum({Key? key, arguments}) : super(key: key);
 
   @override
   State<SetAccnum> createState() => _SetAccnumState();

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
@@ -23,9 +24,13 @@ class _UserInfoState extends State<UserInfo> {
 
   void initState(){
     super.initState();
-    getDetail();
+    pageMap["uid"] = arguments["uid"];
+    getFollow();
+    getList();
   }
-  Map detail = new Map();
+  List list = [];
+  int total = 0; // 动态总数
+  Map<String, dynamic> pageMap = {"page_num": 1, "page_rows": 1};
   Map uinfo = {
     "nickname": "",
     "avator": "",
@@ -35,29 +40,44 @@ class _UserInfoState extends State<UserInfo> {
     "followers": "0",
     "star": "0"
   };
-  // 动态详情 & 粉丝，关注，获赞
-  Future<void> getDetail() async {
+  // 动态列表
+  Future<void> getList() async {
     try {
-      Map trendsRes = await trendsReq.getTrendsDetail({"trends_id":arguments["trends_id"]});
-      print("动态详情>>${trendsRes["data"]}");
-      if (trendsRes["code"] == 200) {
-        detail = trendsRes["data"];
+      Map res = await trendsReq.getTrends(pageMap);
+      print("动态列表【用户】>>${res["data"]}");
+      if (res["code"] == 200) {
+        list = res["data"]["list"];
+        total = res["data"]["total"];
         setState(() {});
       }
-      Map follRes = await trendsReq.getFollow({"uid":arguments["uid"]});
-      print("粉丝，关注，获赞>>${follRes}");
-      if (follRes["code"] == 200) {
-        uinfo = follRes["data"];
-        setState(() {});
-      }
-
     } catch (e) {
       print(e);
       errToast();
     }
   }
-
-
+  // 粉丝，关注，获赞
+  Future<void> getFollow() async {
+    try {
+      Map res = await trendsReq.getFollow({"uid":arguments["uid"]});
+      print("粉丝，关注，获赞>>${res}");
+      if (res["code"] == 200) {
+        uinfo = res["data"];
+        setState(() {});
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
+  @override
+  void toPage(String path, dynamic arg){
+    Map<String,dynamic> arguments = new Map();
+    if(path == "dynamicDetail"){
+      arguments["uid"] = arg["uid"];
+      arguments["trends_id"] = arg["id"];
+    }
+    Navigator.pushNamed(context, path, arguments:arguments);
+  }
   @override
   Widget build(BuildContext context) {
     double mWidth = MediaQuery.of(context).size.width; // 屏幕宽度
@@ -206,14 +226,12 @@ class _UserInfoState extends State<UserInfo> {
                 ListView.builder(
                     shrinkWrap: true, 								//解决无限高度问题
                     physics: new NeverScrollableScrollPhysics(),		//禁用滑动事件
-                    itemCount: 15,
-                    itemBuilder: (ctx,i){
+                    itemCount: list.length,
+                    itemBuilder: (ctx,index){
                       return Container(
                           width: double.infinity,
                           color: Colors.white,
                           margin: EdgeInsets.only(bottom: 35),
-                          // padding:
-                          // EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -224,18 +242,20 @@ class _UserInfoState extends State<UserInfo> {
                                       margin: EdgeInsets.only(right: 8),
                                       child: ClipRRect(
                                           borderRadius: BorderRadius.circular(38),
-                                          child: Image.asset(
-                                              "assets/images/400x400.jpg",
+                                          child: Image.network("${baseUrl}${uinfo["avator"]}",
                                               fit: BoxFit.cover))),
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text("书本书华",
+                                      Text(uinfo["nickname"],
                                           style: TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w800)),
                                       SizedBox(height: 2),
-                                      Text("2023.03.21",
+                                      Text( formatDate(
+                                          DateTime.parse(
+                                              list[index]["create_time"]),
+                                          [yyyy, '.', mm, '.', dd]),
                                           style: TextStyle(
                                               fontSize: 11,
                                               color: Color(0xffc1c1c1)))
@@ -265,15 +285,18 @@ class _UserInfoState extends State<UserInfo> {
                                     ),
                                   )
                                 ]),
-                                SizedBox(height: 10),
-                                Text(
-                                    "浔阳江头夜送客，枫叶荻花秋瑟瑟，主人下马客在船，举酒欲饮无管弦。醉不成欢惨将别，别时茫茫江浸月。忽闻水上琵琶声，主人忘归客不发。寻声暗问弹者谁？琵琶声停欲语迟。",
-                                    style: TextStyle(fontSize: 14, height: 1.7)),
+                                InkWell(
+                                  child: Container(
+                                    padding: EdgeInsets.only(top: 10,bottom: 15),
+                                    width:double.infinity,
+                                    child: Text(list[index]["text"],style: TextStyle(fontSize: 14, height: 1.7)),
+                                  ),
+                                  onTap: ()=>toPage("dynamicDetail",list[index]),
+                                ),
                                 Container(
-                                    margin: EdgeInsets.only(top: 20),
                                     child: GridView.builder(
                                         shrinkWrap: true,
-                                        itemCount: 6,
+                                        itemCount: list[index]["images"].length,
                                         physics: NeverScrollableScrollPhysics(),// 禁止滑动
                                         gridDelegate:
                                         SliverGridDelegateWithFixedCrossAxisCount(
@@ -282,12 +305,11 @@ class _UserInfoState extends State<UserInfo> {
                                           crossAxisSpacing: 6, // 交叉轴每行间距
                                           childAspectRatio: 1, // item的宽高比
                                         ),
-                                        itemBuilder: (context, index) {
+                                        itemBuilder: (context, idx) {
                                           return (Container(
                                               decoration: ShapeDecoration(
                                                   image: DecorationImage(
-                                                      image: AssetImage(
-                                                          "assets/images/400x400.jpg"),
+                                                      image: NetworkImage("$baseUrl${list[index]["images"][idx]}"),
                                                       fit: BoxFit.fitWidth),
                                                   shape: RoundedRectangleBorder(
                                                       borderRadius:
@@ -325,7 +347,7 @@ class _UserInfoState extends State<UserInfo> {
                                                 height: 1.5,
                                                 fontSize: 14)),
                                         SizedBox(width: 4),
-                                        Text("2",
+                                        Text(list[index]["star"] != null ? list[index]["star"] : "",
                                             style: TextStyle(
                                                 color: Color(0xffbbbbbb),
                                                 height: 1.7,
