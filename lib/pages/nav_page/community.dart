@@ -27,10 +27,14 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
   double sx = 2.7;
   double ex = 2.7;
   TrendsReq trendsReq = new TrendsReq();
-
+  late ScrollController listViewController;
   @override
   void initState() {
     super.initState();
+    listViewController = ScrollController();
+    listViewController.addListener(() {
+      print(listViewController.offset);
+    });
     changeTabBarAn(0);
     getTrends();
   }
@@ -231,6 +235,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
               physics: BouncingScrollPhysics(),
               // ClampingScrollPhysics 安卓滑动效果 BouncingScrollPhysics IOS滑动效果
               itemCount: list.length,
+              controller: listViewController,
               itemBuilder: (ctx, index) {
                 return Container(
                     width: double.infinity,
