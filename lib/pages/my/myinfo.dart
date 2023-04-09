@@ -245,24 +245,25 @@ class _MyInfoState extends State<MyInfo> {
                 child:
                     InkWell(child: Text("拍照", style: TextStyle(fontSize: 18))),
               ),
-              onTap: ()=>handleCamera(true),
+              onTap: () => handleCamera(true),
             ),
             InkWell(
-              child: Container(
-                width: double.infinity,
-                alignment: Alignment(0, 0),
-                height: 55,
-                child: Text(
-                  "选取相册照片",
-                  style: TextStyle(fontSize: 18),
+                child: Container(
+                  width: double.infinity,
+                  alignment: Alignment(0, 0),
+                  height: 55,
+                  child: Text(
+                    "选取相册照片",
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
-              ),
-              onTap: ()=>handleCamera(false)
-            ),
+                onTap: () => handleCamera(false)),
           ],
         ));
   }
+
   UploadReq uploadReq = new UploadReq();
+
   // 拍照 相册调用
   void handleCamera(bool flag) async {
     Navigator.pop(context); // 用于底部弹框关闭
@@ -281,7 +282,8 @@ class _MyInfoState extends State<MyInfo> {
         });
         // 转换为 FormData
         FormData formData = new FormData.fromMap({
-          "file":await MultipartFile.fromFile(imgFile.path,filename: imgFile.name),
+          "file": await MultipartFile.fromFile(imgFile.path,
+              filename: imgFile.name),
         });
         Map res = await uploadReq.uploadAvator(formData);
         if (res['code'] == 200) {
@@ -316,27 +318,6 @@ class _MyInfoState extends State<MyInfo> {
     Navigator.pushNamed(context, path);
   }
 
-  // 图片加载失败 【待定】
-  Widget initImage() {
-    Image images;
-    images = Image.network(
-        "http://192.168.2.102:801/avator/sunset202303311711.png",
-        width: 36,
-        height: 36);
-    var resolve = images.image.resolve(ImageConfiguration.empty);
-    resolve.addListener(ImageStreamListener((_, __) {}, onError: (e, s) {
-      print("失败");
-      setState(() {
-        images = Image.asset(
-          "assets/images/3044.jpg",
-          width: 36,
-          height: 36,
-        );
-      });
-    }));
-    return images;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -369,7 +350,14 @@ class _MyInfoState extends State<MyInfo> {
                                         ? Image.network(
                                             baseUrl + uinfo["avator"],
                                             width: 36,
-                                            height: 36)
+                                            height: 36,
+                                            errorBuilder: (ctx, err,
+                                                    stackTrace) =>
+                                                Image.asset(
+                                                    'assets/images/sunset.png',
+                                                    //默认显示图片
+                                                    height: 36,
+                                                    width: double.infinity))
                                         : Image.memory(base64.decode(headimg),
                                             fit: BoxFit.fill,
                                             width: 36,

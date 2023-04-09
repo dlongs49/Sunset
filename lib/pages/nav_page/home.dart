@@ -488,15 +488,18 @@ class _HomeState extends State<Home> {
                               children: [
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(8),
-                                  child: Stack(
-                                    children: [
-                                      Image.network(
-                                          "${baseUrl}${trendsList[index]['images'][0]}",
-                                          fit: BoxFit.cover,
-                                          width: 120,
-                                          height: 120)
-                                    ],
-                                  ),
+                                  child: Image.network(
+                                      "${baseUrl}${trendsList[index]['images'][0]}",
+                                      fit: BoxFit.cover,
+                                      width: 120,
+                                      height: 120,
+                                      errorBuilder: (ctx, err,
+                                          stackTrace) =>
+                                          Image.asset(
+                                              'assets/images/lazy.png',
+                                              fit: BoxFit.fill,
+                                              height: 120,
+                                              width: 120))
                                 ),
                                 Positioned(
                                   bottom: 10,
@@ -547,7 +550,15 @@ class _HomeState extends State<Home> {
                                               BorderRadius.circular(30)),
                                       child: Image.network(
                                           "${baseUrl}${trendsList[index]["avator"]}",
-                                          fit: BoxFit.cover)),
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (ctx, err,
+                                              stackTrace) =>
+                                              Image.asset(
+                                                  'assets/images/sunset.png',
+                                                  fit: BoxFit.fill,
+                                                  height: 20,
+                                                  width: 20)
+                                      )),
                                   Container(
                                     width: 80,
                                     child: Text(trendsList[index]["nickname"],

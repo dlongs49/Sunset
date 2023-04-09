@@ -20,16 +20,15 @@ class _TestState extends State<Test> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: FadeTransition(
-            opacity: opAnimation,
-            child: Container(
-              width: 200,
-              height: 200,
-              margin: EdgeInsets.only(top: 300,left: 100),
-              decoration: BoxDecoration(
-                color: Colors.purple,
-                borderRadius: BorderRadius.circular(200)
-              ),
-            )));
+        body: Image.network(
+        "https://th.bing.com/th/isd/OIP.mH9YLFEL5YdVxJM82mjVJQHaEo?pid=ImgDet&rs=1",
+        width: double.infinity,
+        height: 50,
+        fit: BoxFit.cover,
+        errorBuilder: (ctx,err,stackTrace) => Image.asset(
+        'assets/images/400x400.jpg',//默认显示图片
+            height: 50,
+        width: double.infinity)
+    ));
   }
 }

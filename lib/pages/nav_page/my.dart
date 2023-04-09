@@ -198,7 +198,13 @@ class _MyState extends State<My> {
                                         child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(70),
-                                          child: Image.network(baseUrl + uinfo["avator"]),
+                                          child: Image.network(
+                                              "${baseUrl}${uinfo["avator"]}",
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (ctx, err, stackTrace) => Image.asset(
+                                                  'assets/images/sunset.png',
+                                                  width: double.infinity)
+                                          ),
                                         ),
                                         decoration: BoxDecoration(
                                             borderRadius:

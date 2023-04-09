@@ -170,7 +170,16 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                         borderRadius: BorderRadius.circular(38),
                                         child: Image.network(
                                             "${baseUrl}${detail["avator"]}",
-                                            fit: BoxFit.cover))),
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (ctx, err,
+                                                stackTrace) =>
+                                                Image.asset(
+                                                    'assets/images/sunset.png',
+                                                    //默认显示图片
+                                                    height: 38,
+                                                    width: double
+                                                        .infinity)
+                                        ))),
                                 onTap: () => toPage("userInfo", {"uid":detail["uid"]}),
                               ),
                               Column(
@@ -231,16 +240,25 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                       childAspectRatio: 1, // item的宽高比
                                     ),
                                     itemBuilder: (context, index) {
-                                      return (Container(
-                                          decoration: ShapeDecoration(
-                                              image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      "${baseUrl}${detail["images"][index]}"),
-                                                  fit: BoxFit.fitWidth),
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadiusDirectional
-                                                          .circular(6)))));
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                            color: Color(0xffe3e3e3),
+                                            borderRadius: BorderRadius.circular(8)
+                                        ),
+                                        child:ClipRRect(
+                                          borderRadius: BorderRadius.circular(8),
+                                          child: Image.network(
+                                              "${baseUrl}${detail["images"][index]}",
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (ctx, err,
+                                                  stackTrace) =>
+                                                  Image.asset(
+                                                      'assets/images/lazy.png',
+                                                      fit: BoxFit.fill,
+                                                      width: double
+                                                          .infinity)),
+                                        ) ,
+                                      );
                                     })),
                             SizedBox(height: 20),
                           ],
@@ -274,7 +292,16 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                             BorderRadius.circular(32),
                                             child: Image.network(
                                                 "${baseUrl}${commentList[index]["avator"]}",
-                                                fit: BoxFit.cover))),
+                                                fit: BoxFit.cover,
+                                                errorBuilder: (ctx, err,
+                                                    stackTrace) =>
+                                                    Image.asset(
+                                                        'assets/images/sunset.png',
+                                                        //默认显示图片
+                                                        height: 38,
+                                                        width: double
+                                                            .infinity)
+                                            ))),
                                     onTap: () => toPage("userInfo", commentList[index]),
                                   ),
                                   Expanded(
