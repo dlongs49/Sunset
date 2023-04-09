@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:m_loading/m_loading.dart';
 import 'package:sunset/components/loading.dart';
+import 'package:sunset/components/no_more.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/trends_req.dart';
 import 'package:sunset/utils/request.dart';
@@ -549,7 +550,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                           "dynamicDetail", list[index]))
                                   : Container()
                             ]))
-                         :  Loading();
+                         : list.length != total ? Loading() : NoMore();
                   }),
             ),
           ),
