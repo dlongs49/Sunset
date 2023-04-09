@@ -2,8 +2,8 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sunset/components/tabbar.dart';
+import 'package:sunset/components/toast.dart';
 
 
 class Setting extends StatefulWidget {
@@ -51,16 +51,7 @@ class _SettingState extends State<Setting> {
     if (params['type'] == 1) {
 
     } else {
-      // 暂无页面
-      Fluttertoast.showToast(
-          msg: params["title"],
-          toastLength: Toast.LENGTH_SHORT,
-          // 停留时长短 & 长
-          gravity: ToastGravity.CENTER,
-          // 弹框是否居中
-          backgroundColor: Color(0xd23b3b3b),
-          textColor: Colors.white,
-          fontSize: 16.0);
+      toast(params["title"]);
     }
   }
 
@@ -72,196 +63,188 @@ class _SettingState extends State<Setting> {
         children: [
           CustomTabBar(title:"设置",bgColor:null,fontColor:null),
           Expanded(
-              child: MediaQuery.removePadding(
-                // 去除顶部留白
-                  context: context,
-                  removeTop: true,
-                  removeBottom: true,
-                  child: ListView(
-                      padding: EdgeInsets.only(bottom: 40),
-                      physics: BouncingScrollPhysics(), // IOS的回弹属性
-                      children: [
-                        Container(
-                            padding: EdgeInsets.only(bottom: 20),
+              child: ListView(
+                  padding: EdgeInsets.only(bottom: 40),
+                  physics: BouncingScrollPhysics(), // IOS的回弹属性
+                  children: [
+                    Container(
+                        padding: EdgeInsets.only(bottom: 20),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    width: 1, color: Color(0xfff3f3f3)))),
+                        child: Column(
+                            children: card1
+                                .asMap()
+                                .entries
+                                .map((enry) {
+                              int idx = enry.key;
+                              final item = enry.value;
+                              return InkWell(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Container(
+                                    padding: EdgeInsets.all(18),
+                                    child: Row(
+                                      children: [
+                                        Text(item['title'],
+                                            style: TextStyle(fontSize: 16)),
+                                        SizedBox(width: 10),
+                                        Spacer(flex: 1),
+                                        item["type"] == 1 ? CupertinoSwitch(
+                                            value: isSwitch,
+                                            activeColor: Color(0xffdfdfdf),
+                                            trackColor: Color(0xff22d47e),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                isSwitch = value;
+                                              });
+                                            }
+                                        ) : Container(),
+                                        item["type"] == 0
+                                            ? Icon(
+                                            IconData(0xeb8a,
+                                                fontFamily: "sunfont"),
+                                            size: 13,
+                                            color: Color(0xffbababa))
+                                            : Container()
+                                      ],
+                                    ),
+                                  ),
+                                  onTap: ()=>toPage(item));
+                            }).toList())),
+                    Container(
+                        padding: EdgeInsets.only(top: 20, bottom: 20),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    width: 1, color: Color(0xfff3f3f3)))),
+                        child: Column(
+                            children: card2
+                                .asMap()
+                                .entries
+                                .map((enry) {
+                              int idx = enry.key;
+                              final item = enry.value;
+                              return InkWell(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Container(
+                                    padding: EdgeInsets.all(18),
+                                    child: Row(
+                                      children: [
+                                        Text(item['title'],
+                                            style: TextStyle(fontSize: 16)),
+                                        SizedBox(width: 10),
+                                        Spacer(flex: 1),
+                                        Icon(
+                                            IconData(0xeb8a,
+                                                fontFamily: "sunfont"),
+                                            size: 13,
+                                            color: Color(0xffbababa))
+                                      ],
+                                    ),
+                                  ),
+                                  onTap: () => onCard3(item));
+                            }).toList())),
+                    Container(
+                        padding: EdgeInsets.only(top: 20, bottom: 20),
+                        child: Column(
+                            children: card3
+                                .asMap()
+                                .entries
+                                .map((enry) {
+                              int idx = enry.key;
+                              final item = enry.value;
+                              return InkWell(
+                                  child: Container(
+                                    padding: EdgeInsets.all(18),
+                                    child: Row(
+                                      children: [
+                                        Text(item['title'],
+                                            style: TextStyle(fontSize: 16)),
+                                        SizedBox(width: 10),
+                                        Spacer(flex: 1),
+                                        Text(item["type"] == 1
+                                            ? "123.0M"
+                                            : '', style: TextStyle(
+                                            color: Color(0xffc2c2c2),
+                                            fontSize: 16)),
+                                        Icon(
+                                            IconData(0xeb8a,
+                                                fontFamily: "sunfont"),
+                                            size: 13,
+                                            color: Color(0xffbababa))
+                                      ],
+                                    ),
+                                  ),
+                                  onTap: () => onCard3(item));
+                            }).toList())),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 30),
+                      child: InkWell(
+                          borderRadius: new BorderRadius.all(
+                              new Radius.circular(30.0)),
+                          // 点击水波纹是圆角的，默认是矩形的
+                          child: Container(
+                            height: 50,
+                            alignment: Alignment(0, 0),
+                            // 子元素水平垂直居中
                             decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(
-                                        width: 1, color: Color(0xfff3f3f3)))),
-                            child: Column(
-                                children: card1
-                                    .asMap()
-                                    .entries
-                                    .map((enry) {
-                                  int idx = enry.key;
-                                  final item = enry.value;
-                                  return InkWell(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: Container(
-                                        padding: EdgeInsets.all(18),
-                                        child: Row(
-                                          children: [
-                                            Text(item['title'],
-                                                style: TextStyle(fontSize: 16)),
-                                            SizedBox(width: 10),
-                                            Spacer(flex: 1),
-                                            item["type"] == 1 ? CupertinoSwitch(
-                                                value: isSwitch,
-                                                activeColor: Color(0xffdfdfdf),
-                                                trackColor: Color(0xff22d47e),
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    isSwitch = value;
-                                                  });
-                                                }
-                                            ) : Container(),
-                                            item["type"] == 0
-                                                ? Icon(
-                                                IconData(0xeb8a,
-                                                    fontFamily: "sunfont"),
-                                                size: 13,
-                                                color: Color(0xffbababa))
-                                                : Container()
-                                          ],
-                                        ),
-                                      ),
-                                      onTap: ()=>toPage(item));
-                                }).toList())),
-                        Container(
-                            padding: EdgeInsets.only(top: 20, bottom: 20),
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(
-                                        width: 1, color: Color(0xfff3f3f3)))),
-                            child: Column(
-                                children: card2
-                                    .asMap()
-                                    .entries
-                                    .map((enry) {
-                                  int idx = enry.key;
-                                  final item = enry.value;
-                                  return InkWell(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: Container(
-                                        padding: EdgeInsets.all(18),
-                                        child: Row(
-                                          children: [
-                                            Text(item['title'],
-                                                style: TextStyle(fontSize: 16)),
-                                            SizedBox(width: 10),
-                                            Spacer(flex: 1),
-                                            Icon(
-                                                IconData(0xeb8a,
-                                                    fontFamily: "sunfont"),
-                                                size: 13,
-                                                color: Color(0xffbababa))
-                                          ],
-                                        ),
-                                      ),
-                                      onTap: () {
-                                        print(item["title"]);
-                                      });
-                                }).toList())),
-                        Container(
-                            padding: EdgeInsets.only(top: 20, bottom: 20),
-                            child: Column(
-                                children: card3
-                                    .asMap()
-                                    .entries
-                                    .map((enry) {
-                                  int idx = enry.key;
-                                  final item = enry.value;
-                                  return InkWell(
-                                      child: Container(
-                                        padding: EdgeInsets.all(18),
-                                        child: Row(
-                                          children: [
-                                            Text(item['title'],
-                                                style: TextStyle(fontSize: 16)),
-                                            SizedBox(width: 10),
-                                            Spacer(flex: 1),
-                                            Text(item["type"] == 1
-                                                ? "123.0M"
-                                                : '', style: TextStyle(
-                                                color: Color(0xffc2c2c2),
-                                                fontSize: 16)),
-                                            Icon(
-                                                IconData(0xeb8a,
-                                                    fontFamily: "sunfont"),
-                                                size: 13,
-                                                color: Color(0xffbababa))
-                                          ],
-                                        ),
-                                      ),
-                                      onTap: () => onCard3(item));
-                                }).toList())),
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 30),
-                          child: InkWell(
-                              borderRadius: new BorderRadius.all(
-                                  new Radius.circular(30.0)),
-                              // 点击水波纹是圆角的，默认是矩形的
-                              child: Container(
-                                height: 50,
-                                alignment: Alignment(0, 0),
-                                // 子元素水平垂直居中
-                                decoration: BoxDecoration(
-                                  // color: Color(0xffffffff),
-                                    border: Border.all(
-                                        width: 1, color: Color(0xffff0000)),
-                                    borderRadius: BorderRadius.circular(30)),
-                                child: Text("退出登录",
-                                    style: TextStyle(
-                                        color: Color(0xffff0000),
-                                        fontSize: 20)),
-                              ),
-                              onTap: () {
-                                // Fluttertoast.showToast(
-                                //     msg: '退出登录',
-                                //     toastLength: Toast.LENGTH_SHORT,
-                                //     gravity: ToastGravity.CENTER,
-                                //     backgroundColor: Color(0xd23b3b3b),
-                                //     textColor: Colors.white,
-                                //     fontSize: 16.0);
-                                return;
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        title: Container(
-                                            height: 30,
-                                            alignment: Alignment(0, 0),
-                                            child: Text('提示')),
-                                        content: Container(
-                                            alignment: Alignment(0, 0),
-                                            height: 24,
-                                            child: Text('是否确定退出')),
-                                        actions: <Widget>[
-                                          TextButton(
-                                              child: Text(
-                                                '取消',
-                                                style:
-                                                TextStyle(color: Colors.grey),
-                                              ),
-                                              onPressed: () {
-                                                Navigator.pop(context, "取消");
-                                              }),
-                                          TextButton(
-                                            child: Text(
-                                              '确定',
-                                              style: TextStyle(
-                                                  color: Color(0xff4ece99)),
-                                            ),
-                                            onPressed: () {
-                                              Navigator.pop(context, "确定");
-                                            },
+                              // color: Color(0xffffffff),
+                                border: Border.all(
+                                    width: 1, color: Color(0xffff0000)),
+                                borderRadius: BorderRadius.circular(30)),
+                            child: Text("退出登录",
+                                style: TextStyle(
+                                    color: Color(0xffff0000),
+                                    fontSize: 20)),
+                          ),
+                          onTap: () {
+                            // Fluttertoast.showToast(
+                            //     msg: '退出登录',
+                            //     toastLength: Toast.LENGTH_SHORT,
+                            //     gravity: ToastGravity.CENTER,
+                            //     backgroundColor: Color(0xd23b3b3b),
+                            //     textColor: Colors.white,
+                            //     fontSize: 16.0);
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Container(
+                                        height: 30,
+                                        alignment: Alignment(0, 0),
+                                        child: Text('提示')),
+                                    content: Container(
+                                        alignment: Alignment(0, 0),
+                                        height: 24,
+                                        child: Text('是否确定退出')),
+                                    actions: <Widget>[
+                                      TextButton(
+                                          child: Text(
+                                            '取消',
+                                            style:
+                                            TextStyle(color: Colors.grey),
                                           ),
-                                        ],
-                                      );
-                                    });
-                                print("退出登录>>");
-                              }),
-                        )
-                      ]))),
+                                          onPressed: () {
+                                            Navigator.pop(context, "取消");
+                                          }),
+                                      TextButton(
+                                        child: Text(
+                                          '确定',
+                                          style: TextStyle(
+                                              color: Color(0xff4ece99)),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.pop(context, "确定");
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                });
+                            print("退出登录>>");
+                          }),
+                    )
+                  ])),
         ],
       ),
     );
