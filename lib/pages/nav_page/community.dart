@@ -289,7 +289,9 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                   // ClampingScrollPhysics 安卓滑动效果 BouncingScrollPhysics IOS滑动效果
                   itemCount: list.length,
                   itemBuilder: (ctx, index) {
-                    print(">>>>${index}-${list.length}");
+                    /* 如果列表长度 不等于 当前的索引值即没有到底部 则展示列表，
+                      否 在进行二次三元判断，判断列表的长度 是否大于等于总条数，在进行是否 加载中还是到底部
+                    */
                     return index+1 != list.length
                         ? Container(
                         width: double.infinity,
