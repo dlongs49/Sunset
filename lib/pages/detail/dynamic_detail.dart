@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/api/trends_req.dart';
 import 'package:sunset/utils/request.dart';
 
@@ -32,10 +33,25 @@ class _DynamicDetailState extends State<DynamicDetail> {
   void initState() {
     super.initState();
     commParams["trends_id"] = pageMap["trends_id"] = arguments["trends_id"];
+    getUInfo();
     getDetail();
     getCommnet();
   }
-
+  Sign sign = new Sign();
+  Map uinfo = new Map();
+  // 个人信息
+  void getUInfo() async {
+    try {
+      Map res = await sign.getUInfo();
+      print("个人信息>>> ${res}");
+      if (res["code"] == 200) {
+        uinfo = res["data"];
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
   Map detail = {
     "text": "",
     "avator": "",
@@ -88,8 +104,8 @@ class _DynamicDetailState extends State<DynamicDetail> {
       Map res = await trendsReq.pubComment(commParams);
       if (res["code"] == 200) {
         commentList.insert(0,{
-          "avator":detail["avator"],
-          "nickname":detail["nickname"],
+          "avator":uinfo["avator"],
+          "nickname":uinfo["nickname"],
           "content":commParams["content"],
           "create_time":new DateTime.now().toString(),
           "star":"",

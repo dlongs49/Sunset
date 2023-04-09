@@ -24,7 +24,7 @@ class _UserInfoState extends State<UserInfo> {
   _UserInfoState({this.arguments});
 
   TrendsReq trendsReq = new TrendsReq();
-  String u_id = "";
+  bool isUser = false;
 
   void initState() {
     super.initState();
@@ -35,7 +35,8 @@ class _UserInfoState extends State<UserInfo> {
   Future<void> getUid() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final action = prefs.getString('uid');
-    u_id = action != null ? action : "";
+    final u_id = action != null ? action : "";
+    isUser = u_id == arguments["uid"];
     setState(() {});
     pageMap["uid"] = arguments["uid"];
     getFollow();
@@ -277,8 +278,7 @@ class _UserInfoState extends State<UserInfo> {
                                               )
                                             ])
                                           ]),
-                                          u_id == ""
-                                              ? Container(
+                                          !isUser ? Container(
                                                   margin: EdgeInsets.only(
                                                       right: 30),
                                                   padding: EdgeInsets.symmetric(
@@ -447,7 +447,9 @@ class _UserInfoState extends State<UserInfo> {
                                       onTap: () =>
                                           toPage("dynamicDetail", list[index]),
                                     ),
-                                    Container(
+                                    list[index]["images"] != null &&
+                                        list[index]["images"].length != 0
+                                        ?Container(
                                         child: GridView.builder(
                                             shrinkWrap: true,
                                             itemCount:
@@ -485,7 +487,7 @@ class _UserInfoState extends State<UserInfo> {
                                                                   .infinity)),
                                                 ) ,
                                               );
-                                            })),
+                                            })) :Container(),
                                     Container(
                                         margin: EdgeInsets.only(
                                             top: 12, bottom: 10),
