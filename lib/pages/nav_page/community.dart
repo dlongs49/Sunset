@@ -8,6 +8,7 @@ import 'package:m_loading/m_loading.dart';
 import 'package:sunset/components/loading.dart';
 import 'package:sunset/components/no_more.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/api/trends_req.dart';
 import 'package:sunset/utils/request.dart';
 
@@ -42,9 +43,28 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    getUInfo();
     changeTabBarAn(0);
     getTrends();
   }
+
+  Sign sign = new Sign();
+  Map uinfo = new Map();
+  // 个人信息
+  void getUInfo() async {
+    try {
+      Map res = await sign.getUInfo();
+      print("个人信息>>> ${res}");
+      if (res["code"] == 200) {
+        uinfo = res["data"];
+        setState(() {});
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
+
 
   // 列表滑动中
   bool scrollIng(ScrollNotification n) {
@@ -70,7 +90,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
         isPoint = false;
         print(pageMap);
         pageMap["page_num"] = pageMap["page_num"] + 1;
-        var timeout = Duration(seconds: 3);
+        var timeout = Duration(seconds: 1);
         Timer(timeout, () {
           getTrends();
         });
@@ -167,10 +187,14 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                           clipBehavior: Clip.hardEdge,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(30)),
-                          child: Image.asset("assets/images/3044.jpg",
-                              fit: BoxFit.cover),
+                          child:Image.network("${baseUrl}${uinfo["avator"]}",
+                              fit: BoxFit.cover,
+                              errorBuilder: (ctx, err, stackTrace) => Image.asset(
+                                  'assets/images/sunset.png',
+                                  width: double.infinity)
+                          ),
                         ),
-                        onTap: () => toPage("userInfo", null),
+                        onTap: () => toPage("userInfo", uinfo),
                       ),
                       Expanded(
                           child: Container(

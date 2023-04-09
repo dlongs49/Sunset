@@ -38,13 +38,16 @@ class _HomeState extends State<Home> {
 
   Sign sign = new Sign();
 
+  Map uinfo = new Map();
+
   // 个人信息
   void getUInfo() async {
     try {
       Map res = await sign.getUInfo();
-      print("data>>> ${res["code"]} ${res["data"]}");
-      if (res['code'] == 401) {
-        Navigator.pushNamed(context, 'phoneLog');
+      print("个人信息>>> ${res}");
+      if (res["code"] == 200) {
+        uinfo = res["data"];
+        setState(() {});
       }
     } catch (e) {
       print(e);
@@ -100,14 +103,14 @@ class _HomeState extends State<Home> {
     if (url == "dynamicDetail") {
       Navigator.pushNamed(context, url, arguments: {"trends_id": arg["id"]});
     }
-    if(url == "myDevice"){
+    if (url == "myDevice") {
       Navigator.pushNamed(context, url);
     }
   }
 
   // 轮播图跳转
   void toBanner(String url) async {
-    Navigator.pushNamed(context, "shopDetail",arguments: {"url":url});
+    Navigator.pushNamed(context, "shopDetail", arguments: {"url": url});
   }
 
   // 体秤信息
@@ -387,7 +390,7 @@ class _HomeState extends State<Home> {
                         Icon(IconData(0xeb8a, fontFamily: 'sunfont'),
                             size: 10, color: Color.fromRGBO(120, 120, 120, 1))
                       ])),
-                  onTap: () => toPage("myDevice",null))
+                  onTap: () => toPage("myDevice", null))
             ],
           ),
           Container(
@@ -487,20 +490,18 @@ class _HomeState extends State<Home> {
                             Stack(
                               children: [
                                 ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.network(
-                                      "${baseUrl}${trendsList[index]['images'][0]}",
-                                      fit: BoxFit.cover,
-                                      width: 120,
-                                      height: 120,
-                                      errorBuilder: (ctx, err,
-                                          stackTrace) =>
-                                          Image.asset(
-                                              'assets/images/lazy.png',
-                                              fit: BoxFit.fill,
-                                              height: 120,
-                                              width: 120))
-                                ),
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.network(
+                                        "${baseUrl}${trendsList[index]['images'][0]}",
+                                        fit: BoxFit.cover,
+                                        width: 120,
+                                        height: 120,
+                                        errorBuilder: (ctx, err, stackTrace) =>
+                                            Image.asset(
+                                                'assets/images/lazy.png',
+                                                fit: BoxFit.fill,
+                                                height: 120,
+                                                width: 120))),
                                 Positioned(
                                   bottom: 10,
                                   left: 10,
@@ -552,13 +553,12 @@ class _HomeState extends State<Home> {
                                           "${baseUrl}${trendsList[index]["avator"]}",
                                           fit: BoxFit.cover,
                                           errorBuilder: (ctx, err,
-                                              stackTrace) =>
+                                                  stackTrace) =>
                                               Image.asset(
                                                   'assets/images/sunset.png',
                                                   fit: BoxFit.fill,
                                                   height: 20,
-                                                  width: 20)
-                                      )),
+                                                  width: 20))),
                                   Container(
                                     width: 80,
                                     child: Text(trendsList[index]["nickname"],
@@ -756,8 +756,12 @@ class _HomeState extends State<Home> {
                           clipBehavior: Clip.hardEdge,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(30)),
-                          child: Image.asset("assets/images/3044.jpg",
-                              fit: BoxFit.cover),
+                          child: Image.network("${baseUrl}${uinfo["avator"]}",
+                              fit: BoxFit.cover,
+                              errorBuilder: (ctx, err, stackTrace) => Image.asset(
+                                  'assets/images/sunset.png',
+                                  width: double.infinity)
+                          ),
                         ),
                         onTap: () {
                           Navigator.pushNamed(context, "userInfo");
