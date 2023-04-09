@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:sunset/components/loading.dart';
+import 'package:sunset/components/no_more.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/sign_req.dart';
@@ -37,8 +40,10 @@ class _DynamicDetailState extends State<DynamicDetail> {
     getDetail();
     getCommnet();
   }
+
   Sign sign = new Sign();
   Map uinfo = new Map();
+
   // 个人信息
   void getUInfo() async {
     try {
@@ -52,6 +57,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
       errToast();
     }
   }
+
   Map detail = {
     "text": "",
     "avator": "",
@@ -103,12 +109,12 @@ class _DynamicDetailState extends State<DynamicDetail> {
     try {
       Map res = await trendsReq.pubComment(commParams);
       if (res["code"] == 200) {
-        commentList.insert(0,{
-          "avator":uinfo["avator"],
-          "nickname":uinfo["nickname"],
-          "content":commParams["content"],
-          "create_time":new DateTime.now().toString(),
-          "star":"",
+        commentList.insert(0, {
+          "avator": uinfo["avator"],
+          "nickname": uinfo["nickname"],
+          "content": commParams["content"],
+          "create_time": new DateTime.now().toString(),
+          "star": "",
         });
         // 重置输入框
         ContentController = TextEditingController.fromValue(TextEditingValue(
@@ -131,16 +137,41 @@ class _DynamicDetailState extends State<DynamicDetail> {
   int commentTotal = 0;
   Map<String, dynamic> pageMap = {"page_num": 1, "page_rows": 10};
 
+  bool isPoint = false;
+
+  // 监听滑动结束 分页加载
+  bool scrollEnd(ScrollNotification n) {
+    print("${commentList.length}---${commentTotal}");
+    if (commentList.length >= commentTotal) {
+      return true;
+    } else {
+      // isPoint 解决多次触发置底操作，导致上一次请求未完成，多次请求bug
+      if (isPoint) {
+        isPoint = false;
+        print(pageMap);
+        pageMap["page_num"] = pageMap["page_num"] + 1;
+        var timeout = Duration(seconds: 1);
+        Timer(timeout, () {
+          getCommnet();
+        });
+      }
+    }
+    return false;
+  }
+
   // 评论列表
   @override
   Future<void> getCommnet() async {
     try {
       Map res = await trendsReq.getComment(pageMap);
-      print("评论列表>>>${res["data"]["list"]}");
+      print("评论列表>>>${res}");
       if (res["code"] == 200) {
-        commentList = res["data"]["list"];
+        commentList.insertAll(commentList.length, res["data"]["list"]);
         commentTotal = res["data"]["total"];
-        setState(() {});
+        isPoint = true;
+        if (mounted) {
+          setState(() {});
+        }
       }
     } catch (e) {
       errToast();
@@ -149,11 +180,11 @@ class _DynamicDetailState extends State<DynamicDetail> {
 
   @override
   void toPage(String path, dynamic arg) {
-    Map<String,dynamic> arguments = new Map();
-    if(path == "userInfo"){
+    Map<String, dynamic> arguments = new Map();
+    if (path == "userInfo") {
       arguments["uid"] = arg["uid"];
     }
-    Navigator.pushNamed(context, path,arguments:arguments);
+    Navigator.pushNamed(context, path, arguments: arguments);
   }
 
   @override
@@ -164,12 +195,10 @@ class _DynamicDetailState extends State<DynamicDetail> {
           children: [
             CustomTabBar(title: "动态详情", bgColor: null, fontColor: null),
             Expanded(
-              child: MediaQuery.removePadding(
-                  // 去除顶部留白
-                  context: context,
-                  removeTop: true,
-                  removeBottom: true,
+              child: NotificationListener<ScrollEndNotification>(
+                  onNotification: (notification) => scrollEnd(notification),
                   child: ListView(
+                    padding: EdgeInsets.zero,
                     physics: BouncingScrollPhysics(), // IOS的回弹属性
                     children: [
                       Container(
@@ -188,15 +217,14 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                             "${baseUrl}${detail["avator"]}",
                                             fit: BoxFit.cover,
                                             errorBuilder: (ctx, err,
-                                                stackTrace) =>
+                                                    stackTrace) =>
                                                 Image.asset(
                                                     'assets/images/sunset.png',
                                                     //默认显示图片
                                                     height: 38,
-                                                    width: double
-                                                        .infinity)
-                                        ))),
-                                onTap: () => toPage("userInfo", {"uid":detail["uid"]}),
+                                                    width: double.infinity)))),
+                                onTap: () =>
+                                    toPage("userInfo", {"uid": detail["uid"]}),
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,7 +269,9 @@ class _DynamicDetailState extends State<DynamicDetail> {
                               child: Text(detail["text"],
                                   style: TextStyle(fontSize: 14, height: 1.7)),
                             ),
-                            Container(
+                            detail["images"] != null &&
+                                detail["images"].length != 0
+                                ? Container(
                                 margin: EdgeInsets.only(top: 20),
                                 child: GridView.builder(
                                     shrinkWrap: true,
@@ -259,219 +289,251 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                       return Container(
                                         decoration: BoxDecoration(
                                             color: Color(0xffe3e3e3),
-                                            borderRadius: BorderRadius.circular(8)
-                                        ),
-                                        child:ClipRRect(
-                                          borderRadius: BorderRadius.circular(8),
+                                            borderRadius:
+                                                BorderRadius.circular(8)),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                           child: Image.network(
                                               "${baseUrl}${detail["images"][index]}",
                                               fit: BoxFit.cover,
                                               errorBuilder: (ctx, err,
-                                                  stackTrace) =>
+                                                      stackTrace) =>
                                                   Image.asset(
                                                       'assets/images/lazy.png',
                                                       fit: BoxFit.fill,
-                                                      width: double
-                                                          .infinity)),
-                                        ) ,
+                                                      width: double.infinity)),
+                                        ),
                                       );
-                                    })),
+                                    })) : Container(),
                             SizedBox(height: 20),
                           ],
                         ),
                       ),
                       Padding(
                           padding: EdgeInsets.only(left: 12, bottom: 12),
-                          child:
-                              Text("全部评论(${commentList.length})", style: TextStyle(fontSize: 14))),
+                          child: Text("全部评论(${commentList.length})",
+                              style: TextStyle(fontSize: 14))),
                       ListView.builder(
                           shrinkWrap: true, //解决无限高度问题
                           physics: new NeverScrollableScrollPhysics(), //禁用滑动事件
                           itemCount: commentList.length,
-                          itemBuilder: (ctx, index) => Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 14),
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          width: 1, color: Color(0xFFF1F1F1)))),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  InkWell(
-                                    child: Container(
-                                        width: 32,
-                                        height: 32,
-                                        margin: EdgeInsets.only(right: 8),
-                                        child: ClipRRect(
-                                            borderRadius:
-                                            BorderRadius.circular(32),
-                                            child: Image.network(
-                                                "${baseUrl}${commentList[index]["avator"]}",
-                                                fit: BoxFit.cover,
-                                                errorBuilder: (ctx, err,
-                                                    stackTrace) =>
-                                                    Image.asset(
-                                                        'assets/images/sunset.png',
-                                                        //默认显示图片
-                                                        height: 38,
-                                                        width: double
-                                                            .infinity)
-                                            ))),
-                                    onTap: () => toPage("userInfo", commentList[index]),
-                                  ),
-                                  Expanded(
-                                      child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                          margin: EdgeInsets.only(
-                                              top: 5, bottom: 6),
-                                          child: Text(
-                                              commentList[index]["nickname"] !=
-                                                      null
-                                                  ? commentList[index]
-                                                      ["nickname"]
-                                                  : "",
-                                              style: TextStyle(
-                                                  fontSize: 13,
-                                                  fontWeight:
-                                                      FontWeight.w600))),
-                                      Text(
-                                          commentList[index]["content"] != null
-                                              ? commentList[index]["content"]
-                                              : "",
-                                          style: TextStyle(
-                                              fontSize: 13, height: 1.5)),
-                                      SizedBox(height: 10),
-                                      Row(
+                          itemBuilder: (ctx,
+                                  index) =>
+                          /* 如果列表长度 不等于 当前的索引值即没有到底部 则展示列表，
+                            否 在进行二次三元判断，判断列表的长度 是否大于等于总条数，在进行是否 加载中还是到底部
+                          */
+                              index + 1 != commentList.length
+                                  ? Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 15, vertical: 14),
+                                      decoration: BoxDecoration(
+                                          border: Border(
+                                              bottom: BorderSide(
+                                                  width: 1,
+                                                  color: Color(0xFFF1F1F1)))),
+                                      child: Row(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                              formatDate(
-                                                  DateTime.parse(
+                                          InkWell(
+                                            child: Container(
+                                                width: 32,
+                                                height: 32,
+                                                margin:
+                                                    EdgeInsets.only(right: 8),
+                                                child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            32),
+                                                    child: Image.network(
+                                                        "${baseUrl}${commentList[index]["avator"]}",
+                                                        fit: BoxFit.cover,
+                                                        errorBuilder: (ctx, err,
+                                                                stackTrace) =>
+                                                            Image.asset(
+                                                                'assets/images/sunset.png',
+                                                                //默认显示图片
+                                                                height: 38,
+                                                                width: double
+                                                                    .infinity)))),
+                                            onTap: () => toPage(
+                                                "userInfo", commentList[index]),
+                                          ),
+                                          Expanded(
+                                              child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                  margin: EdgeInsets.only(
+                                                      top: 5, bottom: 6),
+                                                  child: Text(
+                                                      commentList[index][
+                                                                  "nickname"] !=
+                                                              null
+                                                          ? commentList[index]
+                                                              ["nickname"]
+                                                          : "",
+                                                      style: TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight: FontWeight
+                                                              .w600))),
+                                              Text(
+                                                  commentList[index]
+                                                              ["content"] !=
+                                                          null
+                                                      ? commentList[index]
+                                                          ["content"]
+                                                      : "",
+                                                  style: TextStyle(
+                                                      fontSize: 13,
+                                                      height: 1.5)),
+                                              SizedBox(height: 10),
+                                              Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                      formatDate(
+                                                          DateTime.parse(
+                                                              commentList[index]
+                                                                  [
+                                                                  "create_time"]),
+                                                          [
+                                                            yyyy,
+                                                            '.',
+                                                            mm,
+                                                            '.',
+                                                            dd
+                                                          ]),
+                                                      style: TextStyle(
+                                                          color:
+                                                              Color(0xffcccccc),
+                                                          fontSize: 13)),
+                                                  Spacer(flex: 1),
+                                                  Text(
                                                       commentList[index]
-                                                          ["create_time"]),
-                                                  [yyyy, '.', mm, '.', dd]),
-                                              style: TextStyle(
-                                                  color: Color(0xffcccccc),
-                                                  fontSize: 13)),
-                                          Spacer(flex: 1),
-                                          Text(
-                                              commentList[index]["star"] != null
-                                                  ? commentList[index]["star"]
-                                                  : "",
-                                              style: TextStyle(
-                                                  color: Color(0xffbbbbbb),
-                                                  fontSize: 14)),
-                                          SizedBox(width: 10),
-                                          Icon(
-                                              IconData(0xec7f,
-                                                  fontFamily: 'sunfont'),
-                                              size: 16,
-                                              color: Color(0xffbbbbbb)),
-                                          SizedBox(width: 10),
-                                          Icon(
-                                              IconData(0xe600,
-                                                  fontFamily: 'sunfont'),
-                                              size: 18,
-                                              color: Color(0xffbbbbbb))
+                                                                  ["star"] !=
+                                                              null
+                                                          ? commentList[index]
+                                                              ["star"]
+                                                          : "",
+                                                      style: TextStyle(
+                                                          color:
+                                                              Color(0xffbbbbbb),
+                                                          fontSize: 14)),
+                                                  SizedBox(width: 10),
+                                                  Icon(
+                                                      IconData(0xec7f,
+                                                          fontFamily:
+                                                              'sunfont'),
+                                                      size: 16,
+                                                      color: Color(0xffbbbbbb)),
+                                                  SizedBox(width: 10),
+                                                  Icon(
+                                                      IconData(0xe600,
+                                                          fontFamily:
+                                                              'sunfont'),
+                                                      size: 18,
+                                                      color: Color(0xffbbbbbb))
+                                                ],
+                                              ),
+                                              // Container(
+                                              //     margin: EdgeInsets.only(top: 10),
+                                              //     padding: EdgeInsets.only(top: 10),
+                                              //     decoration: BoxDecoration(
+                                              //         border: Border(
+                                              //             top: BorderSide(
+                                              //                 width: 1,
+                                              //                 color:
+                                              //                     Color(0xFFF1F1F1)))),
+                                              //     child: Row(
+                                              //         crossAxisAlignment:
+                                              //             CrossAxisAlignment.start,
+                                              //         children: [
+                                              //           Container(
+                                              //               width: 32,
+                                              //               height: 32,
+                                              //               margin: EdgeInsets.only(
+                                              //                   right: 8),
+                                              //               child: ClipRRect(
+                                              //                   borderRadius:
+                                              //                       BorderRadius
+                                              //                           .circular(32),
+                                              //                   child: Image.asset(
+                                              //                       "assets/images/400x400.jpg",
+                                              //                       fit:
+                                              //                           BoxFit.cover))),
+                                              //           Expanded(
+                                              //               child: Column(
+                                              //                   crossAxisAlignment:
+                                              //                       CrossAxisAlignment
+                                              //                           .start,
+                                              //                   children: [
+                                              //                 Container(
+                                              //                     margin:
+                                              //                         EdgeInsets.only(
+                                              //                             top: 5,
+                                              //                             bottom: 6),
+                                              //                     child: Text("Sept",
+                                              //                         style: TextStyle(
+                                              //                             fontSize: 13,
+                                              //                             fontWeight:
+                                              //                                 FontWeight
+                                              //                                     .w600))),
+                                              //                 Text(
+                                              //                     "浔阳江头夜送客，枫叶荻花秋瑟瑟。",
+                                              //                     style: TextStyle(
+                                              //                         fontSize: 13,
+                                              //                         height: 1.5)),
+                                              //                 SizedBox(height: 10),
+                                              //                 Row(
+                                              //                   crossAxisAlignment:
+                                              //                       CrossAxisAlignment
+                                              //                           .center,
+                                              //                   children: [
+                                              //                     Text("2023-03-17",
+                                              //                         style: TextStyle(
+                                              //                             color: Color(
+                                              //                                 0xffcccccc),
+                                              //                             fontSize:
+                                              //                                 13)),
+                                              //                     Spacer(flex: 1),
+                                              //                     Text("0",
+                                              //                         style: TextStyle(
+                                              //                             color: Color(
+                                              //                                 0xffbbbbbb),
+                                              //                             fontSize:
+                                              //                                 14)),
+                                              //                     SizedBox(width: 10),
+                                              //                     Icon(
+                                              //                         IconData(0xec7f,
+                                              //                             fontFamily:
+                                              //                                 'sunfont'),
+                                              //                         size: 16,
+                                              //                         color: Color(
+                                              //                             0xffbbbbbb)),
+                                              //                     SizedBox(width: 10),
+                                              //                     Icon(
+                                              //                         IconData(0xe600,
+                                              //                             fontFamily:
+                                              //                                 'sunfont'),
+                                              //                         size: 18,
+                                              //                         color: Color(
+                                              //                             0xffbbbbbb))
+                                              //                   ],
+                                              //                 ),
+                                              //               ]))
+                                              //         ]))
+                                            ],
+                                          ))
                                         ],
                                       ),
-                                      // Container(
-                                      //     margin: EdgeInsets.only(top: 10),
-                                      //     padding: EdgeInsets.only(top: 10),
-                                      //     decoration: BoxDecoration(
-                                      //         border: Border(
-                                      //             top: BorderSide(
-                                      //                 width: 1,
-                                      //                 color:
-                                      //                     Color(0xFFF1F1F1)))),
-                                      //     child: Row(
-                                      //         crossAxisAlignment:
-                                      //             CrossAxisAlignment.start,
-                                      //         children: [
-                                      //           Container(
-                                      //               width: 32,
-                                      //               height: 32,
-                                      //               margin: EdgeInsets.only(
-                                      //                   right: 8),
-                                      //               child: ClipRRect(
-                                      //                   borderRadius:
-                                      //                       BorderRadius
-                                      //                           .circular(32),
-                                      //                   child: Image.asset(
-                                      //                       "assets/images/400x400.jpg",
-                                      //                       fit:
-                                      //                           BoxFit.cover))),
-                                      //           Expanded(
-                                      //               child: Column(
-                                      //                   crossAxisAlignment:
-                                      //                       CrossAxisAlignment
-                                      //                           .start,
-                                      //                   children: [
-                                      //                 Container(
-                                      //                     margin:
-                                      //                         EdgeInsets.only(
-                                      //                             top: 5,
-                                      //                             bottom: 6),
-                                      //                     child: Text("Sept",
-                                      //                         style: TextStyle(
-                                      //                             fontSize: 13,
-                                      //                             fontWeight:
-                                      //                                 FontWeight
-                                      //                                     .w600))),
-                                      //                 Text(
-                                      //                     "浔阳江头夜送客，枫叶荻花秋瑟瑟。",
-                                      //                     style: TextStyle(
-                                      //                         fontSize: 13,
-                                      //                         height: 1.5)),
-                                      //                 SizedBox(height: 10),
-                                      //                 Row(
-                                      //                   crossAxisAlignment:
-                                      //                       CrossAxisAlignment
-                                      //                           .center,
-                                      //                   children: [
-                                      //                     Text("2023-03-17",
-                                      //                         style: TextStyle(
-                                      //                             color: Color(
-                                      //                                 0xffcccccc),
-                                      //                             fontSize:
-                                      //                                 13)),
-                                      //                     Spacer(flex: 1),
-                                      //                     Text("0",
-                                      //                         style: TextStyle(
-                                      //                             color: Color(
-                                      //                                 0xffbbbbbb),
-                                      //                             fontSize:
-                                      //                                 14)),
-                                      //                     SizedBox(width: 10),
-                                      //                     Icon(
-                                      //                         IconData(0xec7f,
-                                      //                             fontFamily:
-                                      //                                 'sunfont'),
-                                      //                         size: 16,
-                                      //                         color: Color(
-                                      //                             0xffbbbbbb)),
-                                      //                     SizedBox(width: 10),
-                                      //                     Icon(
-                                      //                         IconData(0xe600,
-                                      //                             fontFamily:
-                                      //                                 'sunfont'),
-                                      //                         size: 18,
-                                      //                         color: Color(
-                                      //                             0xffbbbbbb))
-                                      //                   ],
-                                      //                 ),
-                                      //               ]))
-                                      //         ]))
-                                    ],
-                                  ))
-                                ],
-                              ),
-                            ))
+                                    )
+                                  : commentList.length != commentTotal
+                                      ? Loading()
+                                      : NoMore())
                     ],
                   )),
             ),
