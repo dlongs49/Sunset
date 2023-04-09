@@ -30,6 +30,7 @@ dependencies:
   bot_toast: ^4.0.0 # Toast 超好用
   crypto: ^3.0.0 # MD5加密
   date_format: ^2.0.7 # 格式化日期
+  m_loading: ^0.0.2 # 下拉加载
   #camera: ^0.5.8
 #scan: ^1.6.0
 #path_provider: ^1.6.8 # 获取缓存

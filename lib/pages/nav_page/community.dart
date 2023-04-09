@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:m_loading/m_loading.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/trends_req.dart';
 import 'package:sunset/utils/request.dart';
@@ -15,6 +17,12 @@ class Community extends StatefulWidget {
 }
 
 class _CommunityState extends State<Community> with TickerProviderStateMixin {
+  // 动画执行参数
+  late final AnimationController controller =
+      AnimationController(duration: Duration(milliseconds: 500), vsync: this);
+  late Animation<Offset> animation =
+      Tween(begin: Offset.zero, end: Offset(1.5, 0.0)).animate(controller);
+
   List tabBar = ["最新", "精选", "关注"];
   List<dynamic> list = [];
   int total = 0; // 动态总数
@@ -27,33 +35,59 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
   double sx = 2.7;
   double ex = 2.7;
   TrendsReq trendsReq = new TrendsReq();
-  late ScrollController listViewController;
-
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    listViewController = ScrollController();
-    listViewController.addListener(() {
-      double offset = listViewController.offset;
-      double maxOffset = listViewController.position.maxScrollExtent;
-      if(offset >= maxOffset){
-        toast("到底了");
-      }
-    });
     changeTabBarAn(0);
     getTrends();
+  }
+
+  // 列表滑动中
+  bool scrollIng(ScrollNotification n) {
+    animation =
+        Tween(begin: Offset.zero, end: Offset(1.5, 0.0)).animate(controller);
+    // 开始过渡
+    controller.forward();
+    return false;
+  }
+
+  bool isPoint = false;
+
+  // 滑动结束
+  bool scrollEnd(ScrollNotification n) {
+    // 滑动结束 过渡过来
+    controller.reverse();
+    print("${list.length}---${total}");
+    if (list.length >= total) {
+      return true;
+    } else {
+      // isPoint 解决多次触发置底操作，导致上一次请求未完成，多次请求bug
+      if (isPoint) {
+        isPoint = false;
+        print(pageMap);
+        pageMap["page_num"] = pageMap["page_num"] + 1;
+        var timeout = Duration(seconds: 3);
+        Timer(timeout, () {
+          getTrends();
+        });
+      }
+    }
+    return false;
   }
 
   // 最新的动态列表
   void getTrends() async {
     try {
       Map res = await trendsReq.getTrends(pageMap);
-      print("动态列表>>${res["data"]}");
       if (res["code"] == 200) {
-        list = res["data"]["list"];
+        list.insertAll(list.length, res["data"]["list"]);
         total = res["data"]["total"];
-        setState(() {});
+        isPoint = true;
+        if (mounted) {
+          setState(() {});
+        }
       }
     } catch (e) {
       print(e);
@@ -92,6 +126,11 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
     if (path == "pubTrends") {
       Navigator.pushNamed(context, path);
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   Widget build(BuildContext context) {
@@ -235,94 +274,115 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
         ]),
         Expanded(
             child: Stack(children: [
-          ListView.builder(
-              // 取消顶部留白
-              padding: EdgeInsets.zero,
-              physics: BouncingScrollPhysics(),
-              // ClampingScrollPhysics 安卓滑动效果 BouncingScrollPhysics IOS滑动效果
-              itemCount: list.length,
-              controller: listViewController,
-              itemBuilder: (ctx, index) {
-                return Container(
-                    width: double.infinity,
-                    color: Colors.white,
-                    margin: EdgeInsets.only(bottom: 8),
-                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(children: [
-                            InkWell(
-                              child: Container(
-                                  width: 38,
-                                  height: 38,
-                                  margin: EdgeInsets.only(right: 8),
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(38),
-                                      child: Image.network(
-                                          "${baseUrl}${list[index]["avator"]}",
-                                          fit: BoxFit.cover))),
-                              onTap: () => toPage("userInfo", list[index]),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(list[index]["nickname"],
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w800)),
-                                SizedBox(height: 2),
-                                Text(
-                                    formatDate(
-                                        DateTime.parse(
-                                            list[index]["create_time"]),
-                                        [yyyy, '.', mm, '.', dd]),
-                                    style: TextStyle(
-                                        fontSize: 11, color: Color(0xffc1c1c1)))
-                              ],
-                            ),
-                            Spacer(flex: 1),
-                            Container(
-                              width: 60,
-                              height: 26,
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      width: 1.0, color: Color(0xff22d47e)),
-                                  borderRadius: BorderRadius.circular(22)),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(IconData(0xeaf3, fontFamily: 'sunfont'),
-                                      size: 10, color: Color(0xff22d47e)),
-                                  Text("关注",
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          color: Color(0xff22d47e)))
-                                ],
-                              ),
-                            )
-                          ]),
-                          InkWell(
-                              child: Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.only(top: 10, bottom: 15),
-                                child: Text(list[index]["text"],
-                                    style:
-                                        TextStyle(fontSize: 14, height: 1.7)),
-                              ),
-                              onTap: () =>
-                                  toPage("dynamicDetail", list[index])),
-                          list[index]["images"] != null &&
+          // ScrollUpdateNotification：滑动中
+          NotificationListener<ScrollUpdateNotification>(
+            onNotification: (notification) => scrollIng(notification),
+            // ScrollEndNotification：滑动结束
+            child: NotificationListener<ScrollEndNotification>(
+              onNotification: (notification) => scrollEnd(notification),
+              child: ListView.builder(
+                  // 取消顶部留白
+                  padding: EdgeInsets.zero,
+                  physics: BouncingScrollPhysics(),
+                  // ClampingScrollPhysics 安卓滑动效果 BouncingScrollPhysics IOS滑动效果
+                  itemCount: list.length,
+                  itemBuilder: (ctx, index) {
+                    print(">>>>${index}-${list.length}");
+                    return index+1 != list.length
+                        ? Container(
+                        width: double.infinity,
+                        color: Colors.white,
+                        margin: EdgeInsets.only(bottom: 8),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 15, horizontal: 15),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(children: [
+                                InkWell(
+                                  child: Container(
+                                      width: 38,
+                                      height: 38,
+                                      margin: EdgeInsets.only(right: 8),
+                                      child: ClipRRect(
+                                          borderRadius:
+                                          BorderRadius.circular(38),
+                                          child: Image.network(
+                                              "${baseUrl}${list[index]["avator"]}",
+                                              fit: BoxFit.cover))),
+                                  onTap: () =>
+                                      toPage("userInfo", list[index]),
+                                ),
+                                Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    Text(list[index]["nickname"],
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w800)),
+                                    SizedBox(height: 2),
+                                    Text(
+                                        formatDate(
+                                            DateTime.parse(
+                                                list[index]["create_time"]),
+                                            [yyyy, '.', mm, '.', dd]),
+                                        style: TextStyle(
+                                            fontSize: 11,
+                                            color: Color(0xffc1c1c1)))
+                                  ],
+                                ),
+                                Spacer(flex: 1),
+                                Container(
+                                  width: 60,
+                                  height: 26,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 1.0,
+                                          color: Color(0xff22d47e)),
+                                      borderRadius:
+                                      BorderRadius.circular(22)),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                          IconData(0xeaf3,
+                                              fontFamily: 'sunfont'),
+                                          size: 10,
+                                          color: Color(0xff22d47e)),
+                                      Text("关注",
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: Color(0xff22d47e)))
+                                    ],
+                                  ),
+                                )
+                              ]),
+                              InkWell(
+                                  child: Container(
+                                    width: double.infinity,
+                                    padding:
+                                    EdgeInsets.only(top: 10, bottom: 15),
+                                    child: Text(list[index]["text"],
+                                        style: TextStyle(
+                                            fontSize: 14, height: 1.7)),
+                                  ),
+                                  onTap: () =>
+                                      toPage("dynamicDetail", list[index])),
+                              list[index]["images"] != null &&
                                   list[index]["images"].length != 0
-                              ? Container(
+                                  ? Container(
                                   child: GridView.builder(
                                       padding: EdgeInsets.zero,
                                       shrinkWrap: true,
-                                      itemCount: list[index]["images"].length,
-                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount:
+                                      list[index]["images"].length,
+                                      physics:
+                                      NeverScrollableScrollPhysics(),
                                       // 禁止滑动
                                       gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                      SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 3, // 主轴一行的数量
                                         mainAxisSpacing: 6, // 主轴每行间距
                                         crossAxisSpacing: 6, // 交叉轴每行间距
@@ -337,157 +397,216 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                                     fit: BoxFit.fitWidth),
                                                 shape: RoundedRectangleBorder(
                                                     borderRadius:
-                                                        BorderRadiusDirectional
-                                                            .circular(6)))));
+                                                    BorderRadiusDirectional
+                                                        .circular(
+                                                        6)))));
                                       }))
-                              : Container(),
-                          Container(
-                              margin: EdgeInsets.only(top: 12, bottom: 10),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
-                              decoration: BoxDecoration(
-                                  color: Color(0xfff3f3f3),
-                                  borderRadius: BorderRadius.circular(12)),
-                              child: Text("#运动就是坚持#",
-                                  style: TextStyle(
-                                      color: Color(0xff22d47e), fontSize: 12))),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
+                                  : Container(),
+                              Container(
+                                  margin:
+                                  EdgeInsets.only(top: 12, bottom: 10),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5),
+                                  decoration: BoxDecoration(
+                                      color: Color(0xfff3f3f3),
+                                      borderRadius:
+                                      BorderRadius.circular(12)),
+                                  child: Text("#运动就是坚持#",
+                                      style: TextStyle(
+                                          color: Color(0xff22d47e),
+                                          fontSize: 12))),
                               Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Icon(IconData(0xec7f, fontFamily: 'sunfont'),
-                                      size: 18, color: Color(0xffbbbbbb)),
-                                  SizedBox(width: 6),
-                                  Text("赞",
-                                      style: TextStyle(
-                                          color: Color(0xffbbbbbb),
-                                          height: 1.5,
-                                          fontSize: 14)),
-                                  SizedBox(width: 4),
-                                  Text(
-                                      list[index]["star"] != null
-                                          ? list[index]["star"]
-                                          : "",
-                                      style: TextStyle(
-                                          color: Color(0xffbbbbbb),
-                                          height: 1.7,
-                                          fontSize: 14))
-                                ],
-                              ),
-                              InkWell(
-                                  child: Row(
+                                  Row(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                    CrossAxisAlignment.center,
                                     children: [
                                       Icon(
-                                          IconData(0xe600,
+                                          IconData(0xec7f,
                                               fontFamily: 'sunfont'),
-                                          size: 20,
+                                          size: 18,
                                           color: Color(0xffbbbbbb)),
                                       SizedBox(width: 6),
-                                      Text("评论",
+                                      Text("赞",
                                           style: TextStyle(
                                               color: Color(0xffbbbbbb),
-                                              height: 1.4,
+                                              height: 1.5,
                                               fontSize: 14)),
                                       SizedBox(width: 4),
                                       Text(
-                                          list[index]["comment_num"].toString(),
+                                          list[index]["star"] != null
+                                              ? list[index]["star"]
+                                              : "",
                                           style: TextStyle(
                                               color: Color(0xffbbbbbb),
-                                              height: 1.4,
+                                              height: 1.7,
                                               fontSize: 14))
                                     ],
                                   ),
-                                  onTap: () =>
-                                      toPage("dynamicDetail", list[index])),
-                              Icon(IconData(0xe617, fontFamily: 'sunfont'),
-                                  size: 18, color: Color(0xffbbbbbb)),
-                            ],
-                          ),
-                          list[index]["comment_num"] != 0
-                              ? InkWell(
+                                  InkWell(
+                                      child: Row(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                              IconData(0xe600,
+                                                  fontFamily: 'sunfont'),
+                                              size: 20,
+                                              color: Color(0xffbbbbbb)),
+                                          SizedBox(width: 6),
+                                          Text("评论",
+                                              style: TextStyle(
+                                                  color: Color(0xffbbbbbb),
+                                                  height: 1.4,
+                                                  fontSize: 14)),
+                                          SizedBox(width: 4),
+                                          Text(
+                                              list[index]["comment_num"]
+                                                  .toString(),
+                                              style: TextStyle(
+                                                  color: Color(0xffbbbbbb),
+                                                  height: 1.4,
+                                                  fontSize: 14))
+                                        ],
+                                      ),
+                                      onTap: () =>
+                                          toPage(
+                                              "dynamicDetail",
+                                              list[index])),
+                                  Icon(
+                                      IconData(
+                                          0xe617, fontFamily: 'sunfont'),
+                                      size: 18,
+                                      color: Color(0xffbbbbbb)),
+                                ],
+                              ),
+                              list[index]["comment_num"] != 0
+                                  ? InkWell(
                                   child: Container(
                                     width: double.infinity,
                                     margin: EdgeInsets.only(top: 14),
-                                    constraints: BoxConstraints(minHeight: 50),
+                                    constraints:
+                                    BoxConstraints(minHeight: 50),
                                     padding: EdgeInsets.symmetric(
                                         horizontal: 12, vertical: 10),
                                     decoration: BoxDecoration(
                                         color: Color(0xfff3f3f3),
-                                        borderRadius: BorderRadius.circular(8)),
+                                        borderRadius:
+                                        BorderRadius.circular(8)),
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Column(
-                                          children: list[index]["comment_list"]
+                                          children: list[index]
+                                          ["comment_list"]
                                               .asMap()
                                               .entries
                                               .map<Widget>((entry) {
                                             final item = entry.value;
                                             return Container(
-                                                alignment: Alignment.topLeft,
-                                                margin:
-                                                    EdgeInsets.only(bottom: 6),
+                                                alignment:
+                                                Alignment.topLeft,
+                                                margin: EdgeInsets.only(
+                                                    bottom: 6),
                                                 child: RichText(
                                                     text: TextSpan(
-                                                        text: item["nickname"] +
+                                                        text: item[
+                                                        "nickname"] +
                                                             "：",
                                                         style: TextStyle(
                                                             color: Color(
                                                                 0xff22d47e),
                                                             fontSize: 13),
-                                                        children: <TextSpan>[
-                                                      TextSpan(
-                                                          text: item["comment"],
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 12)),
-                                                    ])));
+                                                        children: <
+                                                            TextSpan>[
+                                                          TextSpan(
+                                                              text: item[
+                                                              "comment"],
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize:
+                                                                  12)),
+                                                        ])));
                                           }).toList(),
                                         ),
                                         list[index]["comment_num"] > 3
                                             ? Text("查看全部评论",
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    color: Color(0xff7b7b7b)))
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Color(
+                                                    0xff7b7b7b)))
                                             : Container()
                                       ],
                                     ),
                                   ),
                                   onTap: () =>
-                                      toPage("dynamicDetail", list[index]))
-                              : Container()
-                        ]));
-              }),
+                                      toPage(
+                                          "dynamicDetail", list[index]))
+                                  : Container()
+                            ]))
+                         :  Container(
+                      margin: EdgeInsets.only(top: 6,bottom: 10),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 15,
+                              height: 15,
+                              color: Colors.white24,
+                              child: BallCircleOpacityLoading(
+                                ballStyle: BallStyle(
+                                    size: 2,
+                                    color: Color(0xffc4c4c4),
+                                    ballType: BallType.solid,
+                                    borderWidth: 4),
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              "加载中...",
+                              style: TextStyle(
+                                  color: Color(0xffc4c4c4), fontSize: 13),
+                            )
+                          ]),
+                    ) ;
+                  }),
+            ),
+          ),
           Positioned(
               bottom: 50,
               right: 30,
-              child: InkWell(
-                  borderRadius: new BorderRadius.all(
-                      new Radius.circular(70.0)), // 点击水波纹是圆角的，默认是矩形的
-                  child: Container(
-                      width: 70,
-                      height: 70,
-                      decoration: BoxDecoration(
-                          color: Color(0xff22d47e),
-                          borderRadius: BorderRadius.circular(70),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.5), // 阴影颜色
-                              offset: Offset(10, 20), // 阴影与容器的距离 x,y
-                              blurRadius: 40.0, // 高斯模糊值。
-                              spreadRadius: 2.0, // 阴影范围量
-                            ),
-                          ]),
-                      child: Align(
-                          child: Icon(IconData(0xe609, fontFamily: 'sunfont'),
-                              size: 34, color: Colors.white))),
-                  onTap: () => toPage("pubTrends", null)))
+              child: SlideTransition(
+                  position: animation,
+                  child: InkWell(
+                      borderRadius: new BorderRadius.all(
+                          new Radius.circular(70.0)), // 点击水波纹是圆角的，默认是矩形的
+                      child: Container(
+                          width: 70,
+                          height: 70,
+                          decoration: BoxDecoration(
+                              color: Color(0xff22d47e),
+                              borderRadius: BorderRadius.circular(70),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.5),
+                                  // 阴影颜色
+                                  offset: Offset(10, 20),
+                                  // 阴影与容器的距离 x,y
+                                  blurRadius: 40.0,
+                                  // 高斯模糊值。
+                                  spreadRadius: 2.0, // 阴影范围量
+                                ),
+                              ]),
+                          child: Align(
+                              child: Icon(
+                                  IconData(0xe609, fontFamily: 'sunfont'),
+                                  size: 34,
+                                  color: Colors.white))),
+                      onTap: () => toPage("pubTrends", null))))
         ]))
       ],
     );

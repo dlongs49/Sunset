@@ -252,6 +252,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.6.3"
+  m_loading:
+    dependency: "direct main"
+    description:
+      name: m_loading
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.2"
   matcher:
     dependency: transitive
     description:
