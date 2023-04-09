@@ -558,7 +558,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
           ),
           Positioned(
               bottom: 50,
-              right: 30,
+              right: 20,
               child: SlideTransition(
                   position: animation,
                   child: InkWell(
