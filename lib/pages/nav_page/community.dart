@@ -122,8 +122,9 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
       Map res = await trendsReq.setTrendsStar({"trends_id":params["id"]});
       if (res["code"] == 200) {
         print(">>>>>$res");
+        // 成功 加状态修改
         list[index]["isstar"] = !list[index]["isstar"];
-        String star = list[index]["star"];
+        String star = list[index]["star"] == null ? "0" : list[index]["star"];
         if(list[index]["isstar"]){
           list[index]["star"] = (int.parse(star) + 1).toString();
         }else{
@@ -502,14 +503,18 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                                     height: 1.5,
                                                     fontSize: 14)),
                                             SizedBox(width: 4),
-                                            Text(
-                                                list[index]["star"] != null
-                                                    ? list[index]["star"]
-                                                    : "",
-                                                style: TextStyle(
-                                                    color: Color(list[index]["isstar"] ? 0xff22d47e : 0xffbbbbbb),
-                                                    height: 1.7,
-                                                    fontSize: 14))
+                                            Container(
+                                              width:20,
+                                              child: Text(
+                                                  list[index]["star"] != null && list[index]["star"] != "0"
+                                                      ? list[index]["star"]
+                                                      : "",
+                                                  style: TextStyle(
+                                                      color: Color(list[index]["isstar"] ? 0xff22d47e : 0xffbbbbbb),
+                                                      height: 1.7,
+                                                      fontSize: 14)),
+                                            )
+
                                           ],
                                         ),
                                           onTap: () =>handleStar(list[index],index)
