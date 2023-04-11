@@ -178,6 +178,35 @@ class _DynamicDetailState extends State<DynamicDetail> {
     }
   }
 
+  // 评论点赞
+  @override
+  Future<void> handleCommStar(params, index) async {
+    try {
+      Map res = await trendsReq.setCommentStar(
+          {"comment_id": params["id"], "trends_id": detail["id"]});
+      if (res["code"] == 200) {
+        print(">>>>>$res");
+        // 成功 加状态修改
+        commentList[index]["isstar"] = !commentList[index]["isstar"];
+        String star = commentList[index]["star"] == null
+            ? "0"
+            : commentList[index]["star"];
+        if (commentList[index]["isstar"]) {
+          commentList[index]["star"] = (int.parse(star) + 1).toString();
+        } else {
+          commentList[index]["star"] = (int.parse(star) - 1).toString();
+        }
+
+        if (mounted) {
+          setState(() {});
+        }
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
+
   @override
   void toPage(String path, dynamic arg) {
     Map<String, dynamic> arguments = new Map();
@@ -270,42 +299,44 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                   style: TextStyle(fontSize: 14, height: 1.7)),
                             ),
                             detail["images"] != null &&
-                                detail["images"].length != 0
+                                    detail["images"].length != 0
                                 ? Container(
-                                margin: EdgeInsets.only(top: 20),
-                                child: GridView.builder(
-                                    shrinkWrap: true,
-                                    itemCount: detail["images"].length,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    // 禁止滑动
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3, // 主轴一行的数量
-                                      mainAxisSpacing: 6, // 主轴每行间距
-                                      crossAxisSpacing: 6, // 交叉轴每行间距
-                                      childAspectRatio: 1, // item的宽高比
-                                    ),
-                                    itemBuilder: (context, index) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                            color: Color(0xffe3e3e3),
-                                            borderRadius:
-                                                BorderRadius.circular(8)),
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          child: Image.network(
-                                              "${baseUrl}${detail["images"][index]}",
-                                              fit: BoxFit.cover,
-                                              errorBuilder: (ctx, err,
-                                                      stackTrace) =>
-                                                  Image.asset(
-                                                      'assets/images/lazy.png',
-                                                      fit: BoxFit.fill,
-                                                      width: double.infinity)),
+                                    margin: EdgeInsets.only(top: 20),
+                                    child: GridView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: detail["images"].length,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        // 禁止滑动
+                                        gridDelegate:
+                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 3, // 主轴一行的数量
+                                          mainAxisSpacing: 6, // 主轴每行间距
+                                          crossAxisSpacing: 6, // 交叉轴每行间距
+                                          childAspectRatio: 1, // item的宽高比
                                         ),
-                                      );
-                                    })) : Container(),
+                                        itemBuilder: (context, index) {
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                                color: Color(0xffe3e3e3),
+                                                borderRadius:
+                                                    BorderRadius.circular(8)),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              child: Image.network(
+                                                  "${baseUrl}${detail["images"][index]}",
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (ctx, err,
+                                                          stackTrace) =>
+                                                      Image.asset(
+                                                          'assets/images/lazy.png',
+                                                          fit: BoxFit.fill,
+                                                          width:
+                                                              double.infinity)),
+                                            ),
+                                          );
+                                        }))
+                                : Container(),
                             SizedBox(height: 20),
                           ],
                         ),
@@ -318,9 +349,8 @@ class _DynamicDetailState extends State<DynamicDetail> {
                           shrinkWrap: true, //解决无限高度问题
                           physics: new NeverScrollableScrollPhysics(), //禁用滑动事件
                           itemCount: commentList.length,
-                          itemBuilder: (ctx,
-                                  index) =>
-                          /* 如果列表长度 不等于 当前的索引值即没有到底部 则展示列表，
+                          itemBuilder: (ctx, index) =>
+                              /* 如果列表长度 不等于 当前的索引值即没有到底部 则展示列表，
                             否 在进行二次三元判断，判断列表的长度 是否大于等于总条数，在进行是否 加载中还是到底部
                           */
                               index + 1 != commentList.length
@@ -412,24 +442,40 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                                               Color(0xffcccccc),
                                                           fontSize: 13)),
                                                   Spacer(flex: 1),
-                                                  Text(
-                                                      commentList[index]
-                                                                  ["star"] !=
-                                                              null
-                                                          ? commentList[index]
-                                                              ["star"]
-                                                          : "",
-                                                      style: TextStyle(
-                                                          color:
-                                                              Color(0xffbbbbbb),
-                                                          fontSize: 14)),
-                                                  SizedBox(width: 10),
-                                                  Icon(
-                                                      IconData(0xec7f,
-                                                          fontFamily:
-                                                              'sunfont'),
-                                                      size: 16,
-                                                      color: Color(0xffbbbbbb)),
+                                                  InkWell(
+                                                      child: Container(
+                                                        child: Row(
+                                                          children: [
+                                                            Container(
+                                                                width: 30,
+                                                                child: Text(
+                                                                    commentList[index]["star"] !=
+                                                                            null
+                                                                        ? commentList[index]
+                                                                            [
+                                                                            "star"]
+                                                                        : "0",
+                                                                    style: TextStyle(
+                                                                        color: Color(
+                                                                            0xffbbbbbb),
+                                                                        fontSize:
+                                                                            14))),
+                                                            // SizedBox(width: 10),
+                                                            Icon(
+                                                                IconData(0xec7f,
+                                                                    fontFamily:
+                                                                        'sunfont'),
+                                                                size: 16,
+                                                                color: Color(
+                                                                    0xffbbbbbb)),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      onTap: () =>
+                                                          handleCommStar(
+                                                              commentList[
+                                                                  index],
+                                                              index)),
                                                   SizedBox(width: 10),
                                                   Icon(
                                                       IconData(0xe600,

@@ -44,8 +44,8 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     getUInfo();
-    changeTabBarAn(0);
     getTrends();
+    changeTabBarAn(0);
   }
 
   Sign sign = new Sign();

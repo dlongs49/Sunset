@@ -39,10 +39,16 @@ class TrendsReq {
     return await http.get(
         "/trends/get/comment", data);
   }
-  // 获取评论列表
+  // 动态文章点赞
   Future<Map> setTrendsStar(params) async {
     Map<String, dynamic> data = params;
     return await http.post(
         "/trends/set_star", data);
+  }
+  // 评论点赞
+  Future<Map> setCommentStar(params) async {
+    Map<String, dynamic> data = params;
+    return await http.post(
+        "/trends/comment/set_star", data);
   }
 }
