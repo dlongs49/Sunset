@@ -140,6 +140,24 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
       errToast();
     }
   }
+
+  // 关注
+  void handleFollow(params,index) async{
+    try{
+      Map res = await trendsReq.setFollow({"uid":params["uid"]});
+      if (res["code"] == 200) {
+        print(">>>>>$res");
+        // 成功 假状态修改保持交互
+        list[index]["isFollow"] = !list[index]["isFollow"];
+        if (mounted) {
+          setState(() {});
+        }
+      }
+    }catch(e){
+      print(e);
+      errToast();
+    }
+  }
   @override
   void changeTabBarAn(int index) {
     if (index == 0) {
@@ -392,31 +410,35 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                       ],
                                     ),
                                     Spacer(flex: 1),
-                                    Container(
-                                      width: 60,
-                                      height: 26,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              width: 1.0,
-                                              color: Color(0xff22d47e)),
-                                          borderRadius:
-                                              BorderRadius.circular(22)),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                              IconData(0xeaf3,
-                                                  fontFamily: 'sunfont'),
-                                              size: 10,
-                                              color: Color(0xff22d47e)),
-                                          Text("关注",
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: Color(0xff22d47e)))
-                                        ],
+                                    InkWell(
+                                      child: Container(
+                                        width: 60,
+                                        height: 26,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1.0,
+                                                color: Color(0xff22d47e)),
+                                            borderRadius:
+                                            BorderRadius.circular(22)),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                                IconData(0xeaf3,
+                                                    fontFamily: 'sunfont'),
+                                                size: 10,
+                                                color: Color(0xff22d47e)),
+                                            Text("关注",
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Color(0xff22d47e)))
+                                          ],
+                                        ),
                                       ),
+                                      onTap: ()=>handleFollow(list[index],index),
                                     )
+
                                   ]),
                                   InkWell(
                                       child: Container(

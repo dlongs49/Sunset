@@ -447,6 +447,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                                         child: Row(
                                                           children: [
                                                             Container(
+                                                                alignment: Alignment.centerRight,
                                                                 width: 30,
                                                                 child: Text(
                                                                     commentList[index]["star"] !=
@@ -457,17 +458,17 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                                                         : "0",
                                                                     style: TextStyle(
                                                                         color: Color(
-                                                                            0xffbbbbbb),
+                                                                            commentList[index]["isstar"] ? 0xff22d47e: 0xffbbbbbb),
                                                                         fontSize:
                                                                             14))),
-                                                            // SizedBox(width: 10),
+                                                            SizedBox(width: 10),
                                                             Icon(
-                                                                IconData(0xec7f,
+                                                                IconData(commentList[index]["isstar"] ? 0xec8c : 0xec7f,
                                                                     fontFamily:
                                                                         'sunfont'),
                                                                 size: 16,
                                                                 color: Color(
-                                                                    0xffbbbbbb)),
+                                                                    commentList[index]["isstar"] ? 0xff22d47e: 0xffbbbbbb)),
                                                           ],
                                                         ),
                                                       ),

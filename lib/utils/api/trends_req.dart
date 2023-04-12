@@ -51,4 +51,10 @@ class TrendsReq {
     return await http.post(
         "/trends/comment/set_star", data);
   }
+  // 关注
+  Future<Map> setFollow(params) async {
+    Map<String, dynamic> data = params;
+    return await http.post(
+        "/trends/follow/set", data);
+  }
 }
