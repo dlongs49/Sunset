@@ -63,7 +63,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
     "avator": "",
     "nickname": "",
     "create_time": "",
-    "isfollow":false,
+    "isfollow": false,
     "images": []
   };
 
@@ -82,11 +82,12 @@ class _DynamicDetailState extends State<DynamicDetail> {
       errToast();
     }
   }
+
   // 关注 & 取消关注
   @override
-  void handleFollow(String uid)async{
-    try{
-      Map res = await trendsReq.setFollow({"uid":uid});
+  void handleFollow(String uid) async {
+    try {
+      Map res = await trendsReq.setFollow({"uid": uid});
       if (res["code"] == 200) {
         print(">>>>>$res");
         // 成功 假状态修改保持交互
@@ -95,11 +96,12 @@ class _DynamicDetailState extends State<DynamicDetail> {
           setState(() {});
         }
       }
-    }catch(e){
+    } catch (e) {
       print(e);
       errToast();
     }
   }
+
   // 监听输入的文本
   @override
   void textChanged(String value) {
@@ -288,32 +290,48 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                 ],
                               ),
                               Spacer(flex: 1),
-                             detail["uid"] != uinfo["uid"] ? InkWell(
-                                child: Container(
-                                  width: 60,
-                                  height: 26,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1.0, color: Color(!detail["isfollow"] ? 0xff22d47e : 0xffdddddd)),
-                                      borderRadius: BorderRadius.circular(22)),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      !detail["isfollow"] ?
-                                      Icon(
-                                          IconData(0xeaf3, fontFamily: 'sunfont'),
-                                          size: 10,
-                                          color: Color(0xff22d47e)) : Container(),
-                                      Text(!detail["isfollow"] ? "关注" : "已关注",
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              color: Color(!detail["isfollow"] ? 0xff22d47e : 0xffdddddd)))
-                                    ],
-                                  ),
-                                ),
-                                onTap:()=>handleFollow(detail["uid"])
-                              ) : Container()
-
+                              detail["uid"] != uinfo["uid"]
+                                  ? InkWell(
+                                      borderRadius: BorderRadius.circular(22),
+                                      highlightColor: Color(0xfff2f2f2),
+                                      splashColor: Color(0xffe2e2e2),
+                                      child: Container(
+                                        width: 60,
+                                        height: 26,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1.0,
+                                                color: Color(!detail["isfollow"]
+                                                    ? 0xff22d47e
+                                                    : 0xffdddddd)),
+                                            borderRadius:
+                                                BorderRadius.circular(22)),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            !detail["isfollow"]
+                                                ? Icon(
+                                                    IconData(0xeaf3,
+                                                        fontFamily: 'sunfont'),
+                                                    size: 10,
+                                                    color: Color(0xff22d47e))
+                                                : Container(),
+                                            Text(
+                                                !detail["isfollow"]
+                                                    ? "关注"
+                                                    : "已关注",
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Color(
+                                                        !detail["isfollow"]
+                                                            ? 0xff22d47e
+                                                            : 0xffdddddd)))
+                                          ],
+                                        ),
+                                      ),
+                                      onTap: () => handleFollow(detail["uid"]))
+                                  : Container()
                             ]),
                             SizedBox(height: 10),
                             Align(
@@ -369,8 +387,11 @@ class _DynamicDetailState extends State<DynamicDetail> {
                           child: Text("全部评论(${commentList.length})",
                               style: TextStyle(fontSize: 14))),
                       ListView.builder(
-                          shrinkWrap: true, //解决无限高度问题
-                          physics: new NeverScrollableScrollPhysics(), //禁用滑动事件
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          //解决无限高度问题
+                          physics: new NeverScrollableScrollPhysics(),
+                          //禁用滑动事件
                           itemCount: commentList.length,
                           itemBuilder: (ctx, index) =>
                               /* 如果列表长度 不等于 当前的索引值即没有到底部 则展示列表，
@@ -470,27 +491,38 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                                         child: Row(
                                                           children: [
                                                             Container(
-                                                                alignment: Alignment.centerRight,
+                                                                alignment: Alignment
+                                                                    .centerRight,
                                                                 width: 30,
                                                                 child: Text(
-                                                                    commentList[index]["star"] != null
-                                                                        ? commentList[index]
-                                                                            [
-                                                                            "star"].toString()
+                                                                    commentList[index]["star"] !=
+                                                                            null
+                                                                        ? commentList[index]["star"]
+                                                                            .toString()
                                                                         : "0",
                                                                     style: TextStyle(
-                                                                        color: Color(
-                                                                            commentList[index]["isstar"] ? 0xff22d47e: 0xffbbbbbb),
+                                                                        color: Color(commentList[index]["isstar"]
+                                                                            ? 0xff22d47e
+                                                                            : 0xffbbbbbb),
                                                                         fontSize:
                                                                             14))),
                                                             SizedBox(width: 10),
                                                             Icon(
-                                                                IconData(commentList[index]["isstar"] ? 0xec8c : 0xec7f,
+                                                                IconData(
+                                                                    commentList[index]
+                                                                            [
+                                                                            "isstar"]
+                                                                        ? 0xec8c
+                                                                        : 0xec7f,
                                                                     fontFamily:
                                                                         'sunfont'),
                                                                 size: 16,
-                                                                color: Color(
-                                                                    commentList[index]["isstar"] ? 0xff22d47e: 0xffbbbbbb)),
+                                                                color: Color(commentList[
+                                                                            index]
+                                                                        [
+                                                                        "isstar"]
+                                                                    ? 0xff22d47e
+                                                                    : 0xffbbbbbb)),
                                                           ],
                                                         ),
                                                       ),
