@@ -124,11 +124,11 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
         print(">>>>>$res");
         // 成功 加状态修改
         list[index]["isstar"] = !list[index]["isstar"];
-        String star = list[index]["star"] == null ? "0" : list[index]["star"];
+        int star = list[index]["star"];
         if(list[index]["isstar"]){
-          list[index]["star"] = (int.parse(star) + 1).toString();
+          list[index]["star"] = star + 1;
         }else{
-          list[index]["star"] = (int.parse(star) - 1).toString();
+          list[index]["star"] =star - 1;
         }
 
         if (mounted) {
