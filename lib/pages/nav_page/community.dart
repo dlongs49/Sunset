@@ -528,8 +528,8 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                             Container(
                                               width:20,
                                               child: Text(
-                                                  list[index]["star"] != null && list[index]["star"] != "0"
-                                                      ? list[index]["star"]
+                                                  list[index]["star"] != 0
+                                                      ? list[index]["star"].toString()
                                                       : "",
                                                   style: TextStyle(
                                                       color: Color(list[index]["isstar"] ? 0xff22d47e : 0xffbbbbbb),

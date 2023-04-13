@@ -522,8 +522,8 @@ class _UserInfoState extends State<UserInfo> {
                                                     fontSize: 14)),
                                             SizedBox(width: 4),
                                             Text(
-                                                list[index]["star"] != null
-                                                    ? list[index]["star"]
+                                                list[index]["star"] != 0
+                                                    ? list[index]["star"].toString()
                                                     : "",
                                                 style: TextStyle(
                                                     color: Color(0xffbbbbbb),

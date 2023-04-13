@@ -450,11 +450,10 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                                                 alignment: Alignment.centerRight,
                                                                 width: 30,
                                                                 child: Text(
-                                                                    commentList[index]["star"] !=
-                                                                            null
+                                                                    commentList[index]["star"] != null
                                                                         ? commentList[index]
                                                                             [
-                                                                            "star"]
+                                                                            "star"].toString()
                                                                         : "0",
                                                                     style: TextStyle(
                                                                         color: Color(
