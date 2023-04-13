@@ -148,7 +148,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
       if (res["code"] == 200) {
         print(">>>>>$res");
         // 成功 假状态修改保持交互
-        list[index]["isFollow"] = !list[index]["isFollow"];
+        list[index]["isfollow"] = !list[index]["isfollow"];
         if (mounted) {
           setState(() {});
         }

@@ -63,6 +63,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
     "avator": "",
     "nickname": "",
     "create_time": "",
+    "isfollow":false,
     "images": []
   };
 
@@ -81,7 +82,24 @@ class _DynamicDetailState extends State<DynamicDetail> {
       errToast();
     }
   }
-
+  // 关注 & 取消关注
+  @override
+  void handleFollow(String uid)async{
+    try{
+      Map res = await trendsReq.setFollow({"uid":uid});
+      if (res["code"] == 200) {
+        print(">>>>>$res");
+        // 成功 假状态修改保持交互
+        detail["isfollow"] = !detail["isfollow"];
+        if (mounted) {
+          setState(() {});
+        }
+      }
+    }catch(e){
+      print(e);
+      errToast();
+    }
+  }
   // 监听输入的文本
   @override
   void textChanged(String value) {
@@ -270,27 +288,32 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                 ],
                               ),
                               Spacer(flex: 1),
-                              Container(
-                                width: 60,
-                                height: 26,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        width: 1.0, color: Color(0xff22d47e)),
-                                    borderRadius: BorderRadius.circular(22)),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                        IconData(0xeaf3, fontFamily: 'sunfont'),
-                                        size: 10,
-                                        color: Color(0xff22d47e)),
-                                    Text("关注",
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: Color(0xff22d47e)))
-                                  ],
+                             detail["uid"] != uinfo["uid"] ? InkWell(
+                                child: Container(
+                                  width: 60,
+                                  height: 26,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 1.0, color: Color(!detail["isfollow"] ? 0xff22d47e : 0xffdddddd)),
+                                      borderRadius: BorderRadius.circular(22)),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      !detail["isfollow"] ?
+                                      Icon(
+                                          IconData(0xeaf3, fontFamily: 'sunfont'),
+                                          size: 10,
+                                          color: Color(0xff22d47e)) : Container(),
+                                      Text(!detail["isfollow"] ? "关注" : "已关注",
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: Color(!detail["isfollow"] ? 0xff22d47e : 0xffdddddd)))
+                                    ],
+                                  ),
                                 ),
-                              )
+                                onTap:()=>handleFollow(detail["uid"])
+                              ) : Container()
+
                             ]),
                             SizedBox(height: 10),
                             Align(
