@@ -208,13 +208,11 @@ class _DynamicDetailState extends State<DynamicDetail> {
         print(">>>>>$res");
         // 成功 加状态修改
         commentList[index]["isstar"] = !commentList[index]["isstar"];
-        String star = commentList[index]["star"] == null
-            ? "0"
-            : commentList[index]["star"];
+        int star = commentList[index]["star"];
         if (commentList[index]["isstar"]) {
-          commentList[index]["star"] = (int.parse(star) + 1).toString();
+          commentList[index]["star"] = star + 1;
         } else {
-          commentList[index]["star"] = (int.parse(star) - 1).toString();
+          commentList[index]["star"] = star - 1;
         }
 
         if (mounted) {
