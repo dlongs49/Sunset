@@ -410,7 +410,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                       ],
                                     ),
                                     Spacer(flex: 1),
-                                    InkWell(
+                                    !list[index]["isfollow"] ? InkWell(
                                       child: Container(
                                         width: 60,
                                         height: 26,
@@ -437,8 +437,7 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                         ),
                                       ),
                                       onTap: ()=>handleFollow(list[index],index),
-                                    )
-
+                                    ) : Container()
                                   ]),
                                   InkWell(
                                       child: Container(
