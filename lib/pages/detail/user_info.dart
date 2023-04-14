@@ -204,6 +204,7 @@ class _UserInfoState extends State<UserInfo> {
                                                   BorderRadius.circular(36),
                                               child: Image.network(
                                                   "${baseUrl}${uinfo["avator"]}",
+                                                  fit: BoxFit.cover,
                                                   width: 65,
                                                   height: 65,
                                                   errorBuilder: (ctx, err,
