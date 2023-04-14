@@ -57,4 +57,10 @@ class TrendsReq {
     return await http.post(
         "/trends/follow/set", data);
   }
+  // 关注列表
+  Future<Map> getFollowList(params) async {
+    Map<String, dynamic> data = params;
+    return await http.get(
+        "/trends/follow/list", data);
+  }
 }
