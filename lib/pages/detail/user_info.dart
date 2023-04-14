@@ -89,13 +89,38 @@ class _UserInfoState extends State<UserInfo> {
   }
 
   // 关注 & 取消关注
-  void handleFollow(params) async{
+  void handleFollow(params) async {
     try {
       Map res = await trendsReq.setFollow({"uid": params["uid"]});
       if (res["code"] == 200) {
         print("关注 & 取消关注>>${params["uid"]}--${res}");
         // 成功 假状态修改保持交互
         uinfo["isfollow"] = !uinfo["isfollow"];
+        if (mounted) {
+          setState(() {});
+        }
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
+
+  // 动态点赞
+  void handleStar(params, index) async {
+    try {
+      Map res = await trendsReq.setTrendsStar({"trends_id": params["id"]});
+      if (res["code"] == 200) {
+        print("动态点赞$res");
+        // 成功 加状态修改
+        list[index]["isstar"] = !list[index]["isstar"];
+        int star = list[index]["star"];
+        if (list[index]["isstar"]) {
+          list[index]["star"] = star + 1;
+        } else {
+          list[index]["star"] = star - 1;
+        }
+
         if (mounted) {
           setState(() {});
         }
@@ -297,47 +322,60 @@ class _UserInfoState extends State<UserInfo> {
                                             ])
                                           ]),
                                           !isUser
-                                              ?InkWell(
-                                              borderRadius: BorderRadius.circular(16),
-                                              highlightColor: Color(0xfff2f2f2),
-                                              splashColor: Color(0xffe2e2e2),
-                                              child: Container(
-                                                  margin: EdgeInsets.only(
-                                                      right: 30),
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 2,
-                                                      horizontal: 16),
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              16),
-                                                      border: Border.all(
-                                                          width: 1,
-                                                          color: Color(!uinfo["isfollow"] ? 0xffffffff : 0xffb1b1b1))),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      !uinfo["isfollow"] ? Icon(
-                                                          IconData(0xeaf3,
-                                                              fontFamily:
-                                                                  'sunfont'),
-                                                          size: 10,
-                                                          color: Color(
-                                                              0xffcccccc)) : Container(),
-                                                      Text(!uinfo["isfollow"] ? "关注" : "已关注",
-                                                          style: TextStyle(
-                                                              fontSize: 14,
-                                                              color: Color(
-                                                                  !uinfo["isfollow"]
-                                                                      ? 0xffcccccc
-                                                                      : 0xffb1b1b1)))
-                                                    ],
+                                              ? InkWell(
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                  highlightColor:
+                                                      Color(0xfff2f2f2),
+                                                  splashColor:
+                                                      Color(0xffe2e2e2),
+                                                  child: Container(
+                                                    margin: EdgeInsets.only(
+                                                        right: 30),
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 2,
+                                                            horizontal: 16),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(16),
+                                                        border: Border.all(
+                                                            width: 1,
+                                                            color: Color(!uinfo[
+                                                                    "isfollow"]
+                                                                ? 0xffffffff
+                                                                : 0xffb1b1b1))),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        !uinfo["isfollow"]
+                                                            ? Icon(
+                                                                IconData(0xeaf3,
+                                                                    fontFamily:
+                                                                        'sunfont'),
+                                                                size: 10,
+                                                                color: Color(
+                                                                    0xffcccccc))
+                                                            : Container(),
+                                                        Text(
+                                                            !uinfo["isfollow"]
+                                                                ? "关注"
+                                                                : "已关注",
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                color: Color(!uinfo[
+                                                                        "isfollow"]
+                                                                    ? 0xffcccccc
+                                                                    : 0xffb1b1b1)))
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
-                                              onTap: ()=>handleFollow(uinfo),
-                                          )
+                                                  onTap: () =>
+                                                      handleFollow(uinfo),
+                                                )
                                               : InkWell(
                                                   child: Container(
                                                     padding:
@@ -513,32 +551,56 @@ class _UserInfoState extends State<UserInfo> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                                IconData(0xec7f,
-                                                    fontFamily: 'sunfont'),
-                                                size: 18,
-                                                color: Color(0xffbbbbbb)),
-                                            SizedBox(width: 6),
-                                            Text("赞",
-                                                style: TextStyle(
-                                                    color: Color(0xffbbbbbb),
-                                                    height: 1.5,
-                                                    fontSize: 14)),
-                                            SizedBox(width: 4),
-                                            Text(
-                                                list[index]["star"] != 0
-                                                    ? list[index]["star"]
-                                                        .toString()
-                                                    : "",
-                                                style: TextStyle(
-                                                    color: Color(0xffbbbbbb),
-                                                    height: 1.7,
-                                                    fontSize: 14))
-                                          ],
+                                        InkWell(
+                                          child: Container(
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                    IconData(
+                                                        list[index]["isstar"]
+                                                            ? 0xec8c
+                                                            : 0xec7f,
+                                                        fontFamily: 'sunfont'),
+                                                    size: 18,
+                                                    color: Color(list[index]
+                                                            ["isstar"]
+                                                        ? 0xff22d47e
+                                                        : 0xffbbbbbb)),
+                                                SizedBox(width: 6),
+                                                Text("赞",
+                                                    style: TextStyle(
+                                                        color: Color(list[index]
+                                                                ["isstar"]
+                                                            ? 0xff22d47e
+                                                            : 0xffbbbbbb),
+                                                        height: 1.5,
+                                                        fontSize: 14)),
+                                                Container(
+                                                    padding: EdgeInsets.only(
+                                                        left: 4),
+                                                    constraints: BoxConstraints(
+                                                        minWidth: 30),
+                                                    child: Text(
+                                                        list[index]["star"] != 0
+                                                            ? list[index]
+                                                                    ["star"]
+                                                                .toString()
+                                                            : "",
+                                                        style: TextStyle(
+                                                            color: Color(list[
+                                                                        index]
+                                                                    ["isstar"]
+                                                                ? 0xff22d47e
+                                                                : 0xffbbbbbb),
+                                                            height: 1.7,
+                                                            fontSize: 14)))
+                                              ],
+                                            ),
+                                          ),
+                                          onTap: () =>
+                                              handleStar(list[index], index),
                                         ),
                                         Row(
                                           crossAxisAlignment:
