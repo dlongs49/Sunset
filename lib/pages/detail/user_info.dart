@@ -51,9 +51,10 @@ class _UserInfoState extends State<UserInfo> {
     "avator": "",
     "description": "",
     "constellation": "",
-    "following": "0",
-    "followers": "0",
-    "star": "0"
+    "following": 0,
+    "followers": 0,
+    "star": 0,
+    "isfollow": false
   };
 
   // 动态列表
@@ -87,7 +88,24 @@ class _UserInfoState extends State<UserInfo> {
     }
   }
 
-  @override
+  // 关注 & 取消关注
+  void handleFollow(params) async{
+    try {
+      Map res = await trendsReq.setFollow({"uid": params["uid"]});
+      if (res["code"] == 200) {
+        print("关注 & 取消关注>>${params["uid"]}--${res}");
+        // 成功 假状态修改保持交互
+        uinfo["isfollow"] = !uinfo["isfollow"];
+        if (mounted) {
+          setState(() {});
+        }
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
+
   void toPage(String path, dynamic arg) {
     Map<String, dynamic> arguments = new Map();
     if (path == "dynamicDetail") {
@@ -278,7 +296,12 @@ class _UserInfoState extends State<UserInfo> {
                                               )
                                             ])
                                           ]),
-                                          !isUser ? Container(
+                                          !isUser
+                                              ?InkWell(
+                                              borderRadius: BorderRadius.circular(16),
+                                              highlightColor: Color(0xfff2f2f2),
+                                              splashColor: Color(0xffe2e2e2),
+                                              child: Container(
                                                   margin: EdgeInsets.only(
                                                       right: 30),
                                                   padding: EdgeInsets.symmetric(
@@ -290,27 +313,31 @@ class _UserInfoState extends State<UserInfo> {
                                                               16),
                                                       border: Border.all(
                                                           width: 1,
-                                                          color: Colors.white)),
+                                                          color: Color(!uinfo["isfollow"] ? 0xffffffff : 0xffb1b1b1))),
                                                   child: Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
                                                             .center,
                                                     children: [
-                                                      Icon(
+                                                      !uinfo["isfollow"] ? Icon(
                                                           IconData(0xeaf3,
                                                               fontFamily:
                                                                   'sunfont'),
                                                           size: 10,
                                                           color: Color(
-                                                              0xffffffff)),
-                                                      Text("关注",
+                                                              0xffcccccc)) : Container(),
+                                                      Text(!uinfo["isfollow"] ? "关注" : "已关注",
                                                           style: TextStyle(
                                                               fontSize: 14,
                                                               color: Color(
-                                                                  0xffffffff)))
+                                                                  !uinfo["isfollow"]
+                                                                      ? 0xffcccccc
+                                                                      : 0xffb1b1b1)))
                                                     ],
                                                   ),
-                                                )
+                                                ),
+                                              onTap: ()=>handleFollow(uinfo),
+                                          )
                                               : InkWell(
                                                   child: Container(
                                                     padding:
@@ -382,13 +409,12 @@ class _UserInfoState extends State<UserInfo> {
                                                   "${baseUrl}${uinfo["avator"]}",
                                                   fit: BoxFit.cover,
                                                   errorBuilder: (ctx, err,
-                                                      stackTrace) =>
+                                                          stackTrace) =>
                                                       Image.asset(
                                                           'assets/images/sunset.png',
                                                           //默认显示图片
                                                           height: 65,
-                                                          width: 65)
-                                              ))),
+                                                          width: 65)))),
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -408,32 +434,6 @@ class _UserInfoState extends State<UserInfo> {
                                                   color: Color(0xffc1c1c1)))
                                         ],
                                       ),
-                                      Spacer(flex: 1),
-                                      Container(
-                                        width: 60,
-                                        height: 26,
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: 1.0,
-                                                color: Color(0xff22d47e)),
-                                            borderRadius:
-                                                BorderRadius.circular(22)),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                                IconData(0xeaf3,
-                                                    fontFamily: 'sunfont'),
-                                                size: 10,
-                                                color: Color(0xff22d47e)),
-                                            Text("关注",
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    color: Color(0xff22d47e)))
-                                          ],
-                                        ),
-                                      )
                                     ]),
                                     InkWell(
                                       child: Container(
@@ -448,46 +448,54 @@ class _UserInfoState extends State<UserInfo> {
                                           toPage("dynamicDetail", list[index]),
                                     ),
                                     list[index]["images"] != null &&
-                                        list[index]["images"].length != 0
-                                        ?Container(
-                                        child: GridView.builder(
-                                            shrinkWrap: true,
-                                            itemCount:
-                                                list[index]["images"].length,
-                                            physics:
-                                                NeverScrollableScrollPhysics(),
-                                            // 禁止滑动
-                                            gridDelegate:
-                                                SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 3,
-                                              // 主轴一行的数量
-                                              mainAxisSpacing: 6,
-                                              // 主轴每行间距
-                                              crossAxisSpacing: 6,
-                                              // 交叉轴每行间距
-                                              childAspectRatio: 1, // item的宽高比
-                                            ),
-                                            itemBuilder: (context, idx) {
-                                              return Container(
-                                                decoration: BoxDecoration(
-                                                    color: Color(0xffe3e3e3),
-                                                    borderRadius: BorderRadius.circular(8)
+                                            list[index]["images"].length != 0
+                                        ? Container(
+                                            child: GridView.builder(
+                                                shrinkWrap: true,
+                                                itemCount: list[index]["images"]
+                                                    .length,
+                                                physics:
+                                                    NeverScrollableScrollPhysics(),
+                                                // 禁止滑动
+                                                gridDelegate:
+                                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisCount: 3,
+                                                  // 主轴一行的数量
+                                                  mainAxisSpacing: 6,
+                                                  // 主轴每行间距
+                                                  crossAxisSpacing: 6,
+                                                  // 交叉轴每行间距
+                                                  childAspectRatio:
+                                                      1, // item的宽高比
                                                 ),
-                                                child:ClipRRect(
-                                                  borderRadius: BorderRadius.circular(8),
-                                                  child: Image.network(
-                                                      "${baseUrl}${list[index]["images"][idx]}",
-                                                      fit: BoxFit.cover,
-                                                      errorBuilder: (ctx, err,
-                                                          stackTrace) =>
-                                                          Image.asset(
-                                                              'assets/images/lazy.png',
-                                                              fit: BoxFit.fill,
-                                                              width: double
-                                                                  .infinity)),
-                                                ) ,
-                                              );
-                                            })) :Container(),
+                                                itemBuilder: (context, idx) {
+                                                  return Container(
+                                                    decoration: BoxDecoration(
+                                                        color:
+                                                            Color(0xffe3e3e3),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8)),
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                      child: Image.network(
+                                                          "${baseUrl}${list[index]["images"][idx]}",
+                                                          fit: BoxFit.cover,
+                                                          errorBuilder: (ctx,
+                                                                  err,
+                                                                  stackTrace) =>
+                                                              Image.asset(
+                                                                  'assets/images/lazy.png',
+                                                                  fit: BoxFit
+                                                                      .fill,
+                                                                  width: double
+                                                                      .infinity)),
+                                                    ),
+                                                  );
+                                                }))
+                                        : Container(),
                                     Container(
                                         margin: EdgeInsets.only(
                                             top: 12, bottom: 10),
@@ -523,7 +531,8 @@ class _UserInfoState extends State<UserInfo> {
                                             SizedBox(width: 4),
                                             Text(
                                                 list[index]["star"] != 0
-                                                    ? list[index]["star"].toString()
+                                                    ? list[index]["star"]
+                                                        .toString()
                                                     : "",
                                                 style: TextStyle(
                                                     color: Color(0xffbbbbbb),
@@ -547,7 +556,9 @@ class _UserInfoState extends State<UserInfo> {
                                                     height: 1.4,
                                                     fontSize: 14)),
                                             SizedBox(width: 4),
-                                            Text(list[index]["comment_num"].toString(),
+                                            Text(
+                                                list[index]["comment_num"]
+                                                    .toString(),
                                                 style: TextStyle(
                                                     color: Color(0xffbbbbbb),
                                                     height: 1.4,

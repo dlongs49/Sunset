@@ -89,7 +89,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
     try {
       Map res = await trendsReq.setFollow({"uid": uid});
       if (res["code"] == 200) {
-        print(">>>>>$res");
+        print("关注 & 取消关注>>${uid}--${res}");
         // 成功 假状态修改保持交互
         detail["isfollow"] = !detail["isfollow"];
         if (mounted) {
@@ -134,7 +134,8 @@ class _DynamicDetailState extends State<DynamicDetail> {
           "nickname": uinfo["nickname"],
           "content": commParams["content"],
           "create_time": new DateTime.now().toString(),
-          "star": "",
+          "star": 0,
+          "isstar": false
         });
         // 重置输入框
         ContentController = TextEditingController.fromValue(TextEditingValue(
@@ -485,6 +486,10 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                                           fontSize: 13)),
                                                   Spacer(flex: 1),
                                                   InkWell(
+                                                      highlightColor:
+                                                          Colors.white,
+                                                      splashColor:
+                                                          Colors.white,
                                                       child: Container(
                                                         child: Row(
                                                           children: [
