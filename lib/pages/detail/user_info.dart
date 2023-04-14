@@ -145,7 +145,11 @@ class _UserInfoState extends State<UserInfo> {
   void toEditUinfo() {
     Navigator.pushNamed(context, "myInfo");
   }
-
+  // 去关注列表页面
+  void toFollow(){
+    if(!isUser) return;
+    Navigator.pushNamed(context, "myFollow");
+  }
   @override
   Widget build(BuildContext context) {
     double mWidth = MediaQuery.of(context).size.width; // 屏幕宽度
@@ -271,22 +275,25 @@ class _UserInfoState extends State<UserInfo> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Row(children: [
-                                            Column(children: [
-                                              Text(
-                                                  uinfo["following"].toString(),
+                                            InkWell(
+                                              child: Column(children: [
+                                                Text(
+                                                    uinfo["following"].toString(),
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                        FontWeight.w600)),
+                                                SizedBox(height: 5),
+                                                Text(
+                                                  "关注",
                                                   style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w600)),
-                                              SizedBox(height: 5),
-                                              Text(
-                                                "关注",
-                                                style: TextStyle(
-                                                    color: Color(0xfff3f3f3),
-                                                    fontSize: 14),
-                                              )
-                                            ]),
+                                                      color: Color(0xfff3f3f3),
+                                                      fontSize: 14),
+                                                )
+                                              ]),
+                                              onTap: toFollow,
+                                            ) ,
                                             SizedBox(width: 40),
                                             Column(children: [
                                               Text(
