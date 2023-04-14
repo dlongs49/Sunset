@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:sunset/pages/pubTrends.dart';
 /* 内嵌H5 */
 import 'package:sunset/pages/webview/mall.dart'; // 我的-->香豆商城[淘宝]
 import 'package:sunset/pages/webview/invite.dart'; // 我的-->邀请[空]
@@ -15,11 +14,13 @@ import 'package:sunset/pages/device/balance.dart'; // 我的-->体脂秤
 import 'package:sunset/pages/my/theme_skin.dart'; // 我的-->主题换肤
 import 'package:sunset/pages/my/family.dart'; // 我的-->家庭成员
 import 'package:sunset/pages/my/setting.dart'; // 我的-->设置
+import 'package:sunset/pages/my/my_follow.dart'; // 我的关注
 import 'package:sunset/pages/my/myinfo.dart'; // 我的--> 个人信息
 import 'package:sunset/pages/my/my_profile.dart'; // 我的-->个人简介
 import 'package:sunset/pages/my/scan.dart'; // 我的-->扫一扫
 import 'package:sunset/pages/my/set_accnum.dart'; //设置--> 账号设置
 import 'package:sunset/pages/detail/user_info.dart'; // 用户信息 & 发布者信息
+import 'package:sunset/pages/pubTrends.dart';// 发布动态
 import 'package:sunset/pages/detail/dynamic_detail.dart'; // 动态详情
 
 import 'package:sunset/pages/sign/dsy_accnum.dart'; // 注销账号
@@ -32,7 +33,7 @@ import 'package:sunset/pages/sign/bind_phone.dart'; // 更换绑定手机号
 import 'package:sunset/pages/Test.dart'; // 测试页面
 final Map<String, WidgetBuilder> routes = {
   // "/":(BuildContext context) => Test(),
-  "/":(BuildContext context) => App(), // 说明：这里如果指定了页面那么在 main中 home: HomePage() 不能存在
+  // "/":(BuildContext context) => App(), // 说明：这里如果指定了页面那么在 main中 home: HomePage() 不能存在
   "aboutApp": (BuildContext context) => AboutApp(),
   "myDevice": (BuildContext context,{arguments}) => MyDevice(arguments:arguments),
   "bindDevice": (BuildContext context,{arguments}) => BindDevice(arguments:arguments),
@@ -42,6 +43,7 @@ final Map<String, WidgetBuilder> routes = {
   "setting": (BuildContext context) => Setting(),
   "myInfo": (BuildContext context,{arguments}) => MyInfo(arguments:arguments),
   "myProfile": (BuildContext context,{arguments}) => MyProfile(arguments:arguments),
+  "/":(BuildContext context,)=>MyFollow(),// myFollow
   "mall": (BuildContext context) => Mall(),
   "invite": (BuildContext context) => Invite(),
   "scan": (BuildContext context) => Scan(),
