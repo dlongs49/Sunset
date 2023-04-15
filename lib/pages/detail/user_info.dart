@@ -140,16 +140,122 @@ class _UserInfoState extends State<UserInfo> {
     Navigator.pushNamed(context, path, arguments: arguments);
   }
 
+  Map<dynamic, dynamic> delMap = {};
+
+  // 删除动态二次确认
+  void delTrends() async {
+    print(delMap["item"]["id"]);
+    if(delMap["item"]["id"] == null){
+      Navigator.of(context).pop();
+      return;
+    }
+    int index = delMap["index"];
+    try {
+      Map res = await trendsReq.delTrends({"id": delMap["item"]["id"]});
+      if (res["code"] == 200) {
+        // 删除成功 加状态更新列表
+        list.removeAt(index);
+        Navigator.of(context).pop();
+        if (mounted) {
+          setState(() {});
+        }
+      }else{
+        Navigator.of(context).pop();
+        toast(res["message"]);
+      }
+    } catch (e) {
+      print(e);
+      Navigator.of(context).pop();
+      errToast();
+    }
+  }
+
+  // 删除动态弹框
+  void showModal(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: false, // 是否滚动
+        backgroundColor: Colors.transparent, // 透明是为了自定义样式，例如圆角等
+        builder: (context) {
+          return CustomBottomSheet(context);
+        });
+  }
+
+  // 重写 showModalBottomSheet 布局样式
+  Widget CustomBottomSheet(BuildContext context) {
+    return Container(
+        width: double.infinity,
+        height: 130,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+            color: Colors.white),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            InkWell(
+                child: Container(
+                  width: double.infinity,
+                  alignment: Alignment(0, 0),
+                  height: 130 / 2 - 4,
+                  child: InkWell(
+                      child: Text("删除动态",
+                          style: TextStyle(
+                              fontSize: 18, color: Color(0xffef1a1e)))),
+                ),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  showCupertinoDialog(
+                    context: context,
+                    builder: (context) {
+                      return CupertinoAlertDialog(
+                        title: Text('确认删除'),
+                        actions: [
+                          CupertinoDialogAction(
+                            child: Text('确认'),
+                            onPressed: ()=> delTrends(),
+                          ),
+                          CupertinoDialogAction(
+                            child: Text('取消'),
+                            isDestructiveAction: true,
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }),
+            InkWell(
+                child: Container(
+                  width: double.infinity,
+                  alignment: Alignment(0, 0),
+                  height: 55,
+                  child: Text(
+                    "取消",
+                    style: TextStyle(fontSize: 18, color: Color(0xffcccccc)),
+                  ),
+                ),
+                onTap: () {
+                  Navigator.of(context).pop();
+                }),
+          ],
+        ));
+  }
+
   // 编辑资料
   @override
   void toEditUinfo() {
     Navigator.pushNamed(context, "myInfo");
   }
+
   // 去关注列表页面
-  void toFollow(){
-    if(!isUser) return;
+  void toFollow() {
+    if (!isUser) return;
     Navigator.pushNamed(context, "myFollow");
   }
+
   @override
   Widget build(BuildContext context) {
     double mWidth = MediaQuery.of(context).size.width; // 屏幕宽度
@@ -279,12 +385,13 @@ class _UserInfoState extends State<UserInfo> {
                                             InkWell(
                                               child: Column(children: [
                                                 Text(
-                                                    uinfo["following"].toString(),
+                                                    uinfo["following"]
+                                                        .toString(),
                                                     style: TextStyle(
                                                         color: Colors.white,
                                                         fontSize: 18,
                                                         fontWeight:
-                                                        FontWeight.w600)),
+                                                            FontWeight.w600)),
                                                 SizedBox(height: 5),
                                                 Text(
                                                   "关注",
@@ -294,7 +401,7 @@ class _UserInfoState extends State<UserInfo> {
                                                 )
                                               ]),
                                               onTap: toFollow,
-                                            ) ,
+                                            ),
                                             SizedBox(width: 40),
                                             Column(children: [
                                               Text(
@@ -635,11 +742,18 @@ class _UserInfoState extends State<UserInfo> {
                                                     fontSize: 14))
                                           ],
                                         ),
-                                        Icon(
-                                            IconData(0xe617,
-                                                fontFamily: 'sunfont'),
-                                            size: 18,
-                                            color: Color(0xffbbbbbb)),
+                                        InkWell(
+                                          child: Icon(
+                                              IconData(0xe617,
+                                                  fontFamily: 'sunfont'),
+                                              size: 18,
+                                              color: Color(0xffbbbbbb)),
+                                          onTap: () {
+                                            delMap["item"] = list[index];
+                                            delMap["index"] = index;
+                                            showModal(context);
+                                          },
+                                        )
                                       ],
                                     ),
                                     list[index]["comment_num"] != 0
