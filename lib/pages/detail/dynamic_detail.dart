@@ -153,7 +153,15 @@ class _DynamicDetailState extends State<DynamicDetail> {
       errToast();
     }
   }
-
+// 删除评论
+  void delComment  (params,index)async{
+    try{
+      Map res = await trendsReq.pubComment(commParams);
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
   List commentList = [];
   int commentTotal = 0;
   Map<String, dynamic> pageMap = {"page_num": 1, "page_rows": 10};

@@ -9,6 +9,12 @@ class TrendsReq {
     return await http.post(
         "/trends/pub_trends", data);
   }
+  // 删除动态
+  Future<Map> delTrends(params) async {
+    Map<String, dynamic> data = params;
+    return await http.post(
+        "/trends/del_trends", data);
+  }
   // 动态列表 & 用户的动态列表
   Future<Map> getTrends(params) async {
     Map<String, dynamic> data = params;
@@ -32,6 +38,12 @@ class TrendsReq {
     Map<String, dynamic> data = params;
     return await http.post(
         "/trends/pub/comment", data);
+  }
+  // 删除评论
+  Future<Map> delComment(params) async {
+    Map<String, dynamic> data = params;
+    return await http.post(
+        "/trends/del/comment", data);
   }
   // 获取评论列表
   Future<Map> getComment(params) async {
