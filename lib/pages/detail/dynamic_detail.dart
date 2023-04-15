@@ -351,6 +351,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                 ? Container(
                                     margin: EdgeInsets.only(top: 20),
                                     child: GridView.builder(
+                                      padding: EdgeInsets.zero,
                                         shrinkWrap: true,
                                         itemCount: detail["images"].length,
                                         physics: NeverScrollableScrollPhysics(),

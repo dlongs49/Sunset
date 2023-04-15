@@ -37,6 +37,7 @@ class _UserInfoState extends State<UserInfo> {
     final action = prefs.getString('uid');
     final u_id = action != null ? action : "";
     isUser = u_id == arguments["uid"];
+    print("当前账号值：${u_id} -- ${arguments["uid"]}");
     setState(() {});
     pageMap["uid"] = arguments["uid"];
     getFollow();
@@ -742,7 +743,7 @@ class _UserInfoState extends State<UserInfo> {
                                                     fontSize: 14))
                                           ],
                                         ),
-                                        InkWell(
+                                        isUser ? InkWell(
                                           child: Icon(
                                               IconData(0xe617,
                                                   fontFamily: 'sunfont'),
@@ -753,7 +754,7 @@ class _UserInfoState extends State<UserInfo> {
                                             delMap["index"] = index;
                                             showModal(context);
                                           },
-                                        )
+                                        ) : Container()
                                       ],
                                     ),
                                     list[index]["comment_num"] != 0
