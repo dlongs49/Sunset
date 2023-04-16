@@ -34,6 +34,7 @@ class _HomeState extends State<Home> {
     getUInfo();
     getBanner();
     getTrends();
+    getKnow();
   }
 
   Sign sign = new Sign();
@@ -95,6 +96,24 @@ class _HomeState extends State<Home> {
     }
   }
 
+  List knowList = [];
+
+  // 知识精选
+  void getKnow() async {
+    try {
+      Map res =
+          await homeReq.getKnow({"page_num": 1, "page_rows": 7, "isimg": true});
+      print("知识精选>>${res["data"]}");
+      if (res["code"] == 200) {
+        knowList = res["data"]["list"];
+        setState(() {});
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
+
   // 页面跳转
   void toPage(String url, dynamic arg) {
     if (url == "community") {
@@ -104,6 +123,12 @@ class _HomeState extends State<Home> {
       Navigator.pushNamed(context, url, arguments: {"trends_id": arg["id"]});
     }
     if (url == "myDevice") {
+      Navigator.pushNamed(context, url);
+    }
+    if (url == "knowList") {
+      Navigator.pushNamed(context, url);
+    }
+    if (url == "knowDetail") {
       Navigator.pushNamed(context, url);
     }
   }
@@ -618,7 +643,7 @@ class _HomeState extends State<Home> {
                           Icon(IconData(0xeb8a, fontFamily: 'sunfont'),
                               size: 10, color: Color.fromRGBO(120, 120, 120, 1))
                         ])),
-                    onTap: () {})
+                    onTap: () => toPage("knowList", null))
               ],
             ),
           ),
@@ -626,70 +651,92 @@ class _HomeState extends State<Home> {
             width: double.infinity,
             height: 140,
             margin: EdgeInsets.only(top: 18),
-            child: ListView(
+            child: ListView.builder(
                 shrinkWrap: true,
                 physics: BouncingScrollPhysics(),
                 scrollDirection: Axis.horizontal,
-                children: knowLedgeList.map((item) {
+                itemCount: knowList.length,
+                itemBuilder: (ctx, index) {
                   return InkWell(
-                    child: Container(
-                        margin: EdgeInsets.only(left: 15),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Stack(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Stack(
-                                    children: [
-                                      Image.network(item["coverUrl"],
-                                          fit: BoxFit.cover,
+                      child: Container(
+                          margin: EdgeInsets.only(left: 15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Stack(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Stack(
+                                      children: [
+                                        Container(
                                           width: 120,
-                                          height: 94)
-                                    ],
+                                          height: 94,
+                                          decoration: BoxDecoration(
+                                            color: Color(0xffeeeeee),
+                                            borderRadius: BorderRadius.circular(8)
+                                          ),
+                                          child: Image.network(
+                                              knowList[index]["isthird"] == 1
+                                                  ? knowList[index]["cover_img"]
+                                                  : baseUrl +
+                                                  knowList[index]
+                                                  ["cover_img"],
+                                              fit: BoxFit.cover,
+                                              width: 120,
+                                              height: 94,
+                                              errorBuilder: (ctx, err, stackTrace) =>
+                                                  Image.asset(
+                                                      'assets/images/lazy.png',
+                                                      fit: BoxFit.fill,
+                                                      height: 120,
+                                                      width: 120)),
+                                        )
+
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Positioned(
-                                  bottom: 10,
-                                  left: 10,
-                                  child: Align(
-                                    child: Container(
-                                        padding: EdgeInsets.only(
-                                            left: 8,
-                                            right: 8,
-                                            top: 3,
-                                            bottom: 3),
-                                        decoration: BoxDecoration(
-                                            color: Color.fromRGBO(0, 0, 0, 0.5),
-                                            borderRadius:
-                                                BorderRadius.circular(3)),
-                                        child: Text(
-                                            item["collectNum"].toString() +
-                                                "人收藏",
-                                            style: TextStyle(
-                                                fontSize: 10,
-                                                color: Colors.white))),
-                                  ),
-                                )
-                              ],
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(top: 10),
-                              width: 120,
-                              child: Text(item["title"],
-                                  maxLines: 2,
-                                  softWrap: false,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                  )),
-                            )
-                          ],
-                        )),
-                    onTap: () {},
-                  );
-                }).toList()),
+                                  Positioned(
+                                    bottom: 10,
+                                    left: 10,
+                                    child: Align(
+                                      child: Container(
+                                          padding: EdgeInsets.only(
+                                              left: 8,
+                                              right: 8,
+                                              top: 3,
+                                              bottom: 3),
+                                          decoration: BoxDecoration(
+                                              color:
+                                                  Color.fromRGBO(0, 0, 0, 0.5),
+                                              borderRadius:
+                                                  BorderRadius.circular(3)),
+                                          child: Text(
+                                              knowList[index]["like_num"]
+                                                      .toString() +
+                                                  "人收藏",
+                                              style: TextStyle(
+                                                  fontSize: 10,
+                                                  color: Colors.white))),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(top: 10),
+                                width: 120,
+                                child: Text(knowList[index]["title"],
+                                    maxLines: 2,
+                                    softWrap: false,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                    )),
+                              )
+                            ],
+                          )),
+                      onTap: () => toPage("knowDetail", knowList[index]));
+                }),
           ),
         ],
       ),
@@ -758,10 +805,9 @@ class _HomeState extends State<Home> {
                               borderRadius: BorderRadius.circular(30)),
                           child: Image.network("${baseUrl}${uinfo["avator"]}",
                               fit: BoxFit.cover,
-                              errorBuilder: (ctx, err, stackTrace) => Image.asset(
-                                  'assets/images/sunset.png',
-                                  width: double.infinity)
-                          ),
+                              errorBuilder: (ctx, err, stackTrace) =>
+                                  Image.asset('assets/images/sunset.png',
+                                      width: double.infinity)),
                         ),
                         onTap: () {
                           Navigator.pushNamed(context, "userInfo");

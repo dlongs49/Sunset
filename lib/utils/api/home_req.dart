@@ -21,4 +21,10 @@ class HomeReq {
     return await http.get(
         "/goods/get_shopp", {"stamp": currentTime.microsecondsSinceEpoch});
   }
+  // 知识精选
+  Future<Map> getKnow(params) async {
+    Map<String, dynamic> data = params;
+    return await http.get(
+        "/know/list", data);
+  }
 }
