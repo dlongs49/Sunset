@@ -61,7 +61,7 @@ final Map<String, WidgetBuilder> routes = {
   "bindPhone":(BuildContext context)=> BindPhone(),//bindPhone
   "pubTrends":(BuildContext context)=> PubTrends(),
   "knowList":(BuildContext context)=>KnowList(), // knowList
-  "knowDetail":(BuildContext context)=>KnowDetail()
+  "knowDetail":(BuildContext context,{arguments})=>KnowDetail(arguments:arguments)
 };
 
 // 路由处理

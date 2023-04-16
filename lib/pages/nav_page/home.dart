@@ -122,14 +122,15 @@ class _HomeState extends State<Home> {
     if (url == "dynamicDetail") {
       Navigator.pushNamed(context, url, arguments: {"trends_id": arg["id"]});
     }
-    if (url == "myDevice") {
-      Navigator.pushNamed(context, url);
-    }
-    if (url == "knowList") {
+    if (url == "myDevice" || url == "knowList") {
       Navigator.pushNamed(context, url);
     }
     if (url == "knowDetail") {
-      Navigator.pushNamed(context, url);
+      Navigator.pushNamed(context, url, arguments: {
+        "isthird": arg["isrhird"],
+        "url": arg["url"],
+        "id": arg["id"]
+      });
     }
   }
 
@@ -673,26 +674,26 @@ class _HomeState extends State<Home> {
                                           width: 120,
                                           height: 94,
                                           decoration: BoxDecoration(
-                                            color: Color(0xffeeeeee),
-                                            borderRadius: BorderRadius.circular(8)
-                                          ),
+                                              color: Color(0xffeeeeee),
+                                              borderRadius:
+                                                  BorderRadius.circular(8)),
                                           child: Image.network(
                                               knowList[index]["isthird"] == 1
                                                   ? knowList[index]["cover_img"]
                                                   : baseUrl +
-                                                  knowList[index]
-                                                  ["cover_img"],
+                                                      knowList[index]
+                                                          ["cover_img"],
                                               fit: BoxFit.cover,
                                               width: 120,
                                               height: 94,
-                                              errorBuilder: (ctx, err, stackTrace) =>
+                                              errorBuilder: (ctx, err,
+                                                      stackTrace) =>
                                                   Image.asset(
                                                       'assets/images/lazy.png',
                                                       fit: BoxFit.fill,
                                                       height: 120,
                                                       width: 120)),
                                         )
-
                                       ],
                                     ),
                                   ),
