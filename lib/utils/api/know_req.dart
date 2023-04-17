@@ -21,4 +21,10 @@ class KnowReq {
     return await http.post(
         "/know/like", data);
   }
+  // 我的收藏
+  Future<Map> getMyLike(params) async {
+    Map<String, dynamic> data = params;
+    return await http.get(
+        "/know/my_like", data);
+  }
 }

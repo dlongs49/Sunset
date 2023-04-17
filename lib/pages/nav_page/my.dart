@@ -26,7 +26,7 @@ class _MyState extends State<My> {
     {"icon": 0xe8ba, "title": "主题皮肤", "path": "themeSkin"},
     {"icon": 0xe642, "title": "问题反馈", "path": ""},
     {"icon": 0xe746, "title": "称重提醒", "path": ""},
-    {"icon": 0xe625, "title": "我的收藏", "path": ""},
+    {"icon": 0xe625, "title": "我的收藏", "path": "myLike"},
   ];
 
   @override
