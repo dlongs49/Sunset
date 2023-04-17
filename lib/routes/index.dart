@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:sunset/pages/webview/mall.dart'; // 我的-->香豆商城[淘宝]
 import 'package:sunset/pages/webview/invite.dart'; // 我的-->邀请[空]
 import 'package:sunset/pages/webview/shopdetail.dart'; // 发现商品详情
+import 'package:sunset/pages/webview/know_detail.dart'; // 知识社区详情
 
 /* 页面 */
 import 'package:sunset/app.dart';
@@ -23,7 +24,8 @@ import 'package:sunset/pages/detail/user_info.dart'; // 用户信息 & 发布者
 import 'package:sunset/pages/pubTrends.dart';// 发布动态
 import 'package:sunset/pages/detail/dynamic_detail.dart'; // 动态详情
 import 'package:sunset/pages/know_commun/know_list.dart'; // 知识社区列表
-import 'package:sunset/pages/webview/know_detail.dart'; // 知识社区详情
+import 'package:sunset/pages/my/my_like.dart'; // 我的收藏【文章】
+
 
 import 'package:sunset/pages/sign/dsy_accnum.dart'; // 注销账号
 import 'package:sunset/pages/sign/forget_pwd.dart'; // 忘记密码
@@ -61,7 +63,8 @@ final Map<String, WidgetBuilder> routes = {
   "bindPhone":(BuildContext context)=> BindPhone(),//bindPhone
   "pubTrends":(BuildContext context)=> PubTrends(),
   "knowList":(BuildContext context)=>KnowList(), // knowList
-  "knowDetail":(BuildContext context,{arguments})=>KnowDetail(arguments:arguments)
+  "knowDetail":(BuildContext context,{arguments})=>KnowDetail(arguments:arguments),
+  "myLike":(BuildContext context)=>MyLike(),
 };
 
 // 路由处理

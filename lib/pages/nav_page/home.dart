@@ -127,7 +127,7 @@ class _HomeState extends State<Home> {
     }
     if (url == "knowDetail") {
       Navigator.pushNamed(context, url, arguments: {
-        "isthird": arg["isrhird"],
+        "isthird": arg["isthird"],
         "url": arg["url"],
         "id": arg["id"]
       });
