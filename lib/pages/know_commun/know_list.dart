@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sunset/components/tabbar.dart';
+import 'package:sunset/components/toast.dart';
+import 'package:sunset/utils/api/know_req.dart';
+import 'package:sunset/utils/request.dart';
 
 class KnowList extends StatefulWidget {
   const KnowList({Key? key}) : super(key: key);
@@ -10,8 +13,43 @@ class KnowList extends StatefulWidget {
 }
 
 class _KnowListState extends State<KnowList> {
-  List list = ["99", '9', "999+"];
+  List list = [];
+  int total = 0;
+  bool isPoint = false;
+  Map<String, dynamic> pageMap = {"page_num": 1, "page_rows": 100};
+  KnowReq knowReq = new KnowReq();
 
+  void initState() {
+    super.initState();
+    this.getKnow();
+  }
+
+  // 列表
+  void getKnow() async {
+    try {
+      Map res = await knowReq.getKnow(pageMap);
+      print("知识精选>>${res["data"]}");
+      if (res["code"] == 200) {
+        list.insertAll(list.length, res["data"]["list"]);
+        total = res["data"]["total"];
+        isPoint = true;
+        if (mounted) {
+          setState(() {});
+        }
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
+  // 去详情
+  void toPage(arg){
+    Navigator.pushNamed(context, "knowDetail", arguments: {
+      "isthird": arg["isthird"],
+      "url": arg["url"],
+      "id": arg["id"]
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,11 +71,22 @@ class _KnowListState extends State<KnowList> {
                                 children: [
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(12),
-                                    child: Image.network(
-                                      "https://th.bing.com/th/id/R.83d51b55fc95657f927c3d3d25c62be5?rik=37%2fqxBZ6VRgn%2bw&pid=ImgRaw&r=0",
-                                      fit: BoxFit.cover,
-                                      width: 110,
+                                    child: Container(
                                       height: 80,
+                                      color: Color(0xffeeeeee),
+                                      child: Image.network(
+                                          list[index]["isthird"] == 1
+                                              ? list[index]["cover_img"]
+                                              : baseUrl +
+                                                  list[index]["cover_img"],
+                                          fit: BoxFit.cover,
+                                          width: 110,
+                                          errorBuilder:
+                                              (ctx, err, stackTrace) =>
+                                                  Image.asset(
+                                                      'assets/images/lazy.png',
+                                                      fit: BoxFit.fill,
+                                                      width: 110)),
                                     ),
                                   ),
                                   SizedBox(width: 10),
@@ -47,7 +96,7 @@ class _KnowListState extends State<KnowList> {
                                       Container(
                                           height: 60,
                                           child: Text(
-                                            "众里寻他千百度，蓦然回首，那人却在灯火阑珊处",
+                                            list[index]["title"],
                                             softWrap: true,
                                             textAlign: TextAlign.left,
                                             overflow: TextOverflow.ellipsis,
@@ -69,7 +118,8 @@ class _KnowListState extends State<KnowList> {
                                                       color: Color(0xffcccccc)),
                                                   borderRadius:
                                                       BorderRadius.circular(6)),
-                                              child: Text("饮食",
+                                              child: Text(
+                                                  list[index]["type_name"],
                                                   style: TextStyle(
                                                       color: Color(0xffcccccc),
                                                       fontSize: 12)),
@@ -78,7 +128,8 @@ class _KnowListState extends State<KnowList> {
                                               alignment: Alignment.centerRight,
                                               constraints:
                                                   BoxConstraints(maxWidth: 64),
-                                              child: Text("${list[index]} 阅读",
+                                              child: Text(
+                                                  "${list[index]["read_num"].toString()} 阅读",
                                                   style: TextStyle(
                                                       color: Color(0xffcccccc),
                                                       fontSize: 13)),
@@ -89,7 +140,8 @@ class _KnowListState extends State<KnowList> {
                                                   EdgeInsets.only(right: 40),
                                               constraints:
                                                   BoxConstraints(maxWidth: 64),
-                                              child: Text("${list[index]} 收藏",
+                                              child: Text(
+                                                  "${list[index]["like_num"].toString()} 收藏",
                                                   style: TextStyle(
                                                       color: Color(0xffcccccc),
                                                       fontSize: 13)),
@@ -102,7 +154,7 @@ class _KnowListState extends State<KnowList> {
                                 ],
                               ),
                             ),
-                            onTap: () {});
+                            onTap: ()=>toPage(list[index]));
                       })))
         ],
       ),

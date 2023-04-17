@@ -17,17 +17,46 @@ class _KnowDetailState extends State<KnowDetail> {
   final arguments;
   _KnowDetailState({this.arguments});
   KnowReq knowReq = new KnowReq();
-  Map item = {};
+  Map item = {
+    "islike":false,
+    "like_num":0,
+    "comment_num":0
+  };
 
+  void initState(){
+    super.initState();
+    getKnowDetail();
+  }
+  String url = "https://m.findlinked.com/#/";
+  // 详情
+  void getKnowDetail() async {
+    try {
+      Map res = await knowReq.getKnowDetail({"id":arguments["id"]});
+      print("详情>>${res["data"]}");
+      if (res["code"] == 200) {
+        item = res["data"];
+        if (mounted) {
+          setState(() {});
+        }
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
   // 收藏 & 取消收藏
   void handleLike () async{
     try {
       Map res =
-      await knowReq.likeKnow({"id": 1});
-      print("知识精选>>${res["data"]}");
+      await knowReq.likeKnow({"id": item["id"]});
+      print("收藏>>${res}");
       if (res["code"] == 200) {
-        item["islike"] = res["data"]["list"];
-        setState(() {});
+        int num = item["like_num"];
+        item["islike"] = !item["islike"];
+        item["like_num"] = item["islike"] ? num + 1 : num -1;
+        if (mounted) {
+          setState(() {});
+        }
       }
     } catch (e) {
       print(e);
@@ -56,7 +85,7 @@ class _KnowDetailState extends State<KnowDetail> {
               color: Color(0xFFF6F7FB),
               child: WebView(
                   initialUrl:
-                  "https://www.taobao.com/",
+                  arguments["isthird"] == 1 ? arguments["url"] : url,
                   javascriptMode: JavascriptMode.unrestricted,
                   onProgress: (int gress) {
                     progress = (gress / 100);
@@ -71,19 +100,24 @@ class _KnowDetailState extends State<KnowDetail> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  child: Row(
-                    children: [
-                      Icon(IconData(0xe603,fontFamily: "sunfont"),size: 24,color: Color(0xff999999)),
-                      Text("收藏 9",style: TextStyle(color: Color(0xff999999),fontSize: 14))
-                    ],
+                InkWell(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  child:  Container(
+                    child: Row(
+                      children: [
+                        Icon(IconData(0xe603,fontFamily: "sunfont"),size: 24,color: Color(item['islike'] ? 0xff22d47e : 0xff999999)),
+                        Text("收藏 ${item['like_num']}",style: TextStyle(color: Color(item['islike'] ? 0xff22d47e : 0xff999999),fontSize: 14))
+                      ],
+                    ),
                   ),
+                  onTap:handleLike,
                 ),
                 Container(
                   child: Row(
                     children: [
                       Icon(IconData(0xe6ba,fontFamily: "sunfont"),size: 24,color: Color(0xff999999)),
-                      Text("评论 9",style: TextStyle(color: Color(0xff999999),fontSize: 14))
+                      Text("评论 ${item['comment_num']}",style: TextStyle(color: Color(0xff999999),fontSize: 14))
                     ],
                   ),
                 )
