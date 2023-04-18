@@ -6,6 +6,13 @@ if (localPropertiesFile.exists()) {
     }
 }
 
+
+def keystorePropertiesFile = rootProject.file("key.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+
+
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
 //    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
@@ -42,14 +49,27 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
+    signingConfigs {
+        release {
+            keyAlias 'key'
+            keyPassword 'sunset'
+            storeFile file('C:\\Users\\dillonl\\Desktop\\flutter\\sunset\\android\\key.jks')  //签名文件路径
+            storePassword 'sunset'
+        }
+    }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
+//    buildTypes {
+//        release {
+//            // TODO: Add your own signing config for the release build.
+//            // Signing with the debug keys for now, so `flutter run --release` works.
+//            signingConfig signingConfigs.debug
+//        }
+//    }
 }
 
 flutter {

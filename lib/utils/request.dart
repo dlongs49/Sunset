@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// String baseUrl = "http://192.168.2.102:801";
-String baseUrl = "http://192.168.0.152:801";
+String baseUrl = "http://192.168.2.102:801";
+// String baseUrl = "http://192.168.0.152:801";
 
 class Http {
   late Dio dio;
@@ -25,7 +25,7 @@ class Http {
       // 赋值请求头
       // options.headers["ms_token"] = ms_token;
       // options.headers["ms_token"] = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiI4NDU0MTJGRi1DREVGLTQxNTgtODIyMS1CRjM5NkYwQzQwNEIiLCJzdGFtcCI6MTY4MTMwMzYzODI4NSwiZXhwIjoxNjgxNTE5NjM4fQ.joPKBfbDeFzvPK85LkqvVr1fxXad32pycvFFMv50II0";
-      options.headers["ms_token"] = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiI4MjgxNjExRi00RkEwLTQyMzgtQkFCRC03MUY0NkVCMjVCODgiLCJzdGFtcCI6MTY4MTU2MTYzOTAzMCwiZXhwIjoxNjgxNzc3NjM5fQ.-W8d8k8vG-RrS746OFQzA9ib7XYlsUbyZFUAYFJEBK8";
+      options.headers["ms_token"] = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiI4MjgxNjExRi00RkEwLTQyMzgtQkFCRC03MUY0NkVCMjVCODgiLCJzdGFtcCI6MTY4MTgyMzUxMjkxNCwiZXhwIjoxNjgyMDM5NTEyfQ.3fbldW5LEzc3fh9mYojXLCmURyGs8_72jsKwC2n1oI8";
       print("开始请求：${options.baseUrl}");
       return handler.next(options);
     }, onResponse: (response, handler) async {
