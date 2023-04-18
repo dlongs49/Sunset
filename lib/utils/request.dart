@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-String baseUrl = "http://192.168.2.102:801";
+// String baseUrl = "http://192.168.2.102:801";
+String baseUrl = "http://192.168.0.152:801";
 
 class Http {
   late Dio dio;

@@ -13,6 +13,7 @@ import 'package:sunset/pages/nav_page/my.dart'; // 我的
 
 // 路由文件
 import 'package:sunset/routes/index.dart';
+
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
 
@@ -24,24 +25,25 @@ class _AppState extends State<App> {
   // 抽离底部导航栏Icon
   @override
   Widget bomIcon(icon, color) {
-    return (Icon(IconData(icon, fontFamily: 'sunfont'), color: Color(color)));
+    return (Icon(IconData(icon, fontFamily: 'sunfont'),
+        color: Color(color)));
   }
 
   int currentIndex = 0; // 导航索引
-  List<Widget> pages = [Home(), Community(),BindDevice(),Find(),  My()];
+  List<Widget> pages = [Home(), Community(), BindDevice(), Find(), My()];
 
   // 更改底部导航栏索引
   @override
   void changeNavBar(int index) {
-    if(index == 2){
-      Navigator.pushNamed(context, "bindDevice",arguments:{"base":"root"});
-    }else{
+    if (index == 2) {
+      Navigator.pushNamed(context, "bindDevice", arguments: {"base": "root"});
+    } else {
       setState(() {
         currentIndex = index;
       });
     }
-
   }
+
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
