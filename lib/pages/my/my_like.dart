@@ -59,7 +59,8 @@ class _MyLikeState extends State<MyLike> {
         children: [
           CustomTabBar(title: "我的收藏", bgColor: null, fontColor: null),
           Expanded(
-              child: Container(
+              child:list.length != 0
+                  ? Container(
                   margin: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
                   child: ListView.builder(
                       padding: EdgeInsets.zero,
@@ -157,7 +158,13 @@ class _MyLikeState extends State<MyLike> {
                             ),
                             onTap: ()=>toPage(list[index]));
                       }))
-
+                  : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset("assets/images/none.png"),
+                  Text("暂无收藏",style: TextStyle(color: Color(0xffcccccc)),)
+                ],
+              )
           )
         ],
       ),
