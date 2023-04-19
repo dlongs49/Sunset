@@ -2,6 +2,7 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:sunset/components/refresh/refresh_header_ex.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/know_req.dart';
@@ -18,7 +19,7 @@ class _KnowListState extends State<KnowList> {
   List list = [];
   int total = 0;
   bool isPoint = false;
-  Map<String, dynamic> pageMap = {"page_num": 1, "page_rows": 100};
+  Map<String, dynamic> pageMap = {"page_num": 1, "page_rows": 12};
   KnowReq knowReq = new KnowReq();
 
   void initState() {
@@ -74,24 +75,23 @@ class _KnowListState extends State<KnowList> {
           CustomTabBar(title: "知识社区", bgColor: null, fontColor: null),
           Expanded(
               child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 15),
-                  child: SmartRefresher(
-                      // onRefresh: () async {
-                      // },
-                      // onLoad: () async {
-                      // },
-                      controller: _refreshController,
-                      enablePullDown: true,
-                      enablePullUp: true,
-                      header: WaterDropHeader(),
-                      // RefreshStyle.Follow,
+                  child: EasyRefresh(
+                    header: RefreshHeaderEx(),
+                      onRefresh: () async {
+                      },
+                      onLoad: () async {
+                      },
+                      // controller: _refreshController,
+                      // enablePullDown: true,
+                      // enablePullUp: true,
+                      // header: WaterDropHeader(),
                       child: ListView.builder(
                           padding: EdgeInsets.zero,
                           itemCount: list.length,
                           itemBuilder: (ctx, index) {
                             return InkWell(
                                 child: Container(
-                                  margin: EdgeInsets.only(bottom: 15),
+                                  padding: EdgeInsets.symmetric(vertical: 7.5,horizontal: 15),
                                   child: Row(
                                     children: [
                                       ClipRRect(
