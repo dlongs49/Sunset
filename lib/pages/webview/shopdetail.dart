@@ -5,6 +5,8 @@ import 'package:flutter/rendering.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import 'custom/CustomLinearProgressIndicator.dart';
+
 class ShopDetail extends StatefulWidget {
   final arguments;
   const ShopDetail({Key? key, this.arguments}) : super(key: key);
@@ -35,12 +37,7 @@ class _ShopDetailState extends State<ShopDetail> {
           children: [
             CustomTabBar(title: "好物详情", bgColor: null, fontColor: null),
             progress != 1.0
-                ? LinearProgressIndicator(
-                    value: progress,
-                    backgroundColor: Color(0xffffffff),
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(Color(0xff22d47e)),
-                  )
+                ? CustomLinearProgressIndicator(value: progress)
                 : Container(height: 4),
             Expanded(
                 child: Container(

@@ -5,6 +5,8 @@ import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/know_req.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import 'custom/CustomLinearProgressIndicator.dart';
+
 class KnowDetail extends StatefulWidget {
   final arguments;
   const KnowDetail({Key? key, this.arguments}) : super(key: key);
@@ -74,12 +76,7 @@ class _KnowDetailState extends State<KnowDetail> {
         children: [
           CustomTabBar(title: "文章详情", bgColor: null, fontColor: null),
           progress != 1.0
-              ? LinearProgressIndicator(
-            value: progress,
-            backgroundColor: Color(0xffffffff),
-            valueColor:
-            AlwaysStoppedAnimation<Color>(Color(0xff22d47e)),
-          )
+              ? CustomLinearProgressIndicator(value: progress)
               : Container(height: 4),
           Expanded(child: Container(
               color: Color(0xFFF6F7FB),
