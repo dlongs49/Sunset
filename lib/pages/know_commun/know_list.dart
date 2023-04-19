@@ -1,7 +1,9 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:m_loading/m_loading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:sunset/components/refresh/refresh_footer_ex.dart';
 import 'package:sunset/components/refresh/refresh_header_ex.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
@@ -31,6 +33,7 @@ class _KnowListState extends State<KnowList> {
   void getKnow() async {
     try {
       Map res = await knowReq.getKnow(pageMap);
+      print("知识精选分页>>${pageMap}");
       print("知识精选>>${res["data"]}");
       if (res["code"] == 200) {
         list.insertAll(list.length, res["data"]["list"]);
@@ -55,17 +58,29 @@ class _KnowListState extends State<KnowList> {
     });
   }
 
-  double mTop = 0;
-
-  void onPointUp(e) {
-    print("Up:${e}");
+  EasyRefreshController _refreshController = new EasyRefreshController(
+    controlFinishRefresh: false,
+    controlFinishLoad: false,
+  );
+  // 上拉加载
+  IndicatorResult onLoad() {
+    pageMap["page_num"]++;
+    if (list.length >= total) {
+      print(1452);
+      return IndicatorResult.noMore;
+    } else {
+      getKnow();
+      return IndicatorResult.success;
+    }
+  }
+  // 下拉刷新
+  IndicatorResult onRefresh() {
+    list = [];
+    pageMap["page_num"] = 1;
+    getKnow();
+    return IndicatorResult.success;
   }
 
-  void onPointMove(e) {
-    print("Move:${e}");
-  }
-  RefreshController _refreshController =
-  RefreshController(initialRefresh: false);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,22 +91,19 @@ class _KnowListState extends State<KnowList> {
           Expanded(
               child: Container(
                   child: EasyRefresh(
-                    header: RefreshHeaderEx(),
-                      onRefresh: () async {
-                      },
-                      onLoad: () async {
-                      },
-                      // controller: _refreshController,
-                      // enablePullDown: true,
-                      // enablePullUp: true,
-                      // header: WaterDropHeader(),
+                      header: RefreshHeaderEx(),
+                      footer: RefreshFooterEx(),
+                      onRefresh: onRefresh,
+                      onLoad: onLoad,
+                      controller: _refreshController,
                       child: ListView.builder(
                           padding: EdgeInsets.zero,
                           itemCount: list.length,
                           itemBuilder: (ctx, index) {
                             return InkWell(
                                 child: Container(
-                                  padding: EdgeInsets.symmetric(vertical: 7.5,horizontal: 15),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 7.5, horizontal: 15),
                                   child: Row(
                                     children: [
                                       ClipRRect(
