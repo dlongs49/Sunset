@@ -14,9 +14,7 @@ class My extends StatefulWidget {
   _MyState createState() => _MyState();
 }
 
-class _MyState extends State<My> with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive =>true;
+class _MyState extends State<My> {
   List card1 = [
     {"icon": 0xeeee, "title": "关于App/作者", "path": "aboutApp"},
     {"icon": 0xe720, "title": "我的设备", "path": "myDevice"},
@@ -33,7 +31,6 @@ class _MyState extends State<My> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     getUInfo();
-
   }
 
   Sign sign = new Sign();
@@ -43,7 +40,6 @@ class _MyState extends State<My> with AutomaticKeepAliveClientMixin {
   void getUInfo() async {
     try {
       Map res = await sign.getUInfo();
-      print("个人信息>>> $res");
       if (res["code"] == 200) {
         setState(() {
           uinfo = res["data"];
@@ -77,16 +73,21 @@ class _MyState extends State<My> with AutomaticKeepAliveClientMixin {
       // Navigator.push(
       //     context, CupertinoPageRoute(builder: (context) => AboutApp()));
     } else {
-      // 暂无页面
-      Fluttertoast.showToast(
-          msg: item["title"],
-          toastLength: Toast.LENGTH_SHORT,
-          // 停留时长短 & 长
-          gravity: ToastGravity.CENTER,
-          // 弹框是否居中
-          backgroundColor: Color(0xd23b3b3b),
-          textColor: Colors.white,
-          fontSize: 16.0);
+      showToast(item["title"]);
+      // Fluttertoast.cancel();
+      // // 暂无页面
+      // Fluttertoast.showToast(
+      //     msg: item["title"],
+      //     timeInSecForIosWeb: 1,
+      //     toastLength:Toast.LENGTH_SHORT,
+      //     // 停留时长短 & 长
+      //     gravity: ToastGravity.CENTER,
+      //     // 弹框是否居中
+      //     backgroundColor: Color(0xd23b3b3b),
+      //     textColor: Colors.white,
+      //     webPosition:"center",
+      //     webShowClose:false,
+      //     fontSize: 16.0);
     }
   }
 
