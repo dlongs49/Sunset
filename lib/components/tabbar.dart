@@ -18,7 +18,6 @@ class _CustomTabBarState extends State<CustomTabBar> {
     final bgColor = widget.bgColor != null ? widget.bgColor : 0xffffffff;
     final fontColor = widget.fontColor != null ? widget.fontColor : 0xff000000;
     final title = widget.title != null ? widget.title : '未知页面';
-    print("页面标题>> ${title}");
     double topBarHeight =
         MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
     void toBack(){

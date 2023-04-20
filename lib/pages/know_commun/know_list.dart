@@ -1,12 +1,10 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:sunset/components/refresh/refresh_footer_ex.dart';
 import 'package:sunset/components/refresh/refresh_header_ex.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
-import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/know_req.dart';
 import 'package:sunset/utils/request.dart';
 
@@ -20,32 +18,33 @@ class KnowList extends StatefulWidget {
 class _KnowListState extends State<KnowList> {
   List list = [];
   int total = 0;
-  bool isPoint = false;
   Map<String, dynamic> pageMap = {"page_num": 1, "page_rows": 12};
   KnowReq knowReq = new KnowReq();
 
   void initState() {
     super.initState();
-    this.getKnow();
+    getKnow();
   }
 
   // 列表
-  void getKnow() async {
+  Future<IndicatorResult> getKnow() async {
     try {
       Map res = await knowReq.getKnow(pageMap);
-      print("知识精选分页>>${pageMap}");
-      print("知识精选>>${res["total"]}");
+      print("分页>>${pageMap}");
       if (res["code"] == 200) {
         list.insertAll(list.length, res["data"]["list"]);
         total = res["data"]["total"];
-        isPoint = true;
         if (mounted) {
           setState(() {});
         }
+        return IndicatorResult.success;
+      }else{
+        return IndicatorResult.fail;
       }
     } catch (e) {
       print(e);
       errToast();
+      return IndicatorResult.fail;
     }
   }
 
@@ -57,35 +56,31 @@ class _KnowListState extends State<KnowList> {
       "id": arg["id"]
     });
   }
-
+ // 加载 刷新控制器
   EasyRefreshController _refreshController = new EasyRefreshController(
     controlFinishRefresh: false,
-    controlFinishLoad: true,
+    controlFinishLoad: false,
   );
   // 上拉加载
-  IndicatorResult onLoad() {
+  Future<IndicatorResult> onLoad() async{
     pageMap["page_num"]++;
     if (list.length >= total) {
-      print(1452);
       return IndicatorResult.noMore;
     } else {
-      getKnow();
-      return IndicatorResult.success;
+      IndicatorResult status = await getKnow();
+      return status;
     }
   }
   // 下拉刷新
-  IndicatorResult onRefresh() {
+  Future<IndicatorResult> onRefresh() async{
     list = [];
     pageMap["page_num"] = 1;
-    getKnow();
-    return IndicatorResult.success;
+    IndicatorResult status = await getKnow();
+    return status;
   }
 
   @override
   Widget build(BuildContext context) {
-    Golbal nf = Provider.of<Golbal>(context);
-    // nf.getKnow();
-    print("NF>>>>:${nf.knowList}");
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(

@@ -223,6 +223,8 @@ class _PubTrendsState extends State<PubTrends> {
       if (res["code"] == 200) {
         FocusManager.instance.primaryFocus?.unfocus(); // 收起键盘
         // Navigator.pop(context);
+      }else{
+        toast("发布失败！");
       }
     } catch (e) {
       errToast();

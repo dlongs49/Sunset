@@ -1,10 +1,10 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
+import 'dart:async';
 // 提示 Toast
 void toast(text, {double y = -0.5}) {
-  BotToast.showText(
+  var showText = BotToast.showText(
       text: text,
       align: Alignment(0, y),
       contentColor: Color(0xbf000000),
@@ -13,6 +13,10 @@ void toast(text, {double y = -0.5}) {
       textStyle: TextStyle(fontSize: 15, color: Colors.white),
       animationDuration: Duration(milliseconds: 1) // 动画执行
       );
+  const timeout = const Duration(seconds: 1);
+  Timer(timeout, (){
+    showText();
+  });
 }
 
 // 服务器异常 Toast
@@ -45,6 +49,7 @@ void loading({double y = 0, final seconds = null}) {
       align: Alignment(0, y),
       duration: seconds == null ? null : Duration(seconds: seconds));
 }
+
 // 提示
 void showToast(msg) {
   Fluttertoast.cancel();
