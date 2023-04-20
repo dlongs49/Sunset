@@ -1,10 +1,12 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/refresh/refresh_footer_ex.dart';
 import 'package:sunset/components/refresh/refresh_header_ex.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/know_req.dart';
 import 'package:sunset/utils/request.dart';
 
@@ -32,7 +34,7 @@ class _KnowListState extends State<KnowList> {
     try {
       Map res = await knowReq.getKnow(pageMap);
       print("知识精选分页>>${pageMap}");
-      print("知识精选>>${res["data"]}");
+      print("知识精选>>${res["total"]}");
       if (res["code"] == 200) {
         list.insertAll(list.length, res["data"]["list"]);
         total = res["data"]["total"];
@@ -58,7 +60,7 @@ class _KnowListState extends State<KnowList> {
 
   EasyRefreshController _refreshController = new EasyRefreshController(
     controlFinishRefresh: false,
-    controlFinishLoad: false,
+    controlFinishLoad: true,
   );
   // 上拉加载
   IndicatorResult onLoad() {
@@ -81,6 +83,9 @@ class _KnowListState extends State<KnowList> {
 
   @override
   Widget build(BuildContext context) {
+    Golbal nf = Provider.of<Golbal>(context);
+    // nf.getKnow();
+    print("NF>>>>:${nf.knowList}");
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(

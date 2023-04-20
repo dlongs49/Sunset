@@ -3,8 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/request.dart';
 
@@ -15,7 +17,9 @@ class My extends StatefulWidget {
   _MyState createState() => _MyState();
 }
 
-class _MyState extends State<My> {
+class _MyState extends State<My> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive =>true;
   List card1 = [
     {"icon": 0xeeee, "title": "关于App/作者", "path": "aboutApp"},
     {"icon": 0xe720, "title": "我的设备", "path": "myDevice"},
@@ -31,30 +35,31 @@ class _MyState extends State<My> {
 
   @override
   void initState() {
-    getUInfo();
+    // getUInfo();
+
   }
 
   Sign sign = new Sign();
 
-  Map<String, dynamic> uinfo = {"nickname":"未登录","avator":"/avator/sunset202303311711.png",};
-  // 个人信息
-  void getUInfo() async {
-    try {
-      Map res = await sign.getUInfo();
-      print("个人信息>>> $res");
-      if (res["code"] == 200) {
-        setState(() {
-          uinfo = res["data"];
-        });
-      }
-      if (res['code'] == 401) {
-        Navigator.pushNamed(context, 'phoneLog');
-      }
-    } catch (e) {
-      print(e);
-      errToast();
-    }
-  }
+  // Map<String, dynamic> uinfo = {"nickname":"未登录","avator":"/avator/sunset202303311711.png",};
+  // // 个人信息
+  // void getUInfo() async {
+  //   try {
+  //     Map res = await sign.getUInfo();
+  //     print("个人信息>>> $res");
+  //     if (res["code"] == 200) {
+  //       setState(() {
+  //         uinfo = res["data"];
+  //       });
+  //     }
+  //     if (res['code'] == 401) {
+  //       Navigator.pushNamed(context, 'phoneLog');
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //     errToast();
+  //   }
+  // }
 
   //设置 个人信息
   void toPages(String path) {
@@ -62,10 +67,10 @@ class _MyState extends State<My> {
   }
   void toUserinfo() async{
     // 将用户 uid 存储在缓存中
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs
-        .setString("uid", uinfo["uid"]);
-    Navigator.pushNamed(context, "userInfo",arguments: {"uid":uinfo["uid"]});
+    // final SharedPreferences prefs = await SharedPreferences.getInstance();
+    // await prefs
+    //     .setString("uid", uinfo["uid"]);
+    // Navigator.pushNamed(context, "userInfo",arguments: {"uid":uinfo["uid"]});
   }
   // 卡片跳转页面
   void toPage(dynamic val, int index) {
@@ -92,9 +97,23 @@ class _MyState extends State<My> {
   void toview(String webViewName) {
     Navigator.pushNamed(context, webViewName);
   }
-
+  @override
+  void dispose() {
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
+    // if(mounted){
+    //   Golbal nf = Provider.of<Golbal>(context);
+    //   // nf.get();
+    //   print("NF-uinfo>>>>:${nf.uinfo}");
+    //   // setState(() {  });
+    // }
+    Golbal nf = Provider.of<Golbal>(context);
+    Map uinfo = nf.uinfo;
+    // nf.get();
+    print("NF-uinfo>>>>:${nf.uinfo}");
+    // uinfo = nf.uinfo;
     double topBarHeight =
         MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
     return Column(

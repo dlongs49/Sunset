@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/local_data/home.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/api/home_req.dart';
 import 'package:sunset/utils/request.dart';
@@ -22,6 +24,7 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
+    super.initState();
     navController.addListener(() {
       double _barScrollX =
           (navController.offset * navTrackWidth) / listViewWidth;
@@ -30,8 +33,9 @@ class _HomeState extends State<Home> {
       });
       print("滑动的距离>> $barScrollX");
     });
+
     // startTimer();
-    getUInfo();
+    // getUInfo();
     getBanner();
     getTrends();
     getKnow();
@@ -777,6 +781,8 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    Golbal nf = Provider.of<Golbal>(context);
+    nf.getUInfo();
     double topBarHeight = MediaQueryData.fromWindow(window).padding.top;
     return Container(
       child: Column(

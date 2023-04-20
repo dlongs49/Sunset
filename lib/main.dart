@@ -4,24 +4,32 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/routes/index.dart';
+
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences.setMockInitialValues({}); // 缓存
-  runApp(MyApp());
+  runApp(
+      // MyApp()
+      ListenableProvider<Golbal>(create: (_) => Golbal(), child: MyApp()));
   //透明沉浸式状态栏
   // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
   //   statusBarColor: Colors.transparent,
   // ));
 }
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp (
+    return CupertinoApp(
       title: 'Sunset',
-      builder: BotToastInit(), // BotToast全局注册
-      navigatorObservers: [BotToastNavigatorObserver()],// BotToast全局注册
+      builder: BotToastInit(),
+      // BotToast全局注册
+      navigatorObservers: [BotToastNavigatorObserver()],
+      // BotToast全局注册
       localizationsDelegates: [
         // 语言代理
         GlobalMaterialLocalizations.delegate,
