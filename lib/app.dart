@@ -21,16 +21,18 @@ class App extends StatefulWidget {
   _AppState createState() => _AppState();
 }
 
-class _AppState extends State<App> {
+class _AppState extends State<App> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   // 抽离底部导航栏Icon
   @override
   Widget bomIcon(icon, color) {
-    return (Icon(IconData(icon, fontFamily: 'sunfont'),
-        color: Color(color)));
+    return (Icon(IconData(icon, fontFamily: 'sunfont'), color: Color(color)));
   }
 
   int currentIndex = 0; // 导航索引
-  List<Widget> pages = [Home(), Community(), BindDevice(), Find(), My()];
+  List<Widget> pages = [Home(), Community(), Container(), Find(), My()];
 
   // 更改底部导航栏索引
   @override
@@ -46,6 +48,7 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
           // 设置沉浸式状态栏文字颜色
@@ -56,16 +59,6 @@ class _AppState extends State<App> {
         ),
         child: Scaffold(
           backgroundColor: Color.fromRGBO(246, 247, 251, 1),
-          // bottomNavigationBar:ConvexAppBar(
-          //   items: [
-          //     TabItem(icon: Icon(IconData(0xe718,fontFamily: 'sunfont')), title: '首页',),
-          //     TabItem(icon: Icon(IconData(0xe8c5,fontFamily: 'sunfont')), title: '社区'),
-          //     TabItem(icon: Icon(IconData(0xe718,fontFamily: 'sunfont')), title: '发现'),
-          //     TabItem(icon: Icon(IconData(0xe621,fontFamily: 'sunfont')), title: '好物'),
-          //     TabItem(icon: Icon(IconData(0xe941,fontFamily: 'sunfont')), title: '我的'),
-          //   ],
-          //   onTap: (int i) => print('click index=$i'),
-          // ),
           bottomNavigationBar: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
               // 当前选中
@@ -108,7 +101,9 @@ class _AppState extends State<App> {
                   label: "我的",
                 )
               ]),
-          body: pages[currentIndex],
+          body:
+              // 这里使用 IndexedStack 实现保持原页面状态 【性能有开销】
+              IndexedStack(index: currentIndex, children: pages),
           // body: MyProfile(),
         ));
   }

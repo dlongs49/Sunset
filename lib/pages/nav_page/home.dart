@@ -781,8 +781,8 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    Golbal nf = Provider.of<Golbal>(context);
-    nf.getUInfo();
+    // Golbal nf = Provider.of<Golbal>(context);
+    // nf.getUInfo();
     double topBarHeight = MediaQueryData.fromWindow(window).padding.top;
     return Container(
       child: Column(

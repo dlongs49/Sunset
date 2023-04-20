@@ -24,6 +24,8 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Golbal nf = Provider.of<Golbal>(context);
+    nf.getGoods();
     return CupertinoApp(
       title: 'Sunset',
       builder: BotToastInit(),

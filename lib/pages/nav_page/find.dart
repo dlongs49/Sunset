@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/home_req.dart';
 import 'package:sunset/utils/request.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -16,6 +18,8 @@ class Find extends StatefulWidget {
 }
 
 class _FindState extends State<Find> {
+  @override
+  // bool get wantKeepAlive => true;
   HomeReq homeReq = new HomeReq();
   List<Map<dynamic, dynamic>> goodList = [];
 
@@ -31,13 +35,15 @@ class _FindState extends State<Find> {
   void getBanner() async {
     try {
       Map res = await homeReq.getBanner();
-      print("data>>> ${res}");
+      print("data");
       if (res['code'] == 200) {
         Map<String, String> map = new Map();
         map["images"] = baseUrl + res["data"][0]["images"];
         map["url"] = res["data"][0]["url"];
         banner.add(map);
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       }
     } catch (e) {
       print(e);
@@ -49,10 +55,12 @@ class _FindState extends State<Find> {
   void getGoods() async {
     try {
       Map res = await homeReq.getGoods();
-      print("好物精选>>> ${res}");
+      print("好物精选");
       if (res['code'] == 200) {
         goodList = res["data"].cast<Map<String, dynamic>>();
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       }
     } catch (e) {
       print(e);
@@ -76,6 +84,9 @@ class _FindState extends State<Find> {
 
   @override
   Widget build(BuildContext context) {
+    // Golbal nf = Provider.of<Golbal>(context);
+    // print(nf.goodList);
+    // List<Map<dynamic, dynamic>> goodList = nf.goodList;
     double topBarHeight = MediaQueryData.fromWindow(window).padding.top;
     return Column(
       mainAxisSize: MainAxisSize.max,

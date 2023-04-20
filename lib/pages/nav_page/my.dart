@@ -3,10 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/toast.dart';
-import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/request.dart';
 
@@ -35,31 +32,31 @@ class _MyState extends State<My> with AutomaticKeepAliveClientMixin {
 
   @override
   void initState() {
-    // getUInfo();
+    getUInfo();
 
   }
 
   Sign sign = new Sign();
 
-  // Map<String, dynamic> uinfo = {"nickname":"未登录","avator":"/avator/sunset202303311711.png",};
-  // // 个人信息
-  // void getUInfo() async {
-  //   try {
-  //     Map res = await sign.getUInfo();
-  //     print("个人信息>>> $res");
-  //     if (res["code"] == 200) {
-  //       setState(() {
-  //         uinfo = res["data"];
-  //       });
-  //     }
-  //     if (res['code'] == 401) {
-  //       Navigator.pushNamed(context, 'phoneLog');
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //     errToast();
-  //   }
-  // }
+  Map<String, dynamic> uinfo = {"nickname":"未登录","avator":"/avator/sunset202303311711.png",};
+  // 个人信息
+  void getUInfo() async {
+    try {
+      Map res = await sign.getUInfo();
+      print("个人信息>>> $res");
+      if (res["code"] == 200) {
+        setState(() {
+          uinfo = res["data"];
+        });
+      }
+      if (res['code'] == 401) {
+        Navigator.pushNamed(context, 'phoneLog');
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
 
   //设置 个人信息
   void toPages(String path) {
@@ -103,17 +100,6 @@ class _MyState extends State<My> with AutomaticKeepAliveClientMixin {
   }
   @override
   Widget build(BuildContext context) {
-    // if(mounted){
-    //   Golbal nf = Provider.of<Golbal>(context);
-    //   // nf.get();
-    //   print("NF-uinfo>>>>:${nf.uinfo}");
-    //   // setState(() {  });
-    // }
-    Golbal nf = Provider.of<Golbal>(context);
-    Map uinfo = nf.uinfo;
-    // nf.get();
-    print("NF-uinfo>>>>:${nf.uinfo}");
-    // uinfo = nf.uinfo;
     double topBarHeight =
         MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
     return Column(

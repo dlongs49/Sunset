@@ -6,6 +6,7 @@ class Golbal with ChangeNotifier{
   HomeReq homeReq = new HomeReq();
   Sign sign = new Sign();
   Map uinfo = new Map();
+  List<Map> goodList = [];
   List knowList = [];
   // 个人信息
   void getUInfo() async {
@@ -16,6 +17,19 @@ class Golbal with ChangeNotifier{
         uinfo = res["data"];
         // notifyListeners();
 
+      }
+    } catch (e) {
+      print(e);
+      errToast();
+    }
+  }
+  // 好物精选
+  void getGoods() async {
+    try {
+      Map res = await homeReq.getGoods();
+      print("Global>>goodList");
+      if (res['code'] == 200) {
+        goodList = res["data"].cast<Map<String, dynamic>>();
       }
     } catch (e) {
       print(e);
