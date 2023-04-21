@@ -158,7 +158,10 @@ class _MyInfoState extends State<MyInfo> {
   // 昵称输入框
   void inputChange(String value) {
     uinfo["nickname"] = value;
-    setState(() {});
+
+    if (mounted) {
+      // setState(() {});
+    }
   }
 
   Sign sign = new Sign();
@@ -286,8 +289,8 @@ class _MyInfoState extends State<MyInfo> {
               filename: imgFile.name),
         });
         Map res = await uploadReq.uploadAvator(formData);
+        print("头像更换成功>>$res");
         if (res['code'] == 200) {
-          print("头像更换成功>>");
           uinfo["avator"] = res["data"]["path"];
           handleInfo();
         }
@@ -328,301 +331,285 @@ class _MyInfoState extends State<MyInfo> {
           Expanded(
               child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 15),
-                  child: MediaQuery.removePadding(
-                      // 去除顶部留白
-                      context: context,
-                      removeTop: true,
-                      removeBottom: true,
-                      child: ListView(
-                          padding: EdgeInsets.only(bottom: 40),
-                          physics: BouncingScrollPhysics(), // IOS的回弹属性
+                  child: ListView(
+                      padding: EdgeInsets.only(bottom: 40),
+                      physics: BouncingScrollPhysics(), // IOS的回弹属性
+                      children: [
+                        SizedBox(height: 36),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            SizedBox(height: 36),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("头像", style: TextStyle(fontSize: 17)),
-                                Spacer(flex: 1),
-                                InkWell(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(36),
-                                    child: headimg == ""
-                                        ? Image.network(
-                                            baseUrl + uinfo["avator"],
-                                            width: 36,
-                                            height: 36,
-                                            errorBuilder: (ctx, err,
-                                                    stackTrace) =>
-                                                Image.asset(
-                                                    'assets/images/sunset.png',
-                                                    //默认显示图片
-                                                    height: 36,
-                                                    width: double.infinity))
-                                        : Image.memory(base64.decode(headimg),
-                                            fit: BoxFit.fill,
-                                            width: 36,
-                                            height: 36),
-                                  ),
-                                  onTap: () => onHeadImg(context),
-                                ),
-                                SizedBox(width: 15),
-                                Icon(IconData(0xeb8a, fontFamily: "sunfont"),
-                                    size: 13, color: Color(0xffbababa))
-                              ],
+                            Text("头像", style: TextStyle(fontSize: 17)),
+                            Spacer(flex: 1),
+                            InkWell(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(36),
+                                child: headimg == ""
+                                    ? Image.network(baseUrl + uinfo["avator"],
+                                        width: 36,
+                                        height: 36,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (ctx, err, stackTrace) =>
+                                            Image.asset(
+                                                'assets/images/sunset.png',
+                                                //默认显示图片
+                                                height: 36,
+                                                width: double.infinity))
+                                    : Image.memory(base64.decode(headimg),
+                                        fit: BoxFit.cover,
+                                        width: 36,
+                                        height: 36),
+                              ),
+                              onTap: () => onHeadImg(context),
                             ),
-                            SizedBox(height: 36),
+                            SizedBox(width: 15),
+                            Icon(IconData(0xeb8a, fontFamily: "sunfont"),
+                                size: 13, color: Color(0xffbababa))
+                          ],
+                        ),
+                        SizedBox(height: 36),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("ID", style: TextStyle(fontSize: 17)),
+                            Spacer(flex: 1),
+                            Text(uinfo["showid"],
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xffb4b4b4))),
+                            SizedBox(width: 10)
+                          ],
+                        ),
+                        SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("昵称", style: TextStyle(fontSize: 17)),
+                            Spacer(flex: 1),
+                            InkWell(
+                                // 取消点击水波纹使用 InkResponse
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                child: Container(
+                                    constraints: BoxConstraints(minWidth: 160),
+                                    padding: EdgeInsets.symmetric(vertical: 8),
+                                    alignment: Alignment(1, 0),
+                                    child: Text(uinfo["nickname"],
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400))),
+                                onTap: () => showNickDialog(context)),
+                            SizedBox(width: 5),
+                            Icon(IconData(0xeb8a, fontFamily: "sunfont"),
+                                size: 13, color: Color(0xffbababa))
+                          ],
+                        ),
+                        SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("个人简介", style: TextStyle(fontSize: 17)),
+                            Spacer(flex: 1),
+                            InkWell(
+                                // 取消点击水波纹使用 InkResponse
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                child: Container(
+                                    constraints: BoxConstraints(maxWidth: 160),
+                                    padding: EdgeInsets.symmetric(vertical: 8),
+                                    alignment: Alignment(1, 0),
+                                    child: Text(uinfo["description"],
+                                        maxLines: 1,
+                                        softWrap: false,
+                                        overflow: TextOverflow.clip,
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                            color: Color(0xffb3b3b3)))),
+                                onTap: () => toPage("myProfile")),
+                            SizedBox(width: 5),
+                            Icon(IconData(0xeb8a, fontFamily: "sunfont"),
+                                size: 13, color: Color(0xffbababa))
+                          ],
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: 20, bottom: 20),
+                          decoration: BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      width: 1, color: Color(0xfff2f2f2)))),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("性别", style: TextStyle(fontSize: 17)),
+                            Spacer(flex: 1),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("ID", style: TextStyle(fontSize: 17)),
-                                Spacer(flex: 1),
-                                Text(uinfo["showid"],
+                                children:
+                                    sexList.asMap().entries.map<Widget>((enry) {
+                              int index = enry.key;
+                              String item = enry.value;
+                              return InkWell(
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 26, vertical: 5),
+                                    decoration: BoxDecoration(
+                                      color: Color(uinfo["sex"] == index
+                                          ? 0xff22d47e
+                                          : 0xffe8e8f2),
+                                      borderRadius: index == 0
+                                          ? BorderRadius.only(
+                                              bottomLeft: Radius.circular(30),
+                                              topLeft: Radius.circular(30))
+                                          : BorderRadius.only(
+                                              bottomRight: Radius.circular(30),
+                                              topRight: Radius.circular(30)),
+                                    ),
+                                    child: Text(
+                                      item,
+                                      style: TextStyle(
+                                          fontSize: 17,
+                                          color: Color(uinfo["sex"] == index
+                                              ? 0xffffffff
+                                              : 0xff747474)),
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      uinfo["sex"] = index;
+                                    });
+                                    handleInfo();
+                                  });
+                            }).toList())
+                          ],
+                        ),
+                        SizedBox(height: 36),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("身高", style: TextStyle(fontSize: 17)),
+                            Spacer(flex: 1),
+                            InkWell(
+                                child: Text(uinfo["height"] + "CM",
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400,
-                                        color: Color(0xffb4b4b4))),
-                                SizedBox(width: 10)
-                              ],
-                            ),
-                            SizedBox(height: 20),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("昵称", style: TextStyle(fontSize: 17)),
-                                Spacer(flex: 1),
-                                InkWell(
-                                    // 取消点击水波纹使用 InkResponse
-                                    splashColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    child: Container(
-                                        constraints:
-                                            BoxConstraints(minWidth: 160),
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 8),
-                                        alignment: Alignment(1, 0),
-                                        child: Text(uinfo["nickname"],
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400))),
-                                    onTap: () => showNickDialog(context)),
-                                SizedBox(width: 5),
-                                Icon(IconData(0xeb8a, fontFamily: "sunfont"),
-                                    size: 13, color: Color(0xffbababa))
-                              ],
-                            ),
-                            SizedBox(height: 20),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("个人简介", style: TextStyle(fontSize: 17)),
-                                Spacer(flex: 1),
-                                InkWell(
-                                    // 取消点击水波纹使用 InkResponse
-                                    splashColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    child: Container(
-                                        constraints:
-                                            BoxConstraints(minWidth: 160),
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 8),
-                                        alignment: Alignment(1, 0),
-                                        child: Text(uinfo["description"],
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400,
-                                                color: Color(0xffb3b3b3)))),
-                                    onTap: () => toPage("myProfile")),
-                                SizedBox(width: 5),
-                                Icon(IconData(0xeb8a, fontFamily: "sunfont"),
-                                    size: 13, color: Color(0xffbababa))
-                              ],
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(top: 20, bottom: 20),
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          width: 1, color: Color(0xfff2f2f2)))),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("性别", style: TextStyle(fontSize: 17)),
-                                Spacer(flex: 1),
-                                Row(
-                                    children: sexList
-                                        .asMap()
-                                        .entries
-                                        .map<Widget>((enry) {
-                                  int index = enry.key;
-                                  String item = enry.value;
-                                  return InkWell(
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 26, vertical: 5),
-                                        decoration: BoxDecoration(
-                                          color: Color(uinfo["sex"] == index
-                                              ? 0xff22d47e
-                                              : 0xffe8e8f2),
-                                          borderRadius: index == 0
-                                              ? BorderRadius.only(
-                                                  bottomLeft:
-                                                      Radius.circular(30),
-                                                  topLeft: Radius.circular(30))
-                                              : BorderRadius.only(
-                                                  bottomRight:
-                                                      Radius.circular(30),
-                                                  topRight:
-                                                      Radius.circular(30)),
-                                        ),
-                                        child: Text(
-                                          item,
-                                          style: TextStyle(
-                                              fontSize: 17,
-                                              color: Color(uinfo["sex"] == index
-                                                  ? 0xffffffff
-                                                  : 0xff747474)),
-                                        ),
-                                      ),
-                                      onTap: () {
+                                        color: Color(0xffb3b3b3))),
+                                onTap: () {
+                                  Pickers.showSinglePicker(context,
+                                      data: stature,
+                                      pickerStyle: customPickStyle(),
+                                      selectData: int.parse(uinfo["height"]),
+                                      onConfirm: (val, i) {
                                         setState(() {
-                                          uinfo["sex"] = index;
+                                          uinfo["height"] = val.toString();
                                         });
                                         handleInfo();
-                                      });
-                                }).toList())
-                              ],
-                            ),
-                            SizedBox(height: 36),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("身高", style: TextStyle(fontSize: 17)),
-                                Spacer(flex: 1),
-                                InkWell(
-                                    child: Text(uinfo["height"] + "CM",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400,
-                                            color: Color(0xffb3b3b3))),
-                                    onTap: () {
-                                      Pickers.showSinglePicker(context,
-                                          data: stature,
-                                          pickerStyle: customPickStyle(),
-                                          selectData:
-                                              int.parse(uinfo["height"]),
-                                          onConfirm: (val, i) {
-                                            setState(() {
-                                              uinfo["height"] = val.toString();
-                                            });
-                                            handleInfo();
-                                          },
-                                          onChanged: (val, i) =>
-                                              print('选择的身高为：$val'));
-                                    }),
-                                SizedBox(width: 5),
-                                Icon(IconData(0xeb8a, fontFamily: "sunfont"),
-                                    size: 13, color: Color(0xffbababa))
-                              ],
-                            ),
-                            SizedBox(height: 36),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("生日", style: TextStyle(fontSize: 17)),
-                                Spacer(flex: 1),
-                                InkWell(
-                                    child: Text(uinfo["birthday"],
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400,
-                                            color: Color(0xffb3b3b3))),
-                                    onTap: () => changeBirth(context)),
-                                SizedBox(width: 5),
-                                Icon(IconData(0xeb8a, fontFamily: "sunfont"),
-                                    size: 13, color: Color(0xffbababa))
-                              ],
-                            ),
-                            SizedBox(height: 36),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("体重", style: TextStyle(fontSize: 17)),
-                                Spacer(flex: 1),
-                                InkWell(
-                                    child: Text(uinfo["weight"] + "公斤",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400,
-                                            color: Color(0xffb3b3b3))),
-                                    onTap: () {
-                                      Pickers.showSinglePicker(context,
-                                          data: weight,
-                                          pickerStyle: customPickStyle(),
-                                          selectData:
-                                              double.parse(uinfo["weight"]),
-                                          onConfirm: (val, i) {
-                                            setState(() {
-                                              uinfo["weight"] = val.toString();
-                                            });
-                                            handleInfo();
-                                          },
-                                          onChanged: (val, i) =>
-                                              print('选择的体重为：$val'));
-                                    }),
-                                SizedBox(width: 5),
-                                Icon(IconData(0xeb8a, fontFamily: "sunfont"),
-                                    size: 13, color: Color(0xffbababa))
-                              ],
-                            ),
-                            SizedBox(height: 36),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("腰围", style: TextStyle(fontSize: 17)),
-                                Spacer(flex: 1),
-                                InkWell(
-                                    child: Text(uinfo["waistline"] + ".0CM",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400,
-                                            color: Color(0xffb3b3b3))),
-                                    onTap: () {
-                                      Pickers.showSinglePicker(context,
-                                          data: waistLine,
-                                          pickerStyle: customPickStyle(),
-                                          selectData:
-                                              int.parse(uinfo["waistline"]),
-                                          onConfirm: (val, i) {
-                                            setState(() {
-                                              uinfo["waistline"] =
-                                                  val.toString();
-                                            });
-                                            handleInfo();
-                                          },
-                                          onChanged: (val, i) =>
-                                              print('选择的腰围为：$val'));
-                                    }),
-                                SizedBox(width: 5),
-                                Icon(IconData(0xeb8a, fontFamily: "sunfont"),
-                                    size: 13, color: Color(0xffbababa))
-                              ],
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(top: 30),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 12),
-                              decoration: BoxDecoration(
-                                  color: Color(0xfff8f8fa),
-                                  borderRadius: BorderRadius.circular(8)),
-                              child: Text(
-                                  "性别、年龄、身高、体重、腰围信息将影响日常活动、体脂数据的准确性。请准确填写以上个人资料，以获取更精准的健康数据",
-                                  style: TextStyle(
-                                      height: 1.5,
-                                      fontSize: 12,
-                                      color: Color(0xff6d6d6d))),
-                            )
-                          ])))),
+                                      },
+                                      onChanged: (val, i) =>
+                                          print('选择的身高为：$val'));
+                                }),
+                            SizedBox(width: 5),
+                            Icon(IconData(0xeb8a, fontFamily: "sunfont"),
+                                size: 13, color: Color(0xffbababa))
+                          ],
+                        ),
+                        SizedBox(height: 36),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("生日", style: TextStyle(fontSize: 17)),
+                            Spacer(flex: 1),
+                            InkWell(
+                                child: Text(uinfo["birthday"],
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                        color: Color(0xffb3b3b3))),
+                                onTap: () => changeBirth(context)),
+                            SizedBox(width: 5),
+                            Icon(IconData(0xeb8a, fontFamily: "sunfont"),
+                                size: 13, color: Color(0xffbababa))
+                          ],
+                        ),
+                        SizedBox(height: 36),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("体重", style: TextStyle(fontSize: 17)),
+                            Spacer(flex: 1),
+                            InkWell(
+                                child: Text(uinfo["weight"] + "公斤",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                        color: Color(0xffb3b3b3))),
+                                onTap: () {
+                                  Pickers.showSinglePicker(context,
+                                      data: weight,
+                                      pickerStyle: customPickStyle(),
+                                      selectData: double.parse(uinfo["weight"]),
+                                      onConfirm: (val, i) {
+                                        setState(() {
+                                          uinfo["weight"] = val.toString();
+                                        });
+                                        handleInfo();
+                                      },
+                                      onChanged: (val, i) =>
+                                          print('选择的体重为：$val'));
+                                }),
+                            SizedBox(width: 5),
+                            Icon(IconData(0xeb8a, fontFamily: "sunfont"),
+                                size: 13, color: Color(0xffbababa))
+                          ],
+                        ),
+                        SizedBox(height: 36),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("腰围", style: TextStyle(fontSize: 17)),
+                            Spacer(flex: 1),
+                            InkWell(
+                                child: Text(uinfo["waistline"] + ".0CM",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                        color: Color(0xffb3b3b3))),
+                                onTap: () {
+                                  Pickers.showSinglePicker(context,
+                                      data: waistLine,
+                                      pickerStyle: customPickStyle(),
+                                      selectData: int.parse(uinfo["waistline"]),
+                                      onConfirm: (val, i) {
+                                        setState(() {
+                                          uinfo["waistline"] = val.toString();
+                                        });
+                                        handleInfo();
+                                      },
+                                      onChanged: (val, i) =>
+                                          print('选择的腰围为：$val'));
+                                }),
+                            SizedBox(width: 5),
+                            Icon(IconData(0xeb8a, fontFamily: "sunfont"),
+                                size: 13, color: Color(0xffbababa))
+                          ],
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: 30),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                          decoration: BoxDecoration(
+                              color: Color(0xfff8f8fa),
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Text(
+                              "性别、年龄、身高、体重、腰围信息将影响日常活动、体脂数据的准确性。请准确填写以上个人资料，以获取更精准的健康数据",
+                              style: TextStyle(
+                                  height: 1.5,
+                                  fontSize: 12,
+                                  color: Color(0xff6d6d6d))),
+                        )
+                      ]))),
         ],
       ),
     );
