@@ -74,7 +74,7 @@ void showIsLogDialog(BuildContext context) {
         child: Center(
             child: Container(
               width: width - 80,
-              height: 150,
+              height: 144,
               padding:
               EdgeInsets.only(right: 24, left: 24, top: 20, bottom: 0),
               decoration: BoxDecoration(
@@ -125,6 +125,7 @@ void showIsLogDialog(BuildContext context) {
                                       fontSize: 16)),
                             ),
                             onTap: () {
+                              Navigator.pop(context);
                               Navigator.pushNamed(context, "phoneLog");
                             },
                           ),

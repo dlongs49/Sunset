@@ -24,20 +24,17 @@ class Http {
       // 赋值请求头
       options.headers["ms_token"] = ms_token;
       // options.headers["ms_token"] = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiI4MjgxNjExRi00RkEwLTQyMzgtQkFCRC03MUY0NkVCMjVCODgiLCJzdGFtcCI6MTY4MTk5NTMxMjU2NywiZXhwIjoxNjgyMjExMzEyfQ._pOHnCVgBuJVSCMcGZOycjJ1xR5B3ZCbD6fbGeATL1Q";
-      print("开始请求：${options.baseUrl}");
       return handler.next(options);
     }, onResponse: (response, handler) async {
       int code = response.data['code'];
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      if (code == 401) {
+      final role = prefs.getString("role");
+      if (code == 401 && role == null) {
         await prefs.remove("ms_token");
       }
-
-      print("请求成功>> ${response.data["code"]}");
       return handler.next(response);
     }, onError: (DioError e, handler) {
-      print("请求失败>> $e");
+      print("响应失败>> $e");
       return handler.next(e);
     }));
     return dio;
