@@ -73,7 +73,8 @@ class _PwdLoginState extends State<PwdLogin> {
     map["phone"] = phone;
     map["password"] = p.toString();
     try {
-      loading(seconds: 3);
+      var ld = loading(seconds: 3);
+
       Map res = await sign.pwdLogin(map);
       print("ms_token>>> ${res["data"]}");
       if (res["code"] == -1) {
@@ -102,11 +103,13 @@ class _PwdLoginState extends State<PwdLogin> {
     );
   }
   // 随便看看
-  void toLook(context) {
+  void toLook(context) async{
     if(!isCheck){
       toast("勾选用户协议");
       return;
     }
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString("role", "UN");
     Navigator.pushNamed(context, '/');
   }
   bool isCheck = false;
@@ -163,7 +166,7 @@ class _PwdLoginState extends State<PwdLogin> {
           Container(
             constraints: BoxConstraints(maxWidth: 100, maxHeight: 100),
             margin: EdgeInsets.symmetric(vertical: 50),
-            child: Image.asset("assets/images/3044.jpg"),
+            child: Image.asset("assets/images/200x200.png",width: 80,height: 80,),
           ),
           Container(
               width: double.infinity,

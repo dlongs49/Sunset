@@ -28,15 +28,15 @@ class _PhoneLoginState extends State<PhoneLogin> {
     super.initState();
     CodeController = TextEditingController.fromValue(TextEditingValue(
         text: "1234",
-        selection: TextSelection.fromPosition(TextPosition(
-            affinity: TextAffinity.downstream, offset: 4))));
+        selection: TextSelection.fromPosition(
+            TextPosition(affinity: TextAffinity.downstream, offset: 4))));
     PhoneController = TextEditingController.fromValue(TextEditingValue(
-        text: "18794388410",
-        selection: TextSelection.fromPosition(TextPosition(
-            affinity: TextAffinity.downstream, offset: 4))));
+        text: "13096954409",
+        selection: TextSelection.fromPosition(
+            TextPosition(affinity: TextAffinity.downstream, offset: 4))));
   }
 
-  String phone = '18794388410';
+  String phone = '13096954409';
   String verCode = '123456';
 
   bool isPhone = false;
@@ -110,14 +110,15 @@ class _PhoneLoginState extends State<PhoneLogin> {
     map["phone"] = phone;
     map["verCode"] = verCode;
     try {
-      loading(seconds: 3);
+      var l = loading();
       Map res = await sign.codeLogin(map);
       print("ms_token>>> ${res["data"]}");
       // 将 token 存在缓存中
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString("ms_token", res["data"]);
+      l();
       FocusManager.instance.primaryFocus?.unfocus(); // 收起键盘
-      Navigator.pushNamed(context, '/');
+      // Navigator.pushNamed(context, '/');
     } catch (e) {
       errToast();
     }
@@ -131,20 +132,24 @@ class _PhoneLoginState extends State<PhoneLogin> {
       (route) => route == null,
     );
   }
+
   // 随便看看
-  void toLook(context) {
-    if(!isCheck){
+  void toLook(context) async{
+    if (!isCheck) {
       toast("勾选用户协议");
       return;
     }
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString("role", "UN");
     Navigator.pushNamed(context, '/');
   }
 
   bool isCheck = false;
 
   void handleCheck() {
-    isCheck = !isCheck;
-    setState(() {});
+    setState(() {
+      isCheck = !isCheck;
+    });
   }
 
   @override
@@ -192,7 +197,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
           Container(
             constraints: BoxConstraints(maxWidth: 100, maxHeight: 100),
             margin: EdgeInsets.symmetric(vertical: 50),
-            child: Image.asset("assets/images/3044.jpg"),
+            child: Image.asset("assets/images/200x200.png",width: 80,height: 80),
           ),
           Container(
               width: double.infinity,
@@ -398,11 +403,13 @@ class _PhoneLoginState extends State<PhoneLogin> {
                   SizedBox(height: 10),
                   Align(
                       child: InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
                           child: Text("随便看看",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Color(0xff22d47e), fontSize: 15)),
-                          onTap: ()=>toLook(context)))
+                          onTap: () => toLook(context)))
                 ],
               ))
         ],
