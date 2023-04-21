@@ -31,6 +31,7 @@ class Http {
       final role = prefs.getString("role");
       if (code == 401 && role == null) {
         await prefs.remove("ms_token");
+        await prefs.remove("uid");
       }
       return handler.next(response);
     }, onError: (DioError e, handler) {

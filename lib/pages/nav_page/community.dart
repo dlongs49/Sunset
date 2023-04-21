@@ -50,21 +50,19 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
 
   Sign sign = new Sign();
   Map uinfo = new Map();
+
   // 个人信息
   void getUInfo() async {
     try {
       Map res = await sign.getUInfo();
-      print("个人信息>>> ${res}");
       if (res["code"] == 200) {
         uinfo = res["data"];
-        setState(() {});
       }
     } catch (e) {
       print(e);
       errToast();
     }
   }
-
 
   // 列表滑动中
   bool scrollIng(ScrollNotification n) {
@@ -116,19 +114,24 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
       errToast();
     }
   }
+
   // 点赞
-  void handleStar(params,index) async{
+  void handleStar(params, index) async {
+    if (uinfo["uid"] == null) {
+      showIsLogDialog(context);
+      return;
+    }
     try {
-      Map res = await trendsReq.setTrendsStar({"trends_id":params["id"]});
+      Map res = await trendsReq.setTrendsStar({"trends_id": params["id"]});
       if (res["code"] == 200) {
         print(">>>>>$res");
         // 成功 加状态修改
         list[index]["isstar"] = !list[index]["isstar"];
         int star = list[index]["star"];
-        if(list[index]["isstar"]){
+        if (list[index]["isstar"]) {
           list[index]["star"] = star + 1;
-        }else{
-          list[index]["star"] =star - 1;
+        } else {
+          list[index]["star"] = star - 1;
         }
 
         if (mounted) {
@@ -142,9 +145,13 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
   }
 
   // 关注
-  void handleFollow(params,index) async{
-    try{
-      Map res = await trendsReq.setFollow({"uid":params["uid"]});
+  void handleFollow(params, index) async {
+    if (uinfo["uid"] == null) {
+      showIsLogDialog(context);
+      return;
+    }
+    try {
+      Map res = await trendsReq.setFollow({"uid": params["uid"]});
       if (res["code"] == 200) {
         print(">>>>>$res");
         // 成功 假状态修改保持交互
@@ -153,11 +160,12 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
           setState(() {});
         }
       }
-    }catch(e){
+    } catch (e) {
       print(e);
       errToast();
     }
   }
+
   @override
   void changeTabBarAn(int index) {
     if (index == 0) {
@@ -187,7 +195,12 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
       Navigator.pushNamed(context, path, arguments: arguments);
     }
     if (path == "pubTrends") {
-      Navigator.pushNamed(context, path);
+      if (uinfo["uid"] == null) {
+        showIsLogDialog(context);
+        return;
+      } else {
+        Navigator.pushNamed(context, path);
+      }
     }
   }
 
@@ -228,12 +241,11 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                           clipBehavior: Clip.hardEdge,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(30)),
-                          child:Image.network("${baseUrl}${uinfo["avator"]}",
+                          child: Image.network("${baseUrl}${uinfo["avator"]}",
                               fit: BoxFit.cover,
-                              errorBuilder: (ctx, err, stackTrace) => Image.asset(
-                                  'assets/images/sunset.png',
-                                  width: double.infinity)
-                          ),
+                              errorBuilder: (ctx, err, stackTrace) =>
+                                  Image.asset('assets/images/sunset.png',
+                                      width: double.infinity)),
                         ),
                         onTap: () => toPage("userInfo", uinfo),
                       ),
@@ -410,34 +422,40 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                       ],
                                     ),
                                     Spacer(flex: 1),
-                                    !list[index]["isfollow"] ? InkWell(
-                                      child: Container(
-                                        width: 60,
-                                        height: 26,
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: 1.0,
-                                                color: Color(0xff22d47e)),
-                                            borderRadius:
-                                            BorderRadius.circular(22)),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                                IconData(0xeaf3,
-                                                    fontFamily: 'sunfont'),
-                                                size: 10,
-                                                color: Color(0xff22d47e)),
-                                            Text("关注",
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    color: Color(0xff22d47e)))
-                                          ],
-                                        ),
-                                      ),
-                                      onTap: ()=>handleFollow(list[index],index),
-                                    ) : Container()
+                                    !list[index]["isfollow"]
+                                        ? InkWell(
+                                            child: Container(
+                                              width: 60,
+                                              height: 26,
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      width: 1.0,
+                                                      color: Color(0xff22d47e)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          22)),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                      IconData(0xeaf3,
+                                                          fontFamily:
+                                                              'sunfont'),
+                                                      size: 10,
+                                                      color: Color(0xff22d47e)),
+                                                  Text("关注",
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: Color(
+                                                              0xff22d47e)))
+                                                ],
+                                              ),
+                                            ),
+                                            onTap: () => handleFollow(
+                                                list[index], index),
+                                          )
+                                        : Container()
                                   ]),
                                   InkWell(
                                       child: Container(
@@ -471,22 +489,26 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                               itemBuilder: (context, idx) {
                                                 return Container(
                                                   decoration: BoxDecoration(
-                                                    color: Color(0xffe3e3e3),
-                                                    borderRadius: BorderRadius.circular(8)
-                                                  ),
-                                                  child:ClipRRect(
-                                                    borderRadius: BorderRadius.circular(8),
+                                                      color: Color(0xffe3e3e3),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8)),
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
                                                     child: Image.network(
                                                         "${baseUrl}${list[index]["images"][idx]}",
                                                         fit: BoxFit.cover,
                                                         errorBuilder: (ctx, err,
-                                                            stackTrace) =>
+                                                                stackTrace) =>
                                                             Image.asset(
                                                                 'assets/images/lazy.png',
-                                                                fit: BoxFit.fill,
+                                                                fit:
+                                                                    BoxFit.fill,
                                                                 width: double
                                                                     .infinity)),
-                                                  ) ,
+                                                  ),
                                                 );
                                               }))
                                       : Container(),
@@ -508,38 +530,50 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       InkWell(
-                                        child:  Row(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                                IconData(list[index]["isstar"] ? 0xec8c : 0xec7f ,
-                                                    fontFamily: 'sunfont'),
-                                                size: 18,
-                                                color: Color(list[index]["isstar"] ? 0xff22d47e : 0xffbbbbbb)),
-                                            SizedBox(width: 6),
-                                            Text("赞",
-                                                style: TextStyle(
-                                                    color: Color(list[index]["isstar"] ? 0xff22d47e : 0xffbbbbbb),
-                                                    height: 1.5,
-                                                    fontSize: 14)),
-                                            SizedBox(width: 4),
-                                            Container(
-                                              width:20,
-                                              child: Text(
-                                                  list[index]["star"] != 0
-                                                      ? list[index]["star"].toString()
-                                                      : "",
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                  IconData(
+                                                      list[index]["isstar"]
+                                                          ? 0xec8c
+                                                          : 0xec7f,
+                                                      fontFamily: 'sunfont'),
+                                                  size: 18,
+                                                  color: Color(list[index]
+                                                          ["isstar"]
+                                                      ? 0xff22d47e
+                                                      : 0xffbbbbbb)),
+                                              SizedBox(width: 6),
+                                              Text("赞",
                                                   style: TextStyle(
-                                                      color: Color(list[index]["isstar"] ? 0xff22d47e : 0xffbbbbbb),
-                                                      height: 1.7,
+                                                      color: Color(list[index]
+                                                              ["isstar"]
+                                                          ? 0xff22d47e
+                                                          : 0xffbbbbbb),
+                                                      height: 1.5,
                                                       fontSize: 14)),
-                                            )
-
-                                          ],
-                                        ),
-                                          onTap: () =>handleStar(list[index],index)
-                                      ),
+                                              SizedBox(width: 4),
+                                              Container(
+                                                width: 20,
+                                                child: Text(
+                                                    list[index]["star"] != 0
+                                                        ? list[index]["star"]
+                                                            .toString()
+                                                        : "",
+                                                    style: TextStyle(
+                                                        color: Color(list[index]
+                                                                ["isstar"]
+                                                            ? 0xff22d47e
+                                                            : 0xffbbbbbb),
+                                                        height: 1.7,
+                                                        fontSize: 14)),
+                                              )
+                                            ],
+                                          ),
+                                          onTap: () =>
+                                              handleStar(list[index], index)),
                                       InkWell(
                                           child: Row(
                                             crossAxisAlignment:

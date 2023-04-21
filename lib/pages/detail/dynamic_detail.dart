@@ -31,7 +31,6 @@ class _DynamicDetailState extends State<DynamicDetail> {
   _DynamicDetailState({this.arguments});
 
   TrendsReq trendsReq = new TrendsReq();
-
   @override
   void initState() {
     super.initState();
@@ -48,9 +47,9 @@ class _DynamicDetailState extends State<DynamicDetail> {
   void getUInfo() async {
     try {
       Map res = await sign.getUInfo();
-      print("个人信息>>> ${res}");
       if (res["code"] == 200) {
         uinfo = res["data"];
+        uinfo["avator"] = baseUrl + res["data"]["avator"];
       }
     } catch (e) {
       print(e);
@@ -72,10 +71,12 @@ class _DynamicDetailState extends State<DynamicDetail> {
     try {
       Map res = await trendsReq
           .getTrendsDetail({"trends_id": arguments["trends_id"]});
-      print("动态详情>>${res["data"]}");
       if (res["code"] == 200) {
         detail = res["data"];
-        setState(() {});
+        detail["avator"] = baseUrl + res["data"]["avator"];
+        if (mounted) {
+          setState(() {});
+        }
       }
     } catch (e) {
       print(e);
@@ -86,6 +87,10 @@ class _DynamicDetailState extends State<DynamicDetail> {
   // 关注 & 取消关注
   @override
   void handleFollow(String uid) async {
+    if(uinfo["uid"] == null){
+      showIsLogDialog(context);
+      return;
+    }
     try {
       Map res = await trendsReq.setFollow({"uid": uid});
       if (res["code"] == 200) {
@@ -118,7 +123,10 @@ class _DynamicDetailState extends State<DynamicDetail> {
   // 发送评论
   @override
   Future<void> pubComment() async {
-    print(commParams);
+    if(uinfo["uid"] == null){
+      showIsLogDialog(context);
+      return;
+    }
     if (commParams["content"].length <= 0) {
       toast("请输入友善的评语");
       return;
@@ -148,15 +156,6 @@ class _DynamicDetailState extends State<DynamicDetail> {
       } else {
         toast("评论失败");
       }
-    } catch (e) {
-      print(e);
-      errToast();
-    }
-  }
-// 删除评论
-  void delComment  (params,index)async{
-    try{
-      Map res = await trendsReq.pubComment(commParams);
     } catch (e) {
       print(e);
       errToast();
@@ -193,7 +192,6 @@ class _DynamicDetailState extends State<DynamicDetail> {
   Future<void> getCommnet() async {
     try {
       Map res = await trendsReq.getComment(pageMap);
-      print("评论列表>>>${res}");
       if (res["code"] == 200) {
         commentList.insertAll(commentList.length, res["data"]["list"]);
         commentTotal = res["data"]["total"];
@@ -210,6 +208,10 @@ class _DynamicDetailState extends State<DynamicDetail> {
   // 评论点赞
   @override
   Future<void> handleCommStar(params, index) async {
+    if(uinfo["uid"] == null){
+      showIsLogDialog(context);
+      return;
+    }
     try {
       Map res = await trendsReq.setCommentStar(
           {"comment_id": params["id"], "trends_id": detail["id"]});
@@ -270,7 +272,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                     child: ClipRRect(
                                         borderRadius: BorderRadius.circular(38),
                                         child: Image.network(
-                                            "${baseUrl}${detail["avator"]}",
+                                            "${detail["avator"]}",
                                             fit: BoxFit.cover,
                                             errorBuilder: (ctx, err,
                                                     stackTrace) =>

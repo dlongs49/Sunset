@@ -62,7 +62,6 @@ class _UserInfoState extends State<UserInfo> {
   Future<void> getList() async {
     try {
       Map res = await trendsReq.getTrends(pageMap);
-      print("动态列表【用户】>>${res["data"]}");
       if (res["code"] == 200) {
         list = res["data"]["list"];
         total = res["data"]["total"];
@@ -78,7 +77,6 @@ class _UserInfoState extends State<UserInfo> {
   Future<void> getFollow() async {
     try {
       Map res = await trendsReq.getFollow({"uid": arguments["uid"]});
-      print("粉丝，关注，获赞>>${res}");
       if (res["code"] == 200) {
         uinfo = res["data"];
         setState(() {});
@@ -91,6 +89,10 @@ class _UserInfoState extends State<UserInfo> {
 
   // 关注 & 取消关注
   void handleFollow(params) async {
+    if (!isUser) {
+      showIsLogDialog(context);
+      return;
+    }
     try {
       Map res = await trendsReq.setFollow({"uid": params["uid"]});
       if (res["code"] == 200) {
@@ -109,6 +111,10 @@ class _UserInfoState extends State<UserInfo> {
 
   // 动态点赞
   void handleStar(params, index) async {
+    if (!isUser) {
+      showIsLogDialog(context);
+      return;
+    }
     try {
       Map res = await trendsReq.setTrendsStar({"trends_id": params["id"]});
       if (res["code"] == 200) {
@@ -146,7 +152,7 @@ class _UserInfoState extends State<UserInfo> {
   // 删除动态二次确认
   void delTrends() async {
     print(delMap["item"]["id"]);
-    if(delMap["item"]["id"] == null){
+    if (delMap["item"]["id"] == null) {
       Navigator.of(context).pop();
       return;
     }
@@ -160,7 +166,7 @@ class _UserInfoState extends State<UserInfo> {
         if (mounted) {
           setState(() {});
         }
-      }else{
+      } else {
         Navigator.of(context).pop();
         toast(res["message"]);
       }
@@ -173,6 +179,10 @@ class _UserInfoState extends State<UserInfo> {
 
   // 删除动态弹框
   void showModal(BuildContext context) {
+    if (!isUser) {
+      showIsLogDialog(context);
+      return;
+    }
     showModalBottomSheet(
         context: context,
         isScrollControlled: false, // 是否滚动
@@ -214,7 +224,7 @@ class _UserInfoState extends State<UserInfo> {
                         actions: [
                           CupertinoDialogAction(
                             child: Text('确认'),
-                            onPressed: ()=> delTrends(),
+                            onPressed: () => delTrends(),
                           ),
                           CupertinoDialogAction(
                             child: Text('取消'),
@@ -743,18 +753,20 @@ class _UserInfoState extends State<UserInfo> {
                                                     fontSize: 14))
                                           ],
                                         ),
-                                        isUser ? InkWell(
-                                          child: Icon(
-                                              IconData(0xe617,
-                                                  fontFamily: 'sunfont'),
-                                              size: 18,
-                                              color: Color(0xffbbbbbb)),
-                                          onTap: () {
-                                            delMap["item"] = list[index];
-                                            delMap["index"] = index;
-                                            showModal(context);
-                                          },
-                                        ) : Container()
+                                        isUser
+                                            ? InkWell(
+                                                child: Icon(
+                                                    IconData(0xe617,
+                                                        fontFamily: 'sunfont'),
+                                                    size: 18,
+                                                    color: Color(0xffbbbbbb)),
+                                                onTap: () {
+                                                  delMap["item"] = list[index];
+                                                  delMap["index"] = index;
+                                                  showModal(context);
+                                                },
+                                              )
+                                            : Container()
                                       ],
                                     ),
                                     list[index]["comment_num"] != 0
