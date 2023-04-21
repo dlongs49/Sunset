@@ -72,25 +72,29 @@ class _PwdLoginState extends State<PwdLogin> {
     Map<String, String> map = new Map();
     map["phone"] = phone;
     map["password"] = p.toString();
+    var l = loading();
     try {
-      var ld = loading(seconds: 3);
-
       Map res = await sign.pwdLogin(map);
       print("ms_token>>> ${res["data"]}");
       if (res["code"] == -1) {
+        l();
         toast(res["message"]);
         return;
       }
+      FocusManager.instance.primaryFocus?.unfocus(); // 收起键盘
       // 将 token 存在缓存中
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString("ms_token", res["data"]);
+      l();
       Navigator.pushNamed(context, '/');
     } catch (e) {
+      l();
       errToast();
     }
   }
 
   void toPage(dynamic item) {
+    FocusManager.instance.primaryFocus?.unfocus(); // 收起键盘
     Navigator.pushNamed(context, item);
   }
 
@@ -102,16 +106,19 @@ class _PwdLoginState extends State<PwdLogin> {
       (route) => route == null,
     );
   }
+
   // 随便看看
-  void toLook(context) async{
-    if(!isCheck){
+  void toLook(context) async {
+    if (!isCheck) {
       toast("勾选用户协议");
       return;
     }
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+    // 区别登录和不登陆
     await prefs.setString("role", "UN");
     Navigator.pushNamed(context, '/');
   }
+
   bool isCheck = false;
 
   void handleCheck() {
@@ -119,7 +126,6 @@ class _PwdLoginState extends State<PwdLogin> {
       isCheck = !isCheck;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +172,11 @@ class _PwdLoginState extends State<PwdLogin> {
           Container(
             constraints: BoxConstraints(maxWidth: 100, maxHeight: 100),
             margin: EdgeInsets.symmetric(vertical: 50),
-            child: Image.asset("assets/images/200x200.png",width: 80,height: 80,),
+            child: Image.asset(
+              "assets/images/200x200.png",
+              width: 80,
+              height: 80,
+            ),
           ),
           Container(
               width: double.infinity,
@@ -357,6 +367,8 @@ class _PwdLoginState extends State<PwdLogin> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
                           child: Text("忘记密码?",
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -370,6 +382,8 @@ class _PwdLoginState extends State<PwdLogin> {
                       ),
                       SizedBox(width: 20),
                       InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
                           child: Text("随便看看",
                               textAlign: TextAlign.center,
                               style: TextStyle(

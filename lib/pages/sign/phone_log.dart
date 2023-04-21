@@ -109,23 +109,31 @@ class _PhoneLoginState extends State<PhoneLogin> {
     Map<String, String> map = new Map();
     map["phone"] = phone;
     map["verCode"] = verCode;
+    var l = loading();
     try {
-      var l = loading();
       Map res = await sign.codeLogin(map);
-      print("ms_token>>> ${res["data"]}");
-      // 将 token 存在缓存中
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString("ms_token", res["data"]);
-      l();
-      FocusManager.instance.primaryFocus?.unfocus(); // 收起键盘
-      // Navigator.pushNamed(context, '/');
+        print("ms_token>>> ${res}");
+      if(res["code"] == 200){
+        // 将 token 存在缓存中
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString("ms_token", res["data"]);
+        FocusManager.instance.primaryFocus?.unfocus(); // 收起键盘
+        l();
+        Navigator.pushNamed(context, '/');
+      }else{
+        l();
+        toast("登录失败,请检查网络");
+      }
+
     } catch (e) {
+      l();
       errToast();
     }
   }
 
   //跳转并关闭并销毁当前页面 密码登录页面
   void toPwdLog(context) {
+    FocusManager.instance.primaryFocus?.unfocus(); // 收起键盘
     Navigator.pushAndRemoveUntil(
       context,
       new CupertinoPageRoute(builder: (context) => new PwdLogin()),
@@ -140,6 +148,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
       return;
     }
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+    // 区别登录和不登陆
     await prefs.setString("role", "UN");
     Navigator.pushNamed(context, '/');
   }

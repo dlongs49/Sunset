@@ -16,11 +16,11 @@ class SetPwd extends StatefulWidget {
 }
 
 class _SetPwdState extends State<SetPwd> {
-
   @override
-  void initState(){
+  void initState() {
     setState(() {});
   }
+
   bool isPwd1_obs = true; // 密码一控制显隐
   bool isPwd2_obs = true; // 密码二控制显隐
   // 密码是否可见
@@ -56,7 +56,6 @@ class _SetPwdState extends State<SetPwd> {
 
   // 修改密码
   void handlePwd() async {
-    print("两次密码>> $password1 $password");
     if (password == "" || password1 == "") {
       return;
     }
@@ -67,9 +66,10 @@ class _SetPwdState extends State<SetPwd> {
     final p = md5Tools(password); // 密码 md5 加密  后台在加一层密
     Map<String, String> map = new Map();
     map["password"] = p.toString();
+    var l = loading();
     try {
-      loading(seconds: 3);
       Map res = await sign.setPwd(map);
+      l();
       if (res['code'] == 200) {
         toast("密码设置成功");
         Navigator.pop(context);
@@ -77,6 +77,7 @@ class _SetPwdState extends State<SetPwd> {
         toast("密码设置失败");
       }
     } catch (e) {
+      l();
       errToast();
     }
   }
