@@ -42,8 +42,8 @@ class _DsyAccnumState extends State<DsyAccnum> {
       toast("至少勾选一项");
       return;
     }
+    var l = loading();
     try {
-      loading(seconds: 3);
       Map res = await sign.distryUInfo();
       if (res["code"] == -1) {
         toast(res["message"]);
@@ -53,8 +53,10 @@ class _DsyAccnumState extends State<DsyAccnum> {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       // 清除token
       await prefs.remove('ms_token');
+      await prefs.remove('role');
       // 清除个人简介 --> 在我的信息页面传递的值用于在修改个人简介
       await prefs.remove('descInfo');
+      l();
       Navigator.pushNamed(context, '/');
     } catch (e) {
       print(e);

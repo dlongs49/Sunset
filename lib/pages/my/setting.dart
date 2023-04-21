@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
 
@@ -54,7 +55,82 @@ class _SettingState extends State<Setting> {
       toast(params["title"]);
     }
   }
-
+  // 退出登录
+  void handleOutSign()async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('ms_token');
+    await prefs.remove('role');
+    Navigator.pushNamed(context, "phoneLog");
+  }
+  // 退出登录 widget
+  void showOutLogDialog(BuildContext context) {
+    final width = MediaQueryData.fromWindow(window).size.width;
+    showDialog(
+        context: context,
+        builder: (ctx) => Container(
+          color: Color(0x7e000000),
+          child: Center(
+              child: Container(
+                width: width - 80,
+                height: 150,
+                padding:
+                EdgeInsets.only(right: 24, left: 24, top: 26, bottom: 0),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8)),
+                child: Column(children: [
+                  Text("提示",
+                      style:
+                      TextStyle(fontWeight: FontWeight.w600, fontSize: 17)),
+                  SizedBox(height: 14),
+                  Text("是否确定退出",
+                      style: TextStyle(color: Color(0xff000000), fontSize: 16)),
+                  SizedBox(height: 15),
+                  Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Material(
+                            color: Colors.white,
+                            child: InkWell(
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 10),
+                                child: Text("取消",
+                                    style: TextStyle(
+                                        color: Color(0xffb8b8b8),
+                                        fontSize: 16)),
+                              ),
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ),
+                          Material(
+                            color: Colors.white,
+                            child: InkWell(
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 10),
+                                child: Text("确定",
+                                    style: TextStyle(
+                                        color: Color(0xff22d47e),
+                                        fontSize: 16)),
+                              ),
+                              onTap: handleOutSign,
+                            ),
+                          )
+                        ],
+                      ))
+                ]),
+              )),
+        ));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -198,51 +274,7 @@ class _SettingState extends State<Setting> {
                                     color: Color(0xffff0000),
                                     fontSize: 20)),
                           ),
-                          onTap: () {
-                            // Fluttertoast.showToast(
-                            //     msg: '退出登录',
-                            //     toastLength: Toast.LENGTH_SHORT,
-                            //     gravity: ToastGravity.CENTER,
-                            //     backgroundColor: Color(0xd23b3b3b),
-                            //     textColor: Colors.white,
-                            //     fontSize: 16.0);
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: Container(
-                                        height: 30,
-                                        alignment: Alignment(0, 0),
-                                        child: Text('提示')),
-                                    content: Container(
-                                        alignment: Alignment(0, 0),
-                                        height: 24,
-                                        child: Text('是否确定退出')),
-                                    actions: <Widget>[
-                                      TextButton(
-                                          child: Text(
-                                            '取消',
-                                            style:
-                                            TextStyle(color: Colors.grey),
-                                          ),
-                                          onPressed: () {
-                                            Navigator.pop(context, "取消");
-                                          }),
-                                      TextButton(
-                                        child: Text(
-                                          '确定',
-                                          style: TextStyle(
-                                              color: Color(0xff4ece99)),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.pop(context, "确定");
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                });
-                            print("退出登录>>");
-                          }),
+                          onTap: ()=>showOutLogDialog(context)),
                     )
                   ])),
         ],
