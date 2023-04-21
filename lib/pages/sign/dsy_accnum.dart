@@ -46,6 +46,7 @@ class _DsyAccnumState extends State<DsyAccnum> {
     try {
       Map res = await sign.distryUInfo();
       if (res["code"] == -1) {
+        l();
         toast(res["message"]);
         return;
       }
@@ -57,8 +58,9 @@ class _DsyAccnumState extends State<DsyAccnum> {
       // 清除个人简介 --> 在我的信息页面传递的值用于在修改个人简介
       await prefs.remove('descInfo');
       l();
-      Navigator.pushNamed(context, '/');
+      Navigator.pushNamed(context, 'phoneLog');
     } catch (e) {
+      l();
       print(e);
       errToast();
     }
