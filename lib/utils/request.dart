@@ -20,7 +20,7 @@ class Http {
       // 从缓存中取 token
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? ms_token = prefs.getString("ms_token");
-      print("[ms_token]>>>$ms_token");
+      // print("[ms_token]>>>$ms_token");
       // 赋值请求头
       options.headers["ms_token"] = ms_token;
       // options.headers["ms_token"] = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiI4MjgxNjExRi00RkEwLTQyMzgtQkFCRC03MUY0NkVCMjVCODgiLCJzdGFtcCI6MTY4MTk5NTMxMjU2NywiZXhwIjoxNjgyMjExMzEyfQ._pOHnCVgBuJVSCMcGZOycjJ1xR5B3ZCbD6fbGeATL1Q";

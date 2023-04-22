@@ -1,17 +1,13 @@
 import 'dart:async';
 import 'dart:ui';
-import 'package:date_format/date_format.dart';
-import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:sunset/components/refresh/refresh_footer_ex.dart';
-import 'package:sunset/components/refresh/refresh_header_ex.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/pages/nav_page/commun_view/follower_trends.dart';
 import 'package:sunset/pages/nav_page/commun_view/new_trends.dart';
 import 'package:sunset/pages/nav_page/commun_view/star_trends.dart';
 import 'package:sunset/utils/api/sign_req.dart';
-import 'package:sunset/utils/api/trends_req.dart';
 import 'package:sunset/utils/request.dart';
 
 class Community extends StatefulWidget {
@@ -21,31 +17,17 @@ class Community extends StatefulWidget {
   State<Community> createState() => _CommunityState();
 }
 
-class _CommunityState extends State<Community> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+class _CommunityState extends State<Community>
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true; // 缓存页面，保持状态，混入 AutomaticKeepAliveClientMixin
-  // 动画执行参数
-  late final AnimationController controller =
-      AnimationController(duration: Duration(milliseconds: 500), vsync: this);
-  late Animation<Offset> animation =
-      Tween(begin: Offset.zero, end: Offset(1.5, 0.0)).animate(controller);
 
   List tabBar = ["最新", "精选", "关注"];
-  List<dynamic> list = [];
-  int total = 0; // 动态总数
-  Map<String, dynamic> pageMap = {"page_num": 1, "page_rows": 6};
-  int activeBar = 0;
-  double tranBar = 75; // 初始值为头像宽度+右边距
-
-  // late Animation<Offset> offsetAnimation;
-  TrendsReq trendsReq = new TrendsReq();
-  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
     getUInfo();
-    getTrends();
   }
 
   Sign sign = new Sign();
@@ -57,94 +39,6 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin, Au
       Map res = await sign.getUInfo();
       if (res["code"] == 200) {
         uinfo = res["data"];
-      }
-    } catch (e) {
-      print(e);
-      errToast();
-    }
-  }
-
-  // 列表滑动中
-  bool scrollIng(ScrollNotification n) {
-    animation =
-        Tween(begin: Offset.zero, end: Offset(1.5, 0.0)).animate(controller);
-    // 开始过渡
-    controller.forward();
-    return false;
-  }
-
-  // 滑动结束
-  bool scrollEnd(ScrollNotification n) {
-    // 滑动结束 过渡过来
-    controller.reverse();
-    return false;
-  }
-
-  // 最新的动态列表
-  Future<IndicatorResult> getTrends() async {
-    try {
-      Map res = await trendsReq.getTrends(pageMap);
-      if (res["code"] == 200) {
-        list.insertAll(list.length, res["data"]["list"]);
-        total = res["data"]["total"];
-        if (mounted) {
-          setState(() {});
-        }
-        return IndicatorResult.success;
-      }else{
-        return IndicatorResult.fail;
-      }
-    } catch (e) {
-      print(e);
-      errToast();
-      return IndicatorResult.fail;
-    }
-  }
-
-  // 点赞
-  void handleStar(params, index) async {
-    if (uinfo["uid"] == null) {
-      showIsLogDialog(context);
-      return;
-    }
-    try {
-      Map res = await trendsReq.setTrendsStar({"trends_id": params["id"]});
-      if (res["code"] == 200) {
-        print(">>>>>$res");
-        // 成功 加状态修改
-        list[index]["isstar"] = !list[index]["isstar"];
-        int star = list[index]["star"];
-        if (list[index]["isstar"]) {
-          list[index]["star"] = star + 1;
-        } else {
-          list[index]["star"] = star - 1;
-        }
-
-        if (mounted) {
-          setState(() {});
-        }
-      }
-    } catch (e) {
-      print(e);
-      errToast();
-    }
-  }
-
-  // 关注
-  void handleFollow(params, index) async {
-    if (uinfo["uid"] == null) {
-      showIsLogDialog(context);
-      return;
-    }
-    try {
-      Map res = await trendsReq.setFollow({"uid": params["uid"]});
-      if (res["code"] == 200) {
-        print(">>>>>$res");
-        // 成功 假状态修改保持交互
-        list[index]["isfollow"] = !list[index]["isfollow"];
-        if (mounted) {
-          setState(() {});
-        }
       }
     } catch (e) {
       print(e);
@@ -168,31 +62,65 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin, Au
       }
     }
   }
-// 加载 刷新控制器
-  EasyRefreshController _refreshController = new EasyRefreshController(
-    controlFinishRefresh: false,
-    controlFinishLoad: false,
-  );
-  // 上拉加载
-  Future<IndicatorResult> onLoad() async{
-    pageMap["page_num"]++;
-    if (list.length >= total) {
-      return IndicatorResult.noMore;
-    } else {
-      IndicatorResult status = await getTrends();
-      return status;
-    }
-  }
-  // 下拉刷新
-  Future<IndicatorResult> onRefresh() async{
-    list = [];
-    pageMap["page_num"] = 1;
-    IndicatorResult status = await getTrends();
-    return status;
-  }
+
+  List<Widget> pageList = [NewTrends(), StarTrends(), FollowerTrends()];
+
   @override
   void dispose() {
     super.dispose();
+  }
+
+  PageController pageController =
+      new PageController(initialPage: 0, keepPage: true);
+
+  late AnimationController _controller = AnimationController(
+    duration: const Duration(milliseconds: 500),
+    vsync: this,
+  );
+  late Animation<Offset> lineSlide =
+      Tween(begin: Offset(0.2, 0), end: Offset(0, 0)).animate(_controller);
+
+  GlobalKey TopPageKey = GlobalKey();
+  int activeBar = 0;
+
+  double s_offset = 0.2;
+  double e_offset = 0.2;
+  int line_width = 28;
+  // 改变 page 【核心动画过渡】
+  void pageChange(i) {
+    double? current = TopPageKey.currentContext?.size?.width;
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    if (i == 0) {
+      lineSlide = Tween(begin: Offset(s_offset, 0), end: Offset(e_offset, 0))
+          .animate(_controller);
+      s_offset = 0.2;
+    }
+    if (i == 1) {
+      double end = ((current! / 2) - (line_width/2)) / line_width;
+      lineSlide = Tween(begin: Offset(s_offset, 0), end: Offset(end, 0))
+          .animate(_controller);
+      s_offset = end;
+    }
+    if (i == 2) {
+      double end = (current! - 34) / line_width;
+      lineSlide = Tween(begin: Offset(s_offset, 0), end: Offset(end, 0))
+          .animate(_controller);
+      s_offset = end;
+    }
+    _controller.forward();
+    activeBar = i;
+    setState(() {});
+  }
+
+  void pageChanges(index) {
+    pageController.animateToPage(
+      index,
+      curve: Curves.ease,
+      duration: Duration(milliseconds: 200),
+    );
   }
 
   Widget build(BuildContext context) {
@@ -237,35 +165,59 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin, Au
                         ),
                         Expanded(
                             child: Container(
-                              child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: tabBar.asMap().entries.map((entry) {
-                                    int index = entry.key;
-                                    String item = entry.value;
-                                    return Expanded(
-                                        child: InkWell(
-                                          child: Container(
-                                              alignment: index == 0
-                                                  ? Alignment.centerLeft
-                                                  : index == 1
-                                                  ? Alignment.center
-                                                  : Alignment.centerRight,
-                                              height: 34,
-                                              child: Text(item,
-                                                  style: TextStyle(
-                                                      color: Color(
-                                                          activeBar == index
-                                                              ? 0xff000000
-                                                              : 0xffc2c2c2),
-                                                      fontSize: activeBar == index
-                                                          ? 20
-                                                          : 16,
-                                                      fontWeight:
-                                                      FontWeight.w800))),
-                                        ));
-                                  }).toList()),
-                            )),
+                                key: TopPageKey,
+                                child: Stack(
+                                  children: [
+                                    Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children:
+                                            tabBar.asMap().entries.map((entry) {
+                                          int index = entry.key;
+                                          String item = entry.value;
+                                          return Expanded(
+                                              child: InkWell(
+                                            child: Container(
+                                                alignment: index == 0
+                                                    ? Alignment.centerLeft
+                                                    : index == 1
+                                                        ? Alignment.center
+                                                        : Alignment.centerRight,
+                                                height: 34,
+                                                child: Text(item,
+                                                    key: ValueKey(index),
+                                                    style: TextStyle(
+                                                        color: Color(
+                                                            activeBar == index
+                                                                ? 0xff000000
+                                                                : 0xffc2c2c2),
+                                                        fontSize:
+                                                            activeBar == index
+                                                                ? 20
+                                                                : 16,
+                                                        fontWeight:
+                                                            FontWeight.w800))),
+                                            onTap: () => pageChanges(index),
+                                          ));
+                                        }).toList()),
+                                    Positioned(
+                                        bottom: 0,
+                                        left: 0,
+                                        child: SlideTransition(
+                                            position: lineSlide,
+                                            child: Container(
+                                              width: 28,
+                                              height: 6,
+                                              // margin: EdgeInsets.only(top: 4),
+                                              decoration: BoxDecoration(
+                                                  color: Color(0xff22d47e),
+                                                  borderRadius:
+                                                      BorderRadius.circular(4)),
+                                            )))
+                                  ],
+                                ))),
                         Container(
                           margin: EdgeInsets.only(left: 40),
                           width: 24,
@@ -296,40 +248,19 @@ class _CommunityState extends State<Community> with TickerProviderStateMixin, Au
                         )
                       ],
                     ),
-                    // Transform(
-                    //     alignment: Alignment.bottomRight,
-                    //     transform: Matrix4.translationValues(tranBar, -6, 0),
-                    //     child: Container(
-                    //       width: 28,
-                    //       height: 6,
-                    //       margin: EdgeInsets.only(top: 4),
-                    //       decoration: BoxDecoration(
-                    //           color: Color(0xff22d47e),
-                    //           borderRadius: BorderRadius.circular(4)),
-                    //     ))
-                    // SlideTransition(
-                    //     position: offsetAnimation,
-                    //     child: Container(
-                    //       width: 28,
-                    //       height: 6,
-                    //       // margin: EdgeInsets.only(top: 4),
-                    //       decoration: BoxDecoration(
-                    //           color: Color(0xff22d47e),
-                    //           borderRadius: BorderRadius.circular(4)),
-                    //     ))
                   ],
                 )),
           ]),
           Expanded(
-             child: PageView(
-                children: [
-                  NewTrends(),
-                  StarTrends()
-                ],
-              ))
+              child: PageView.builder(
+                  itemCount: pageList.length,
+                  controller: pageController,
+                  itemBuilder: (ctx, index) {
+                    return pageList[index];
+                  },
+                  onPageChanged: (int i) => pageChange(i)))
         ],
       ),
-
     );
   }
 }

@@ -13,8 +13,8 @@ void main() {
   // WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences.setMockInitialValues({}); // 缓存
   runApp(
-      // MyApp()
-      ListenableProvider<Golbal>(create: (_) => Golbal(), child: MyApp()));
+     MyApp());
+      // ListenableProvider<Golbal>(create: (_) => Golbal(), child: MyApp()));
   //透明沉浸式状态栏
   // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
   //   statusBarColor: Colors.transparent,
@@ -24,8 +24,6 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Golbal nf = Provider.of<Golbal>(context);
-    nf.getGoods();
     return CupertinoApp(
       title: 'Sunset',
       builder: BotToastInit(),

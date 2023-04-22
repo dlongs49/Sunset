@@ -35,7 +35,6 @@ class _FindState extends State<Find> {
   void getBanner() async {
     try {
       Map res = await homeReq.getBanner();
-      print("data");
       if (res['code'] == 200) {
         Map<String, String> map = new Map();
         map["images"] = baseUrl + res["data"][0]["images"];
@@ -55,7 +54,6 @@ class _FindState extends State<Find> {
   void getGoods() async {
     try {
       Map res = await homeReq.getGoods();
-      print("好物精选");
       if (res['code'] == 200) {
         goodList = res["data"].cast<Map<String, dynamic>>();
         if (mounted) {
@@ -84,9 +82,6 @@ class _FindState extends State<Find> {
 
   @override
   Widget build(BuildContext context) {
-    // Golbal nf = Provider.of<Golbal>(context);
-    // print(nf.goodList);
-    // List<Map<dynamic, dynamic>> goodList = nf.goodList;
     double topBarHeight = MediaQueryData.fromWindow(window).padding.top;
     return Column(
       mainAxisSize: MainAxisSize.max,
