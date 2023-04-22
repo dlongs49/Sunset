@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/know_req.dart';
+import 'package:sunset/utils/tools.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'custom/CustomLinearProgressIndicator.dart';
@@ -25,16 +26,10 @@ class _KnowDetailState extends State<KnowDetail> {
   KnowReq knowReq = new KnowReq();
   Map item = {"islike": false, "like_num": 0, "comment_num": 0};
 
+
   void initState() {
     super.initState();
     getKnowDetail();
-  }
-
-  String? uid = null;
-
-  Future<void> getUid() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    uid = await prefs.getString("uid");
   }
 
   String url = "https://m.findlinked.com/#/";
@@ -58,6 +53,7 @@ class _KnowDetailState extends State<KnowDetail> {
 
   // 收藏 & 取消收藏
   void handleLike() async {
+    String uid = await getStorage("uid");
     // 有token限制
     if (uid == null) {
       showIsLogDialog(context);

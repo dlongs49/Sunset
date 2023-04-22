@@ -2,9 +2,9 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/utils/tools.dart';
 
 class Setting extends StatefulWidget {
   const Setting({Key? key}) : super(key: key);
@@ -43,15 +43,10 @@ class _SettingState extends State<Setting> {
 
   String? uid = null;
 
-  void getUid() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    uid = await prefs.getString("uid");
-  }
 
   void toPage(params) async {
     if (params["path"] != null) {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final String? uid = await prefs.getString("uid");
+      String uid = await getStorage("uid");
       if (uid != null) {
         Navigator.pushNamed(context, params['path']);
       } else {
@@ -71,9 +66,7 @@ class _SettingState extends State<Setting> {
 
   // 退出登录
   void handleOutSign() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('ms_token');
-    await prefs.remove('role');
+    await clearStorage();
     Navigator.pushNamed(context, "phoneLog");
   }
 

@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/sign_req.dart';
+import 'package:sunset/utils/tools.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({Key? key, arguments}) : super(key: key);
@@ -30,9 +30,8 @@ class _MyProfileState extends State<MyProfile> {
 
   // 从缓存中取 简介信息
   void getStotageInfo() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final List<String>? descInfo = prefs.getStringList("descInfo");
-    uinfo["id"] = descInfo![0];
+    List<String> descInfo = await getStorage("descInfo");
+    uinfo["id"] = descInfo[0];
     uinfo["description"] = descInfo[1];
     maxTextNum = "${descInfo[1].length.toString()}/50";
     // 给 文本框 输入框赋值

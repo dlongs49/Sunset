@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/request.dart';
+import 'package:sunset/utils/tools.dart';
 
 class My extends StatefulWidget {
   const My({Key? key}) : super(key: key);
@@ -46,8 +47,7 @@ class _MyState extends State<My> {
     try {
       Map res = await sign.getUInfo();
       if (res["code"] == 200) {
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString("uid", res["data"]["uid"]);
+        await setStorage("uid", res["data"]["uid"]);
         uinfo = res["data"];
         if (mounted) {
           setState(() {});

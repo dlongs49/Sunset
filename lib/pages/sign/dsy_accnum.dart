@@ -3,10 +3,10 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/sign_req.dart';
+import 'package:sunset/utils/tools.dart';
 
 class DsyAccnum extends StatefulWidget {
   const DsyAccnum({Key? key}) : super(key: key);
@@ -51,12 +51,7 @@ class _DsyAccnumState extends State<DsyAccnum> {
         return;
       }
 
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      // 清除token
-      await prefs.remove('ms_token');
-      await prefs.remove('role');
-      // 清除个人简介 --> 在我的信息页面传递的值用于在修改个人简介
-      await prefs.remove('descInfo');
+      await clearStorage();
       l();
       Navigator.pushNamed(context, 'phoneLog');
     } catch (e) {

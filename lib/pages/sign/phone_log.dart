@@ -5,10 +5,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/pages/sign/pwd_log.dart';
 import 'package:sunset/utils/api/sign_req.dart';
+import 'package:sunset/utils/tools.dart';
 
 class PhoneLogin extends StatefulWidget {
   const PhoneLogin({Key? key}) : super(key: key);
@@ -115,8 +115,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
         print("ms_token>>> ${res}");
       if(res["code"] == 200){
         // 将 token 存在缓存中
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString("ms_token", res["data"]);
+        await setStorage("ms_token", res["data"]);
         FocusManager.instance.primaryFocus?.unfocus(); // 收起键盘
         l();
         Navigator.pushNamed(context, '/');
@@ -147,9 +146,8 @@ class _PhoneLoginState extends State<PhoneLogin> {
       toast("勾选用户协议");
       return;
     }
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
     // 区别登录和不登陆
-    await prefs.setString("role", "UN");
+    await setStorage("role", "UN");
     Navigator.pushNamed(context, '/');
   }
 

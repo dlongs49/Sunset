@@ -11,6 +11,7 @@ import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/api/trends_req.dart';
 import 'package:sunset/utils/request.dart';
+import 'package:sunset/utils/tools.dart';
 
 class NewTrends extends StatefulWidget {
   const NewTrends({Key? key}) : super(key: key);
@@ -178,6 +179,10 @@ class _NewTrendsState extends State<NewTrends> with TickerProviderStateMixin,Aut
   }
   // 下拉刷新
   Future<IndicatorResult> onRefresh() async{
+    // setStorage("key", 1);
+    await removeStorage("key");
+    int key = await getStorage("key");
+    print(">>>$key");
     list = [];
     pageMap["page_num"] = 1;
     IndicatorResult status = await getTrends();

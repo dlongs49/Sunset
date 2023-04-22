@@ -18,6 +18,7 @@ import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/api/upload_req.dart';
 import 'package:sunset/utils/request.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sunset/utils/tools.dart';
 
 class MyInfo extends StatefulWidget {
   const MyInfo({Key? key, arguments}) : super(key: key);
@@ -315,9 +316,7 @@ class _MyInfoState extends State<MyInfo> {
   // 个人简介
   void toPage(String path) async {
     // 将个人简介存在缓存中 在简介页面获取
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs
-        .setStringList("descInfo", <String>[uinfo['id'], uinfo['description']]);
+    await setStorage("descInfo", <String>[uinfo['id'], uinfo['description']]);
     Navigator.pushNamed(context, path);
   }
 

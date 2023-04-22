@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/trends_req.dart';
 import 'package:sunset/utils/request.dart';
+import 'package:sunset/utils/tools.dart';
 
 class UserInfo extends StatefulWidget {
   final arguments; // 路由带的参数
@@ -33,9 +34,7 @@ class _UserInfoState extends State<UserInfo> {
 
   // 从缓存中获取 uid
   Future<void> getUid() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final action = prefs.getString('uid');
-    final u_id = action != null ? action : "";
+    String u_id = await getStorage("uid");
     isUser = u_id == arguments["uid"];
     print("当前账号值：${u_id} -- ${arguments["uid"]}");
     setState(() {});
