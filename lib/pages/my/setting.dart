@@ -39,10 +39,18 @@ class _SettingState extends State<Setting> {
   @override
   void initState() {
     super.initState();
+    getUid();
   }
 
   String? uid = null;
 
+  void getUid() async {
+    String u_id = await getStorage("uid");
+    uid = u_id;
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
   void toPage(params) async {
     if (params["path"] != null) {

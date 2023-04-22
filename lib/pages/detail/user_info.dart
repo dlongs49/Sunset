@@ -45,7 +45,7 @@ class _UserInfoState extends State<UserInfo> {
 
   List list = [];
   int total = 0; // 动态总数
-  Map<String, dynamic> pageMap = {"page_num": 1, "page_rows": 6};
+  Map<String, dynamic> pageMap = {"page_num": 1, "page_rows": 6,"type":0};
   Map uinfo = {
     "nickname": "",
     "avator": "",
@@ -64,7 +64,9 @@ class _UserInfoState extends State<UserInfo> {
       if (res["code"] == 200) {
         list = res["data"]["list"];
         total = res["data"]["total"];
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       }
     } catch (e) {
       print(e);

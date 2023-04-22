@@ -29,7 +29,6 @@ class _MyLikeState extends State<MyLike> {
   void getMyLike() async {
     try {
       Map res = await knowReq.getMyLike(pageMap);
-      print("我的收藏>>${res["data"]}");
       if (res["code"] == 200) {
         list.insertAll(list.length, res["data"]["list"]);
         total = res["data"]["total"];
