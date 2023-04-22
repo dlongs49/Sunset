@@ -21,7 +21,7 @@ class NewTrends extends StatefulWidget {
 
 class _NewTrendsState extends State<NewTrends> with TickerProviderStateMixin,AutomaticKeepAliveClientMixin {
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => true; // 缓存页面，保持状态，混入 AutomaticKeepAliveClientMixin
   // 动画执行参数
   late final AnimationController controller =
   AnimationController(duration: Duration(milliseconds: 500), vsync: this);
