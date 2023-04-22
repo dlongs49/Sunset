@@ -11,7 +11,6 @@ import 'package:sunset/routes/index.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
-  SharedPreferences.setMockInitialValues({}); // 缓存
   runApp(
      MyApp());
       // ListenableProvider<Golbal>(create: (_) => Golbal(), child: MyApp()));
