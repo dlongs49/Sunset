@@ -124,7 +124,7 @@ class _MyState extends State<My> {
       children: [
         Column(children: [
           Container(
-            height: topBarHeight,
+            height: topBarHeight == 0 ? 34 : topBarHeight,
             color: Color(0xff22d47e),
           ),
           Container(

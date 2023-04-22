@@ -67,7 +67,6 @@ class _HomeState extends State<Home> {
   void getBanner() async {
     try {
       Map res = await homeReq.getBanner();
-      print("data>>> ${res}");
       if (res['code'] == 200) {
         res["data"].forEach((el) {
           Map<String, String> map = new Map();
@@ -89,7 +88,6 @@ class _HomeState extends State<Home> {
   void getTrends() async {
     try {
       Map res = await homeReq.getTrends({"page_num": 1, "page_rows": 7});
-      print("动态列表>>${res["data"]}");
       if (res["code"] == 200) {
         trendsList = res["data"]["list"];
         setState(() {});
@@ -107,7 +105,6 @@ class _HomeState extends State<Home> {
     try {
       Map res =
           await homeReq.getKnow({"page_num": 1, "page_rows": 7, "isimg": true});
-      print("知识精选>>${res["data"]}");
       if (res["code"] == 200) {
         knowList = res["data"]["list"];
         setState(() {});
