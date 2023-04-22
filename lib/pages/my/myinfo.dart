@@ -159,10 +159,6 @@ class _MyInfoState extends State<MyInfo> {
   // 昵称输入框
   void inputChange(String value) {
     uinfo["nickname"] = value;
-
-    if (mounted) {
-      // setState(() {});
-    }
   }
 
   Sign sign = new Sign();
@@ -182,12 +178,13 @@ class _MyInfoState extends State<MyInfo> {
   void getUInfo() async {
     try {
       Map res = await sign.getUInfo();
-      print("个人信息>>> ${res["data"]}");
       if (res["code"] == 200) {
         uinfo = res["data"];
         uinfo['description'] =
             uinfo['description'] != null ? uinfo['description'] : '暂无';
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       }
       if (res['code'] == 401) {
         Navigator.pushNamed(context, 'phoneLog');
