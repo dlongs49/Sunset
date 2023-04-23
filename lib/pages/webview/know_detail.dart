@@ -32,7 +32,7 @@ class _KnowDetailState extends State<KnowDetail> {
     getKnowDetail();
   }
 
-  String url = "https://m.findlinked.com/#/";
+  String url = "http://sunset-server.dillonl.com/trends_detail.html";
 
   // 详情
   void getKnowDetail() async {
@@ -93,7 +93,7 @@ class _KnowDetailState extends State<KnowDetail> {
                   color: Color(0xFFF6F7FB),
                   child: WebView(
                       initialUrl:
-                          arguments["isthird"] == 1 ? arguments["url"] : url,
+                          arguments["isthird"] == 1 ? arguments["url"] : "${url}?id=${arguments["id"]}",
                       javascriptMode: JavascriptMode.unrestricted,
                       onProgress: (int gress) {
                         progress = (gress / 100);
