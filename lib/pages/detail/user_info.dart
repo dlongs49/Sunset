@@ -5,7 +5,6 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/refresh/refresh_footer_ex.dart';
 import 'package:sunset/components/refresh/refresh_header_ex.dart';
 import 'package:sunset/components/toast.dart';
@@ -43,7 +42,7 @@ class _UserInfoState extends State<UserInfo> {
     setState(() {});
     pageMap["uid"] = arguments["uid"];
     getFollow();
-    // getList();
+    getList();
   }
 
   List list = [];

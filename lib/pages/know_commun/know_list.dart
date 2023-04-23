@@ -15,7 +15,7 @@ class KnowList extends StatefulWidget {
   _KnowListState createState() => _KnowListState();
 }
 
-class _KnowListState extends State<KnowList> {
+class _KnowListState extends State<KnowList> with TickerProviderStateMixin {
   List list = [];
   int total = 0;
   Map<String, dynamic> pageMap = {"page_num": 1, "page_rows": 12};
@@ -38,7 +38,7 @@ class _KnowListState extends State<KnowList> {
           setState(() {});
         }
         return IndicatorResult.success;
-      }else{
+      } else {
         return IndicatorResult.fail;
       }
     } catch (e) {
@@ -56,14 +56,15 @@ class _KnowListState extends State<KnowList> {
       "id": arg["id"]
     });
   }
- // 加载 刷新控制器
-  EasyRefreshController _controller  = new EasyRefreshController(
+
+  // 加载 刷新控制器
+  EasyRefreshController _controller = new EasyRefreshController(
     controlFinishRefresh: false,
     controlFinishLoad: false,
   );
 
   // 上拉加载
-  Future<IndicatorResult> onLoad() async{
+  Future<IndicatorResult> onLoad() async {
     pageMap["page_num"]++;
     if (list.length >= total) {
       return IndicatorResult.noMore;
@@ -72,12 +73,32 @@ class _KnowListState extends State<KnowList> {
       return status;
     }
   }
+
   // 下拉刷新
-  Future<IndicatorResult> onRefresh() async{
+  Future<IndicatorResult> onRefresh() async {
     list = [];
     pageMap["page_num"] = 1;
     IndicatorResult status = await getKnow();
     return status;
+  }
+
+  late AnimationController _animationController = AnimationController(
+    duration: const Duration(milliseconds: 500),
+    vsync: this,
+  );
+  late Animation<Offset> lineSlide =
+      Tween(begin: Offset(0, 0), end: Offset(0, 0))
+          .animate(_animationController);
+  List<String> navList = ["饮食", "运动", "减肥", "亲子", "旅游"];
+  final GlobalKey TopPageKey = GlobalKey();
+  double w = 0.0;
+  void handleNav(index) {
+    final current = TopPageKey.currentContext?.size?.width;
+    w = current != null ? current/5 : 0.0;
+    setState(() {
+
+    });
+    print(392.72727272727275/5);
   }
 
   @override
@@ -87,6 +108,42 @@ class _KnowListState extends State<KnowList> {
       body: Column(
         children: [
           CustomTabBar(title: "知识社区", bgColor: null, fontColor: null),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 25),
+            padding: EdgeInsets.only(bottom: 6),
+            key: TopPageKey,
+            child: Stack(
+              children: [
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: navList.asMap().entries.map((entry) {
+                      int index = entry.key;
+                      String value = entry.value;
+                      return InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        child: Container(
+                            margin: EdgeInsets.only(bottom: 7),
+                            child: Text(value, style: TextStyle(fontSize: 14))),
+                        onTap: () => handleNav(index),
+                      );
+                    }).toList()),
+                Positioned(left:0,child: Container(width: w,height:3,color: Colors.pink,)),
+                Positioned(
+                    bottom: 0,
+                    left:2,
+                    child: SlideTransition(
+                        position: lineSlide,
+                        child: Container(
+                          width: 26,
+                          height: 3,
+                          decoration: BoxDecoration(
+                              color: Color(0xff22d47e),
+                              borderRadius: BorderRadius.circular(4)),
+                        )))
+              ],
+            ),
+          ),
           Expanded(
               child: Container(
                   child: EasyRefresh(
@@ -94,7 +151,7 @@ class _KnowListState extends State<KnowList> {
                       footer: RefreshFooterEx(),
                       onRefresh: onRefresh,
                       onLoad: onLoad,
-                      controller: _controller ,
+                      controller: _controller,
                       child: ListView.builder(
                           padding: EdgeInsets.zero,
                           itemCount: list.length,
