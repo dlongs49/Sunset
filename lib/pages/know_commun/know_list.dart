@@ -57,10 +57,11 @@ class _KnowListState extends State<KnowList> {
     });
   }
  // 加载 刷新控制器
-  EasyRefreshController _refreshController = new EasyRefreshController(
+  EasyRefreshController _controller  = new EasyRefreshController(
     controlFinishRefresh: false,
     controlFinishLoad: false,
   );
+
   // 上拉加载
   Future<IndicatorResult> onLoad() async{
     pageMap["page_num"]++;
@@ -93,7 +94,7 @@ class _KnowListState extends State<KnowList> {
                       footer: RefreshFooterEx(),
                       onRefresh: onRefresh,
                       onLoad: onLoad,
-                      controller: _refreshController,
+                      controller: _controller ,
                       child: ListView.builder(
                           padding: EdgeInsets.zero,
                           itemCount: list.length,

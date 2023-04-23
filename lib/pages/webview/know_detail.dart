@@ -38,7 +38,6 @@ class _KnowDetailState extends State<KnowDetail> {
   void getKnowDetail() async {
     try {
       Map res = await knowReq.getKnowDetail({"id": arguments["id"]});
-      print("详情>>${res["data"]}");
       if (res["code"] == 200) {
         item = res["data"];
         if (mounted) {
