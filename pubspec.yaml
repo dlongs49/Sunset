@@ -35,7 +35,6 @@ dependencies:
   provider: ^6.0.0
   #camera: ^0.5.8
 #scan: ^1.6.0
-#path_provider: ^1.6.8 # 获取缓存
 dev_dependencies:
   flutter_test:
     sdk: flutter

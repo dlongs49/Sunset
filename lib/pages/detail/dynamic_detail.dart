@@ -256,13 +256,12 @@ class _DynamicDetailState extends State<DynamicDetail> {
           children: [
             CustomTabBar(title: "动态详情", bgColor: null, fontColor: null),
             Expanded(
-              child: EasyRefresh(
+              child:EasyRefresh(
                   footer: RefreshFooterEx(),
                   onLoad: onLoad,
                   controller: _controller,
                   child: ListView(
                     padding: EdgeInsets.zero,
-                    // physics: BouncingScrollPhysics(), // IOS的回弹属性
                     children: [
                       Container(
                         margin: EdgeInsets.symmetric(horizontal: 15),
@@ -401,6 +400,8 @@ class _DynamicDetailState extends State<DynamicDetail> {
                           padding: EdgeInsets.only(left: 12, bottom: 12),
                           child: Text("全部评论(${commentTotal})",
                               style: TextStyle(fontSize: 14))),
+                      commentList.length != 0
+                          ?
                       ListView.builder(
                           padding: EdgeInsets.zero,
                           shrinkWrap: true,
@@ -645,9 +646,18 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                         ))
                                   ],
                                 ),
-                              ))
+                              )) : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset("assets/images/none.png"),
+                          Text(
+                            "暂无评论",
+                            style: TextStyle(color: Color(0xffcccccc)),
+                          )
+                        ],
+                      ),
                     ],
-                  )),
+                  ))
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
