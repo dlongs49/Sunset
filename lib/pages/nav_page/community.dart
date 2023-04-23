@@ -22,8 +22,6 @@ class _CommunityState extends State<Community>
   @override
   bool get wantKeepAlive => true; // 缓存页面，保持状态，混入 AutomaticKeepAliveClientMixin
 
-  List tabBar = ["最新", "精选", "关注"];
-
   @override
   void initState() {
     super.initState();
@@ -73,45 +71,50 @@ class _CommunityState extends State<Community>
   PageController pageController =
       new PageController(initialPage: 0, keepPage: true);
 
-  late AnimationController _controller = AnimationController(
+  late AnimationController _animationController = AnimationController(
     duration: const Duration(milliseconds: 500),
     vsync: this,
   );
   late Animation<Offset> lineSlide =
-      Tween(begin: Offset(0.2, 0), end: Offset(0, 0)).animate(_controller);
-
+      Tween(begin: Offset(0.2, 0), end: Offset(0, 0))
+          .animate(_animationController);
+  List tabBar = ["最新", "精选", "关注"];
   GlobalKey TopPageKey = GlobalKey();
   int activeBar = 0;
-
   double s_offset = 0.2;
   double e_offset = 0.2;
-  int line_width = 28;
+  int lineWidth = 28;
+
   // 改变 page 【核心动画过渡】
-  void pageChange(i) {
-    double? current = TopPageKey.currentContext?.size?.width;
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 300),
+  void pageChange(index) {
+    // 获取导航 widget 宽度
+    final current = TopPageKey.currentContext?.size?.width;
+    // 动画控制器
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 100),
       vsync: this,
     );
-    if (i == 0) {
+    // 特殊处理 计算倍数
+    if (index == 0) {
       lineSlide = Tween(begin: Offset(s_offset, 0), end: Offset(e_offset, 0))
-          .animate(_controller);
+          .animate(_animationController);
       s_offset = 0.2;
     }
-    if (i == 1) {
-      double end = ((current! / 2) - (line_width/2)) / line_width;
+    if (index == 1) {
+      double end = ((current! / 2) - (lineWidth / 2)) / lineWidth;
       lineSlide = Tween(begin: Offset(s_offset, 0), end: Offset(end, 0))
-          .animate(_controller);
+          .animate(_animationController);
       s_offset = end;
     }
-    if (i == 2) {
-      double end = (current! - 34) / line_width;
+    if (index == 2) {
+      double end = (current! - 34) / lineWidth;
       lineSlide = Tween(begin: Offset(s_offset, 0), end: Offset(end, 0))
-          .animate(_controller);
+          .animate(_animationController);
       s_offset = end;
     }
-    _controller.forward();
-    activeBar = i;
+    // 开始动画
+    _animationController.forward();
+    activeBar = index;
     setState(() {});
   }
 

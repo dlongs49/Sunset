@@ -468,7 +468,7 @@ class _HomeState extends State<Home> {
   Widget MyPopTrendComm() {
     return Container(
       margin: EdgeInsets.only(bottom: 15),
-      padding: EdgeInsets.only(top: 15, bottom: 10),
+      padding: EdgeInsets.only(bottom: 10),
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -488,6 +488,7 @@ class _HomeState extends State<Home> {
                         fontSize: 14)),
                 InkWell(
                     child: Container(
+                        padding: EdgeInsets.only(top: 15, bottom: 15),
                         child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
@@ -506,7 +507,6 @@ class _HomeState extends State<Home> {
           Container(
             width: double.infinity,
             height: 200,
-            margin: EdgeInsets.only(top: 18),
             child: ListView.builder(
               shrinkWrap: true,
               physics: BouncingScrollPhysics(),
@@ -619,7 +619,7 @@ class _HomeState extends State<Home> {
   // 知识精选
   Widget MyKnowLedgeComm() {
     return Container(
-      padding: EdgeInsets.only(top: 15, bottom: 10),
+      padding: EdgeInsets.only(bottom: 10),
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -639,6 +639,7 @@ class _HomeState extends State<Home> {
                         fontSize: 14)),
                 InkWell(
                     child: Container(
+                        padding: EdgeInsets.only(top: 15, bottom: 15),
                         child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
@@ -657,7 +658,7 @@ class _HomeState extends State<Home> {
           Container(
             width: double.infinity,
             height: 140,
-            margin: EdgeInsets.only(top: 18),
+            // margin: EdgeInsets.only(top: 18),
             child: ListView.builder(
                 shrinkWrap: true,
                 physics: BouncingScrollPhysics(),
