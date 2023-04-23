@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:date_format/date_format.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:sunset/components/loading.dart';
 import 'package:sunset/components/no_more.dart';
+import 'package:sunset/components/refresh/refresh_footer_ex.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/sign_req.dart';
@@ -31,6 +33,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
   _DynamicDetailState({this.arguments});
 
   TrendsReq trendsReq = new TrendsReq();
+
   @override
   void initState() {
     super.initState();
@@ -87,7 +90,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
   // 关注 & 取消关注
   @override
   void handleFollow(String uid) async {
-    if(uinfo["uid"] == null){
+    if (uinfo["uid"] == null) {
       showIsLogDialog(context);
       return;
     }
@@ -123,7 +126,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
   // 发送评论
   @override
   Future<void> pubComment() async {
-    if(uinfo["uid"] == null){
+    if (uinfo["uid"] == null) {
       showIsLogDialog(context);
       return;
     }
@@ -138,13 +141,14 @@ class _DynamicDetailState extends State<DynamicDetail> {
       Map res = await trendsReq.pubComment(commParams);
       if (res["code"] == 200) {
         commentList.insert(0, {
-          "avator": uinfo["avator"],
+          "avator": baseUrl + uinfo["avator"],
           "nickname": uinfo["nickname"],
           "content": commParams["content"],
           "create_time": new DateTime.now().toString(),
           "star": 0,
           "isstar": false
         });
+        commentTotal++;
         // 重置输入框
         ContentController = TextEditingController.fromValue(TextEditingValue(
             text: "",
@@ -152,7 +156,9 @@ class _DynamicDetailState extends State<DynamicDetail> {
                 TextPosition(affinity: TextAffinity.downstream, offset: 0))));
         commParams["content"] = "";
         FocusManager.instance.primaryFocus?.unfocus();
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       } else {
         toast("评论失败");
       }
@@ -161,54 +167,51 @@ class _DynamicDetailState extends State<DynamicDetail> {
       errToast();
     }
   }
+
   List commentList = [];
   int commentTotal = 0;
   Map<String, dynamic> pageMap = {"page_num": 1, "page_rows": 10};
 
-  bool isPoint = false;
-
-  // 监听滑动结束 分页加载
-  bool scrollEnd(ScrollNotification n) {
-    print("${commentList.length}---${commentTotal}");
-    if (commentList.length >= commentTotal) {
-      return true;
-    } else {
-      // isPoint 解决多次触发置底操作，导致上一次请求未完成，多次请求bug
-      if (isPoint) {
-        isPoint = false;
-        print(pageMap);
-        pageMap["page_num"] = pageMap["page_num"] + 1;
-        var timeout = Duration(seconds: 1);
-        Timer(timeout, () {
-          getCommnet();
-        });
-      }
-    }
-    return false;
-  }
-
   // 评论列表
   @override
-  Future<void> getCommnet() async {
+  Future<IndicatorResult> getCommnet() async {
     try {
       Map res = await trendsReq.getComment(pageMap);
       if (res["code"] == 200) {
         commentList.insertAll(commentList.length, res["data"]["list"]);
         commentTotal = res["data"]["total"];
-        isPoint = true;
         if (mounted) {
           setState(() {});
         }
+        return IndicatorResult.success;
+      } else {
+        return IndicatorResult.fail;
       }
     } catch (e) {
       errToast();
+      return IndicatorResult.fail;
+    }
+  }
+
+// 加载 刷新控制器
+  EasyRefreshController _controller =
+      new EasyRefreshController(controlFinishRefresh: true);
+
+  // 上拉加载
+  Future<IndicatorResult> onLoad() async {
+    pageMap["page_num"]++;
+    if (commentList.length >= commentTotal) {
+      return IndicatorResult.noMore;
+    } else {
+      IndicatorResult status = await getCommnet();
+      return status;
     }
   }
 
   // 评论点赞
   @override
   Future<void> handleCommStar(params, index) async {
-    if(uinfo["uid"] == null){
+    if (uinfo["uid"] == null) {
       showIsLogDialog(context);
       return;
     }
@@ -253,11 +256,13 @@ class _DynamicDetailState extends State<DynamicDetail> {
           children: [
             CustomTabBar(title: "动态详情", bgColor: null, fontColor: null),
             Expanded(
-              child: NotificationListener<ScrollEndNotification>(
-                  onNotification: (notification) => scrollEnd(notification),
+              child: EasyRefresh(
+                  footer: RefreshFooterEx(),
+                  onLoad: onLoad,
+                  controller: _controller,
                   child: ListView(
                     padding: EdgeInsets.zero,
-                    physics: BouncingScrollPhysics(), // IOS的回弹属性
+                    // physics: BouncingScrollPhysics(), // IOS的回弹属性
                     children: [
                       Container(
                         margin: EdgeInsets.symmetric(horizontal: 15),
@@ -353,7 +358,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                 ? Container(
                                     margin: EdgeInsets.only(top: 20),
                                     child: GridView.builder(
-                                      padding: EdgeInsets.zero,
+                                        padding: EdgeInsets.zero,
                                         shrinkWrap: true,
                                         itemCount: detail["images"].length,
                                         physics: NeverScrollableScrollPhysics(),
@@ -394,7 +399,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
                       ),
                       Padding(
                           padding: EdgeInsets.only(left: 12, bottom: 12),
-                          child: Text("全部评论(${commentList.length})",
+                          child: Text("全部评论(${commentTotal})",
                               style: TextStyle(fontSize: 14))),
                       ListView.builder(
                           padding: EdgeInsets.zero,
@@ -404,251 +409,243 @@ class _DynamicDetailState extends State<DynamicDetail> {
                           //禁用滑动事件
                           itemCount: commentList.length,
                           itemBuilder: (ctx, index) =>
-                              /* 如果列表长度 不等于 当前的索引值即没有到底部 则展示列表，
-                            否 在进行二次三元判断，判断列表的长度 是否大于等于总条数，在进行是否 加载中还是到底部
-                          */
-                              index + 1 != commentList.length
-                                  ? Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 15, vertical: 14),
-                                      decoration: BoxDecoration(
-                                          border: Border(
-                                              bottom: BorderSide(
-                                                  width: 1,
-                                                  color: Color(0xFFF1F1F1)))),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          InkWell(
-                                            child: Container(
-                                                width: 32,
-                                                height: 32,
-                                                margin:
-                                                    EdgeInsets.only(right: 8),
-                                                child: ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            32),
-                                                    child: Image.network(
-                                                        "${baseUrl}${commentList[index]["avator"]}",
-                                                        fit: BoxFit.cover,
-                                                        errorBuilder: (ctx, err,
-                                                                stackTrace) =>
-                                                            Image.asset(
-                                                                'assets/images/sunset.png',
-                                                                //默认显示图片
-                                                                height: 38,
-                                                                width: double
-                                                                    .infinity)))),
-                                            onTap: () => toPage(
-                                                "userInfo", commentList[index]),
-                                          ),
-                                          Expanded(
-                                              child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                  margin: EdgeInsets.only(
-                                                      top: 5, bottom: 6),
-                                                  child: Text(
-                                                      commentList[index][
-                                                                  "nickname"] !=
-                                                              null
-                                                          ? commentList[index]
-                                                              ["nickname"]
-                                                          : "",
-                                                      style: TextStyle(
-                                                          fontSize: 13,
-                                                          fontWeight: FontWeight
-                                                              .w600))),
-                                              Text(
-                                                  commentList[index]
-                                                              ["content"] !=
-                                                          null
-                                                      ? commentList[index]
-                                                          ["content"]
-                                                      : "",
-                                                  style: TextStyle(
-                                                      fontSize: 13,
-                                                      height: 1.5)),
-                                              SizedBox(height: 10),
-                                              Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                      formatDate(
-                                                          DateTime.parse(
-                                                              commentList[index]
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 14),
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(
+                                            width: 1,
+                                            color: Color(0xFFF1F1F1)))),
+                                child: Row(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    InkWell(
+                                      child: Container(
+                                          width: 32,
+                                          height: 32,
+                                          margin:
+                                          EdgeInsets.only(right: 8),
+                                          child: ClipRRect(
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  32),
+                                              child: Image.network(
+                                                  "${baseUrl}${commentList[index]["avator"]}",
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (ctx, err,
+                                                      stackTrace) =>
+                                                      Image.asset(
+                                                          'assets/images/sunset.png',
+                                                          //默认显示图片
+                                                          height: 38,
+                                                          width: double
+                                                              .infinity)))),
+                                      onTap: () => toPage(
+                                          "userInfo", commentList[index]),
+                                    ),
+                                    Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                                margin: EdgeInsets.only(
+                                                    top: 5, bottom: 6),
+                                                child: Text(
+                                                    commentList[index][
+                                                    "nickname"] !=
+                                                        null
+                                                        ? commentList[index]
+                                                    ["nickname"]
+                                                        : "",
+                                                    style: TextStyle(
+                                                        fontSize: 13,
+                                                        fontWeight: FontWeight
+                                                            .w600))),
+                                            Text(
+                                                commentList[index]
+                                                ["content"] !=
+                                                    null
+                                                    ? commentList[index]
+                                                ["content"]
+                                                    : "",
+                                                style: TextStyle(
+                                                    fontSize: 13,
+                                                    height: 1.5)),
+                                            SizedBox(height: 10),
+                                            Row(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                    formatDate(
+                                                        DateTime.parse(
+                                                            commentList[index]
+                                                            [
+                                                            "create_time"]),
+                                                        [
+                                                          yyyy,
+                                                          '.',
+                                                          mm,
+                                                          '.',
+                                                          dd
+                                                        ]),
+                                                    style: TextStyle(
+                                                        color:
+                                                        Color(0xffcccccc),
+                                                        fontSize: 13)),
+                                                Spacer(flex: 1),
+                                                InkWell(
+                                                    highlightColor:
+                                                    Colors.white,
+                                                    splashColor: Colors.white,
+                                                    child: Container(
+                                                      child: Row(
+                                                        children: [
+                                                          Container(
+                                                              alignment: Alignment
+                                                                  .centerRight,
+                                                              width: 30,
+                                                              child: Text(
+                                                                  commentList[index]["star"] !=
+                                                                      null
+                                                                      ? commentList[index]["star"]
+                                                                      .toString()
+                                                                      : "0",
+                                                                  style: TextStyle(
+                                                                      color: Color(commentList[index]["isstar"]
+                                                                          ? 0xff22d47e
+                                                                          : 0xffbbbbbb),
+                                                                      fontSize:
+                                                                      14))),
+                                                          SizedBox(width: 10),
+                                                          Icon(
+                                                              IconData(
+                                                                  commentList[index]
                                                                   [
-                                                                  "create_time"]),
-                                                          [
-                                                            yyyy,
-                                                            '.',
-                                                            mm,
-                                                            '.',
-                                                            dd
-                                                          ]),
-                                                      style: TextStyle(
-                                                          color:
-                                                              Color(0xffcccccc),
-                                                          fontSize: 13)),
-                                                  Spacer(flex: 1),
-                                                  InkWell(
-                                                      highlightColor:
-                                                          Colors.white,
-                                                      splashColor:
-                                                          Colors.white,
-                                                      child: Container(
-                                                        child: Row(
-                                                          children: [
-                                                            Container(
-                                                                alignment: Alignment
-                                                                    .centerRight,
-                                                                width: 30,
-                                                                child: Text(
-                                                                    commentList[index]["star"] !=
-                                                                            null
-                                                                        ? commentList[index]["star"]
-                                                                            .toString()
-                                                                        : "0",
-                                                                    style: TextStyle(
-                                                                        color: Color(commentList[index]["isstar"]
-                                                                            ? 0xff22d47e
-                                                                            : 0xffbbbbbb),
-                                                                        fontSize:
-                                                                            14))),
-                                                            SizedBox(width: 10),
-                                                            Icon(
-                                                                IconData(
-                                                                    commentList[index]
-                                                                            [
-                                                                            "isstar"]
-                                                                        ? 0xec8c
-                                                                        : 0xec7f,
-                                                                    fontFamily:
-                                                                        'sunfont'),
-                                                                size: 16,
-                                                                color: Color(commentList[
-                                                                            index]
-                                                                        [
-                                                                        "isstar"]
-                                                                    ? 0xff22d47e
-                                                                    : 0xffbbbbbb)),
-                                                          ],
-                                                        ),
+                                                                  "isstar"]
+                                                                      ? 0xec8c
+                                                                      : 0xec7f,
+                                                                  fontFamily:
+                                                                  'sunfont'),
+                                                              size: 16,
+                                                              color: Color(commentList[
+                                                              index]
+                                                              [
+                                                              "isstar"]
+                                                                  ? 0xff22d47e
+                                                                  : 0xffbbbbbb)),
+                                                        ],
                                                       ),
-                                                      onTap: () =>
-                                                          handleCommStar(
-                                                              commentList[
-                                                                  index],
-                                                              index)),
-                                                  SizedBox(width: 10),
-                                                  Icon(
-                                                      IconData(0xe600,
-                                                          fontFamily:
-                                                              'sunfont'),
-                                                      size: 18,
-                                                      color: Color(0xffbbbbbb))
-                                                ],
-                                              ),
-                                              // Container(
-                                              //     margin: EdgeInsets.only(top: 10),
-                                              //     padding: EdgeInsets.only(top: 10),
-                                              //     decoration: BoxDecoration(
-                                              //         border: Border(
-                                              //             top: BorderSide(
-                                              //                 width: 1,
-                                              //                 color:
-                                              //                     Color(0xFFF1F1F1)))),
-                                              //     child: Row(
-                                              //         crossAxisAlignment:
-                                              //             CrossAxisAlignment.start,
-                                              //         children: [
-                                              //           Container(
-                                              //               width: 32,
-                                              //               height: 32,
-                                              //               margin: EdgeInsets.only(
-                                              //                   right: 8),
-                                              //               child: ClipRRect(
-                                              //                   borderRadius:
-                                              //                       BorderRadius
-                                              //                           .circular(32),
-                                              //                   child: Image.asset(
-                                              //                       "assets/images/400x400.jpg",
-                                              //                       fit:
-                                              //                           BoxFit.cover))),
-                                              //           Expanded(
-                                              //               child: Column(
-                                              //                   crossAxisAlignment:
-                                              //                       CrossAxisAlignment
-                                              //                           .start,
-                                              //                   children: [
-                                              //                 Container(
-                                              //                     margin:
-                                              //                         EdgeInsets.only(
-                                              //                             top: 5,
-                                              //                             bottom: 6),
-                                              //                     child: Text("Sept",
-                                              //                         style: TextStyle(
-                                              //                             fontSize: 13,
-                                              //                             fontWeight:
-                                              //                                 FontWeight
-                                              //                                     .w600))),
-                                              //                 Text(
-                                              //                     "浔阳江头夜送客，枫叶荻花秋瑟瑟。",
-                                              //                     style: TextStyle(
-                                              //                         fontSize: 13,
-                                              //                         height: 1.5)),
-                                              //                 SizedBox(height: 10),
-                                              //                 Row(
-                                              //                   crossAxisAlignment:
-                                              //                       CrossAxisAlignment
-                                              //                           .center,
-                                              //                   children: [
-                                              //                     Text("2023-03-17",
-                                              //                         style: TextStyle(
-                                              //                             color: Color(
-                                              //                                 0xffcccccc),
-                                              //                             fontSize:
-                                              //                                 13)),
-                                              //                     Spacer(flex: 1),
-                                              //                     Text("0",
-                                              //                         style: TextStyle(
-                                              //                             color: Color(
-                                              //                                 0xffbbbbbb),
-                                              //                             fontSize:
-                                              //                                 14)),
-                                              //                     SizedBox(width: 10),
-                                              //                     Icon(
-                                              //                         IconData(0xec7f,
-                                              //                             fontFamily:
-                                              //                                 'sunfont'),
-                                              //                         size: 16,
-                                              //                         color: Color(
-                                              //                             0xffbbbbbb)),
-                                              //                     SizedBox(width: 10),
-                                              //                     Icon(
-                                              //                         IconData(0xe600,
-                                              //                             fontFamily:
-                                              //                                 'sunfont'),
-                                              //                         size: 18,
-                                              //                         color: Color(
-                                              //                             0xffbbbbbb))
-                                              //                   ],
-                                              //                 ),
-                                              //               ]))
-                                              //         ]))
-                                            ],
-                                          ))
-                                        ],
-                                      ),
-                                    )
-                                  : commentList.length != commentTotal
-                                      ? Loading()
-                                      : NoMore())
+                                                    ),
+                                                    onTap: () =>
+                                                        handleCommStar(
+                                                            commentList[
+                                                            index],
+                                                            index)),
+                                                SizedBox(width: 10),
+                                                Icon(
+                                                    IconData(0xe600,
+                                                        fontFamily:
+                                                        'sunfont'),
+                                                    size: 18,
+                                                    color: Color(0xffbbbbbb))
+                                              ],
+                                            ),
+                                            // Container(
+                                            //     margin: EdgeInsets.only(top: 10),
+                                            //     padding: EdgeInsets.only(top: 10),
+                                            //     decoration: BoxDecoration(
+                                            //         border: Border(
+                                            //             top: BorderSide(
+                                            //                 width: 1,
+                                            //                 color:
+                                            //                     Color(0xFFF1F1F1)))),
+                                            //     child: Row(
+                                            //         crossAxisAlignment:
+                                            //             CrossAxisAlignment.start,
+                                            //         children: [
+                                            //           Container(
+                                            //               width: 32,
+                                            //               height: 32,
+                                            //               margin: EdgeInsets.only(
+                                            //                   right: 8),
+                                            //               child: ClipRRect(
+                                            //                   borderRadius:
+                                            //                       BorderRadius
+                                            //                           .circular(32),
+                                            //                   child: Image.asset(
+                                            //                       "assets/images/400x400.jpg",
+                                            //                       fit:
+                                            //                           BoxFit.cover))),
+                                            //           Expanded(
+                                            //               child: Column(
+                                            //                   crossAxisAlignment:
+                                            //                       CrossAxisAlignment
+                                            //                           .start,
+                                            //                   children: [
+                                            //                 Container(
+                                            //                     margin:
+                                            //                         EdgeInsets.only(
+                                            //                             top: 5,
+                                            //                             bottom: 6),
+                                            //                     child: Text("Sept",
+                                            //                         style: TextStyle(
+                                            //                             fontSize: 13,
+                                            //                             fontWeight:
+                                            //                                 FontWeight
+                                            //                                     .w600))),
+                                            //                 Text(
+                                            //                     "浔阳江头夜送客，枫叶荻花秋瑟瑟。",
+                                            //                     style: TextStyle(
+                                            //                         fontSize: 13,
+                                            //                         height: 1.5)),
+                                            //                 SizedBox(height: 10),
+                                            //                 Row(
+                                            //                   crossAxisAlignment:
+                                            //                       CrossAxisAlignment
+                                            //                           .center,
+                                            //                   children: [
+                                            //                     Text("2023-03-17",
+                                            //                         style: TextStyle(
+                                            //                             color: Color(
+                                            //                                 0xffcccccc),
+                                            //                             fontSize:
+                                            //                                 13)),
+                                            //                     Spacer(flex: 1),
+                                            //                     Text("0",
+                                            //                         style: TextStyle(
+                                            //                             color: Color(
+                                            //                                 0xffbbbbbb),
+                                            //                             fontSize:
+                                            //                                 14)),
+                                            //                     SizedBox(width: 10),
+                                            //                     Icon(
+                                            //                         IconData(0xec7f,
+                                            //                             fontFamily:
+                                            //                                 'sunfont'),
+                                            //                         size: 16,
+                                            //                         color: Color(
+                                            //                             0xffbbbbbb)),
+                                            //                     SizedBox(width: 10),
+                                            //                     Icon(
+                                            //                         IconData(0xe600,
+                                            //                             fontFamily:
+                                            //                                 'sunfont'),
+                                            //                         size: 18,
+                                            //                         color: Color(
+                                            //                             0xffbbbbbb))
+                                            //                   ],
+                                            //                 ),
+                                            //               ]))
+                                            //         ]))
+                                          ],
+                                        ))
+                                  ],
+                                ),
+                              ))
                     ],
                   )),
             ),

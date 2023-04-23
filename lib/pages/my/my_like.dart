@@ -18,7 +18,6 @@ class MyLike extends StatefulWidget {
 class _MyLikeState extends State<MyLike> {
   List list = [];
   int total = 0;
-  bool isPoint = false;
   Map<String, dynamic> pageMap = {"page_num": 1, "page_rows": 8};
   KnowReq knowReq = new KnowReq();
 
@@ -34,7 +33,6 @@ class _MyLikeState extends State<MyLike> {
       if (res["code"] == 200) {
         list.insertAll(list.length, res["data"]["list"]);
         total = res["data"]["total"];
-        isPoint = true;
         if (mounted) {
           setState(() {});
         }
