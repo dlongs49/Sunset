@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_qr_reader/flutter_qr_reader.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class Scan extends StatefulWidget {
   const Scan({Key? key}) : super(key: key);
@@ -14,31 +13,10 @@ class Scan extends StatefulWidget {
 }
 
 class _ScanState extends State<Scan> {
-  late QrReaderViewController QrController;
-  // 相机权限申请
-  void requestAllPermission() async {
-    var status = await Permission.phone.status;
-    print(">>状态 $status");
-    var isGranted = await Permission.contacts.request().isGranted;
-    if (isGranted) {
-      print("没有权限申请许可");
-    }
-    // 用户拒绝权限申请，再次申请转至系统设置
-    if (await Permission.speech.isPermanentlyDenied) {
-      openAppSettings();
-    }
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.camera,
-    ].request();
-    QrController.startCamera(onScan);
-  }
-
-
+  late final QrReaderViewController QrController;
   @override
   void initState() {
-    requestAllPermission();
   }
-
   void onScan(String val, List data) {
     print("扫一扫值：>>$val");
     print("list值：>>$data");
@@ -50,17 +28,13 @@ class _ScanState extends State<Scan> {
         textColor: Colors.white,
         fontSize: 16.0);
   }
-
+  // 控制闪光灯开关
   bool isOpen = false;
 
   void toBack() {
-    QrController.stopCamera();
     Navigator.pop(context);
   }
 
-  void dispose() {
-    QrController.stopCamera();
-  }
 
   @override
   Widget build(BuildContext context) {

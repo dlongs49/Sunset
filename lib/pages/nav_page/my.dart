@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/sign_req.dart';
@@ -73,7 +74,39 @@ class _MyState extends State<My> {
       Navigator.pushNamed(context, path);
     }
   }
-
+  // 去扫一扫
+  void toScan(String path) async{
+    // 有token限制
+    if (uinfo["uid"] == null) {
+      showIsLogDialog(context);
+      return;
+    }
+    Permission permission = Permission.camera;
+    // 相机权限
+    PermissionStatus status = await permission.status;
+    if (status.isGranted) {
+      print("申请通过>>");
+      Navigator.pushNamed(context, path);
+    } else if (status.isDenied) {
+      PermissionStatus state = await permission.request();
+      print("申请拒绝>>");
+      if (state.isPermanentlyDenied) {
+        print("  >>永久拒绝2");
+        await openAppSettings();
+      }
+      if(state.isGranted){
+        print(">>申请通过2");
+        Navigator.pushNamed(context, path);
+      }
+    } else if (status.isPermanentlyDenied) {
+      print("永久拒绝>>");
+      // 转至系统设置
+      await openAppSettings();
+    } else {
+      toast("未知错误");
+      print("第一次申请权限");
+    }
+  }
   void toUserinfo() async {
     if (uinfo["uid"] != null) {
       Navigator.pushNamed(context, "userInfo",
@@ -148,7 +181,7 @@ class _MyState extends State<My> {
                                   IconData(0xe601, fontFamily: 'sunfont'),
                                   color: Colors.white,
                                   size: 24.0)),
-                          onTap: () => toPages("scan")),
+                          onTap: () => toScan("scan")),
                       Text("我的",
                           style: TextStyle(color: Colors.white, fontSize: 18)),
                       Row(

@@ -50,11 +50,12 @@ class _HomeState extends State<Home> {
       print("个人信息>>> ${res["data"]["nickname"]}");
       if (res["code"] == 200) {
         uinfo = res["data"];
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       }
     } catch (e) {
-      print(e);
-      errToast();
+      print("未登录>>$e");
     }
   }
 
@@ -72,7 +73,9 @@ class _HomeState extends State<Home> {
           map["url"] = el["url"];
           banner.add(map);
         });
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       }
     } catch (e) {
       print(e);
@@ -88,7 +91,9 @@ class _HomeState extends State<Home> {
       Map res = await homeReq.getTrends({"page_num": 1, "page_rows": 7});
       if (res["code"] == 200) {
         trendsList = res["data"]["list"];
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       }
     } catch (e) {
       print(e);
@@ -105,7 +110,9 @@ class _HomeState extends State<Home> {
           await homeReq.getKnow({"page_num": 1, "page_rows": 7, "isimg": true});
       if (res["code"] == 200) {
         knowList = res["data"]["list"];
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       }
     } catch (e) {
       print(e);
@@ -131,11 +138,9 @@ class _HomeState extends State<Home> {
         "id": arg["id"]
       });
     }
-    if(url == "userInfo"){
-      if(uinfo["uid"] != null){
-        Navigator.pushNamed(context, url, arguments: {
-          "uid": uinfo["uid"]
-        });
+    if (url == "userInfo") {
+      if (uinfo["uid"] != null) {
+        Navigator.pushNamed(context, url, arguments: {"uid": uinfo["uid"]});
       }
     }
   }
@@ -492,14 +497,15 @@ class _HomeState extends State<Home> {
                         child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                          Text("更多动态",
-                              style: TextStyle(
-                                  color: Color.fromRGBO(120, 120, 120, 1),
-                                  fontSize: 12)),
-                          SizedBox(width: 5),
-                          Icon(IconData(0xeb8a, fontFamily: 'sunfont'),
-                              size: 10, color: Color.fromRGBO(120, 120, 120, 1))
-                        ])),
+                              Text("更多动态",
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(120, 120, 120, 1),
+                                      fontSize: 12)),
+                              SizedBox(width: 5),
+                              Icon(IconData(0xeb8a, fontFamily: 'sunfont'),
+                                  size: 10,
+                                  color: Color.fromRGBO(120, 120, 120, 1))
+                            ])),
                     onTap: () => toPage("community", null))
               ],
             ),
@@ -643,14 +649,15 @@ class _HomeState extends State<Home> {
                         child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                          Text("更多知识",
-                              style: TextStyle(
-                                  color: Color.fromRGBO(120, 120, 120, 1),
-                                  fontSize: 12)),
-                          SizedBox(width: 5),
-                          Icon(IconData(0xeb8a, fontFamily: 'sunfont'),
-                              size: 10, color: Color.fromRGBO(120, 120, 120, 1))
-                        ])),
+                              Text("更多知识",
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(120, 120, 120, 1),
+                                      fontSize: 12)),
+                              SizedBox(width: 5),
+                              Icon(IconData(0xeb8a, fontFamily: 'sunfont'),
+                                  size: 10,
+                                  color: Color.fromRGBO(120, 120, 120, 1))
+                            ])),
                     onTap: () => toPage("knowList", null))
               ],
             ),
@@ -817,7 +824,7 @@ class _HomeState extends State<Home> {
                                   Image.asset('assets/images/sunset.png',
                                       width: double.infinity)),
                         ),
-                        onTap: ()=>toPage("userInfo",uinfo),
+                        onTap: () => toPage("userInfo", uinfo),
                       ),
                       Text(
                         "我",
@@ -846,7 +853,7 @@ class _HomeState extends State<Home> {
             ),
           ]),
           Expanded(
-            child:ListView(
+            child: ListView(
                 padding: EdgeInsets.zero,
                 physics: BouncingScrollPhysics(),
                 // ClampingScrollPhysics 安卓滑动效果 BouncingScrollPhysics IOS滑动效果
@@ -880,7 +887,7 @@ class _HomeState extends State<Home> {
                                               color: Color.fromRGBO(
                                                   46, 202, 129, 1)),
                                           borderRadius:
-                                          BorderRadius.circular(50)),
+                                              BorderRadius.circular(50)),
                                       child: Icon(
                                           IconData(0xe62c,
                                               fontFamily: 'sunfont'),
@@ -888,15 +895,14 @@ class _HomeState extends State<Home> {
                                           size: 10.0)),
                                   Container(
                                       constraints:
-                                      BoxConstraints(maxWidth: 200),
+                                          BoxConstraints(maxWidth: 200),
                                       height: 20,
                                       margin: EdgeInsets.only(left: 8),
                                       child: PageView.builder(
                                           scrollDirection: Axis.vertical,
                                           // controller: pageController,
                                           itemCount: annBanner.length,
-                                          itemBuilder:
-                                              (bubuildContext, index) {
+                                          itemBuilder: (bubuildContext, index) {
                                             return (Text(
                                                 annBanner[index]['title'],
                                                 style: TextStyle(
@@ -910,13 +916,11 @@ class _HomeState extends State<Home> {
                                     width: 20,
                                     height: 20,
                                     decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(4),
-                                        color: Color.fromRGBO(
-                                            246, 247, 251, 1)),
+                                        borderRadius: BorderRadius.circular(4),
+                                        color:
+                                            Color.fromRGBO(246, 247, 251, 1)),
                                     child: Icon(
-                                        IconData(0xeb8a,
-                                            fontFamily: 'sunfont'),
+                                        IconData(0xeb8a, fontFamily: 'sunfont'),
                                         color: Colors.black,
                                         size: 8),
                                   )
@@ -938,14 +942,13 @@ class _HomeState extends State<Home> {
                                 children: [
                                   Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                       children: navList.map((item) {
                                         return InkWell(
                                           child: Container(
                                               margin: EdgeInsets.only(
-                                                  right: item['id'] == 5
-                                                      ? 0
-                                                      : 15),
+                                                  right:
+                                                      item['id'] == 5 ? 0 : 15),
                                               child: Column(
                                                 children: [
                                                   Container(
@@ -955,8 +958,8 @@ class _HomeState extends State<Home> {
                                                               width: 60))),
                                                   Text(
                                                     item["title"],
-                                                    style: TextStyle(
-                                                        fontSize: 12),
+                                                    style:
+                                                        TextStyle(fontSize: 12),
                                                   )
                                                 ],
                                               )),
@@ -983,8 +986,7 @@ class _HomeState extends State<Home> {
                                     width: navBarWidth,
                                     height: 3,
                                     decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(6),
+                                        borderRadius: BorderRadius.circular(6),
                                         color: Color(0xff6dce87)),
                                   ))
                             ],
@@ -1002,8 +1004,7 @@ class _HomeState extends State<Home> {
                             color: Colors.white,
                           ),
                           child: Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Container(
                                     width: 140,
@@ -1012,10 +1013,8 @@ class _HomeState extends State<Home> {
                                         "assets/images/jihua.jpg",
                                         fit: BoxFit.cover)),
                                 Column(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.center,
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.end,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text("立即设置目标体重",
                                         style: TextStyle(
@@ -1026,10 +1025,10 @@ class _HomeState extends State<Home> {
                                       width: 100,
                                       margin: EdgeInsets.only(top: 10),
                                       decoration: BoxDecoration(
-                                          color: Color.fromRGBO(
-                                              34, 212, 126, 1),
+                                          color:
+                                              Color.fromRGBO(34, 212, 126, 1),
                                           borderRadius:
-                                          BorderRadius.circular(16)),
+                                              BorderRadius.circular(16)),
                                       child: Align(
                                           child: Text("开始计划",
                                               style: TextStyle(
@@ -1052,61 +1051,50 @@ class _HomeState extends State<Home> {
                                           topLeft: Radius.circular(10),
                                           topRight: Radius.circular(10))),
                                   padding: EdgeInsets.only(
-                                      left: 15,
-                                      right: 15,
-                                      top: 16,
-                                      bottom: 22),
+                                      left: 15, right: 15, top: 16, bottom: 22),
                                   child: Column(
                                     children: [
                                       Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text("饮食&运动记录",
                                               style: TextStyle(
                                                   color: Colors.black,
-                                                  fontWeight:
-                                                  FontWeight.w800,
+                                                  fontWeight: FontWeight.w800,
                                                   fontSize: 14)),
                                           Container(
-                                            // 点击事件
+                                              // 点击事件
                                               child: Row(
                                                   crossAxisAlignment:
-                                                  CrossAxisAlignment
-                                                      .center,
+                                                      CrossAxisAlignment.center,
                                                   children: [
-                                                    Text("更多食谱",
-                                                        style: TextStyle(
-                                                            color:
-                                                            Color.fromRGBO(
-                                                                120,
-                                                                120,
-                                                                120,
-                                                                1),
-                                                            fontSize: 12)),
-                                                    SizedBox(width: 5),
-                                                    Icon(
-                                                        IconData(0xeb8a,
-                                                            fontFamily:
-                                                            'sunfont'),
-                                                        size: 10,
+                                                Text("更多食谱",
+                                                    style: TextStyle(
                                                         color: Color.fromRGBO(
-                                                            120, 120, 120, 1))
-                                                  ]))
+                                                            120, 120, 120, 1),
+                                                        fontSize: 12)),
+                                                SizedBox(width: 5),
+                                                Icon(
+                                                    IconData(0xeb8a,
+                                                        fontFamily: 'sunfont'),
+                                                    size: 10,
+                                                    color: Color.fromRGBO(
+                                                        120, 120, 120, 1))
+                                              ]))
                                         ],
                                       ),
                                       Container(
                                         margin: EdgeInsets.only(top: 10),
                                         child: Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment
-                                              .spaceBetween,
+                                              MainAxisAlignment.spaceBetween,
                                           crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                              CrossAxisAlignment.center,
                                           children: [
                                             Column(
                                               crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Row(children: [
                                                   Text("还可以吃",
@@ -1116,7 +1104,7 @@ class _HomeState extends State<Home> {
                                                   Icon(
                                                       IconData(0xeb8a,
                                                           fontFamily:
-                                                          'sunfont'),
+                                                              'sunfont'),
                                                       size: 10,
                                                       color: Colors.black)
                                                 ]),
@@ -1124,18 +1112,15 @@ class _HomeState extends State<Home> {
                                                 Row(children: [
                                                   Text("1998",
                                                       style: TextStyle(
-                                                          color: Colors
-                                                              .black87,
+                                                          color: Colors.black87,
                                                           fontWeight:
-                                                          FontWeight
-                                                              .bold,
+                                                              FontWeight.bold,
                                                           fontSize: 25,
                                                           fontFamily:
-                                                          "PingFang SC")),
+                                                              "PingFang SC")),
                                                   Text("千卡",
                                                       style: TextStyle(
-                                                          color: Colors
-                                                              .black38,
+                                                          color: Colors.black38,
                                                           fontSize: 10,
                                                           height: 2.6))
                                                 ]),
@@ -1145,25 +1130,16 @@ class _HomeState extends State<Home> {
                                                     margin: EdgeInsets.only(
                                                         top: 4, bottom: 4),
                                                     decoration: BoxDecoration(
-                                                        color:
-                                                        Color.fromRGBO(
-                                                            237,
-                                                            236,
-                                                            242,
-                                                            1),
+                                                        color: Color.fromRGBO(
+                                                            237, 236, 242, 1),
                                                         borderRadius:
-                                                        BorderRadius
-                                                            .circular(
-                                                            15))),
+                                                            BorderRadius
+                                                                .circular(15))),
                                                 Text("推荐摄入1998千卡",
                                                     style: TextStyle(
                                                         fontSize: 12,
-                                                        color:
-                                                        Color.fromRGBO(
-                                                            191,
-                                                            191,
-                                                            193,
-                                                            1)))
+                                                        color: Color.fromRGBO(
+                                                            191, 191, 193, 1)))
                                               ],
                                             ),
                                             Container(
@@ -1180,19 +1156,15 @@ class _HomeState extends State<Home> {
                                 Container(
                                   width: double.infinity,
                                   padding: EdgeInsets.only(
-                                      top: 8,
-                                      bottom: 14,
-                                      left: 15,
-                                      right: 15),
+                                      top: 8, bottom: 14, left: 15, right: 15),
                                   decoration: BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.only(
                                           bottomLeft: Radius.circular(10),
-                                          bottomRight:
-                                          Radius.circular(10))),
+                                          bottomRight: Radius.circular(10))),
                                   child: Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                       children: mealsList.map((item) {
                                         return InkWell(
                                             child: Container(
@@ -1205,22 +1177,20 @@ class _HomeState extends State<Home> {
                                                   color: Color.fromRGBO(
                                                       246, 247, 251, 1),
                                                   borderRadius:
-                                                  BorderRadius.circular(
-                                                      8)),
+                                                      BorderRadius.circular(8)),
                                               child: Column(
                                                 children: [
                                                   Icon(
                                                       IconData(item['icon'],
                                                           fontFamily:
-                                                          'sunfont'),
+                                                              'sunfont'),
                                                       size: 20,
                                                       color: Colors.black),
                                                   SizedBox(height: 5),
                                                   Text(item['title'],
                                                       style: TextStyle(
                                                           fontSize: 12,
-                                                          color:
-                                                          Colors.black))
+                                                          color: Colors.black))
                                                 ],
                                               ),
                                             ),
@@ -1234,21 +1204,21 @@ class _HomeState extends State<Home> {
                                     decoration: BoxDecoration(
                                         color: Colors.grey[300],
                                         borderRadius:
-                                        BorderRadius.circular(10)),
+                                            BorderRadius.circular(10)),
                                     child: Swiper(
-                                      itemBuilder: (BuildContext context,
-                                          int index) {
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
                                         return InkWell(
                                             child: ClipRRect(
                                               borderRadius:
-                                              BorderRadius.circular(10),
+                                                  BorderRadius.circular(10),
                                               child: new Image.network(
                                                 banner[index]["images"],
                                                 fit: BoxFit.fill,
                                               ),
                                             ),
-                                            onTap: () => toBanner(
-                                                banner[index]['url']));
+                                            onTap: () =>
+                                                toBanner(banner[index]['url']));
                                       },
                                       // 图片数量
                                       itemCount: banner.length,
@@ -1262,8 +1232,8 @@ class _HomeState extends State<Home> {
                                           color: Color.fromRGBO(
                                               255, 255, 255, 0.7),
                                           // 未选中点颜色
-                                          activeColor: Color.fromRGBO(
-                                              102, 101, 78, 0.8),
+                                          activeColor:
+                                              Color.fromRGBO(102, 101, 78, 0.8),
                                           // 选中点颜色
                                           space: 3,
                                         ),
