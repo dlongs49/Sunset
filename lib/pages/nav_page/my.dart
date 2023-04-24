@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/request.dart';
@@ -104,7 +103,7 @@ class _MyState extends State<My> {
       await openAppSettings();
     } else {
       toast("未知错误");
-      print("第一次申请权限");
+      print("未知");
     }
   }
   void toUserinfo() async {
