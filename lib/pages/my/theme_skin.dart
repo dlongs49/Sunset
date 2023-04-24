@@ -2,7 +2,9 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/tabbar.dart';
+import 'package:sunset/provider/global.dart';
 
 class ThemeSkin extends StatefulWidget {
   const ThemeSkin({Key? key}) : super(key: key);
@@ -25,46 +27,58 @@ class _ThemeSkinState extends State<ThemeSkin> {
   // 选中的主题索引
   int activeIndex = 0;
 
+  // 主题色切换
+  void handleSkin(int index) {
+    activeIndex = index;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final prof = Provider.of<Global>(context);
     return Scaffold(
-      backgroundColor: Colors.white,
-      body:Column(
-        children: [
-          CustomTabBar(title:"主题色",bgColor:null,fontColor:null),
-          Expanded(
-              child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 26),
-                  child: GridView.builder(
-                      shrinkWrap: true,
-                      itemCount: list.length,
-                      physics: BouncingScrollPhysics(),
-                      // IOS的回弹属性
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2, // 主轴一行的数量
-                        mainAxisSpacing: 20, // 主轴每行间距
-                        crossAxisSpacing: 26, // 交叉轴每行间距
-                        childAspectRatio: 1, // item的宽高比
-                      ),
-                      itemBuilder: (ctx, i) => InkWell(
-                          child: Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                  color: Color(list[i]),
-                                  borderRadius: BorderRadius.circular(14)),
-                              child: Visibility(
-                                  visible: i == activeIndex ? true : false,
-                                  child: Icon(
-                                      IconData(0xe645, fontFamily: 'sunfont'),
-                                      color: Colors.white,
-                                      size: 26))),
-                          onTap: () {
-                            setState(() {
-                              activeIndex = i;
-                            });
-                          }))))
-        ],
-      )
-    );
+        backgroundColor: Colors.white,
+        body: Column(
+          children: [
+            CustomTabBar(title: "主题色", bgColor: null, fontColor: null),
+            Expanded(
+                child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 26),
+                    child: GridView.builder(
+                        shrinkWrap: true,
+                        itemCount: list.length,
+                        physics: BouncingScrollPhysics(),
+                        // IOS的回弹属性
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2, // 主轴一行的数量
+                          mainAxisSpacing: 20, // 主轴每行间距
+                          crossAxisSpacing: 26, // 交叉轴每行间距
+                          childAspectRatio: 1, // item的宽高比
+                        ),
+                        itemBuilder: (ctx, i) =>
+                            InkWell(
+                                child: Container(
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                        color: Color(list[i]),
+                                        borderRadius: BorderRadius.circular(
+                                            14)),
+                                    child: Visibility(
+                                        visible: i == activeIndex
+                                            ? true
+                                            : false,
+                                        child: Icon(
+                                            IconData(
+                                                0xe645, fontFamily: 'sunfont'),
+                                            color: Colors.white,
+                                            size: 26))),
+                                onTap: () {
+                                  handleSkin(i);
+                                  prof.handleTheme(list[i]);
+                                }))))
+          ],
+        ));
   }
 }

@@ -12,8 +12,8 @@ import 'package:sunset/routes/index.dart';
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
   runApp(
-     MyApp());
-      // ListenableProvider<Golbal>(create: (_) => Golbal(), child: MyApp()));
+     // MyApp());
+      ListenableProvider<Global>(create: (_) => Global(), child: MyApp()));
   //透明沉浸式状态栏
   // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
   //   statusBarColor: Colors.transparent,

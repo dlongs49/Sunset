@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/request.dart';
 import 'package:sunset/utils/tools.dart';
@@ -73,8 +75,9 @@ class _MyState extends State<My> {
       Navigator.pushNamed(context, path);
     }
   }
+
   // 去扫一扫
-  void toScan(String path) async{
+  void toScan(String path) async {
     // 有token限制
     if (uinfo["uid"] == null) {
       showIsLogDialog(context);
@@ -93,7 +96,7 @@ class _MyState extends State<My> {
         print("  >>永久拒绝2");
         await openAppSettings();
       }
-      if(state.isGranted){
+      if (state.isGranted) {
         print(">>申请通过2");
         Navigator.pushNamed(context, path);
       }
@@ -106,6 +109,7 @@ class _MyState extends State<My> {
       print("未知");
     }
   }
+
   void toUserinfo() async {
     if (uinfo["uid"] != null) {
       Navigator.pushNamed(context, "userInfo",
@@ -151,13 +155,16 @@ class _MyState extends State<My> {
   Widget build(BuildContext context) {
     double topBarHeight =
         MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
+    final prof = Provider.of<Global>(context);
+    print(">>>${prof.color}");
+    int skinTheme = prof.color;
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
         Column(children: [
           Container(
             height: topBarHeight == 0 ? 34 : topBarHeight,
-            color: Color(0xff22d47e),
+            color: Color(prof.color),
           ),
           Container(
               padding: EdgeInsets.only(left: 15, right: 15),
@@ -230,7 +237,7 @@ class _MyState extends State<My> {
                       height: 130,
                       color: Color(0xff22d47e),
                       child: CustomPaint(
-                        painter: arcBg(),
+                        painter: new arcBg(),
                       ),
                     )),
                     Container(
@@ -508,7 +515,7 @@ class _MyState extends State<My> {
 
 // 弧形 【百度大神】
 class arcBg extends CustomPainter {
-  Paint _paint = Paint()
+  Paint _paint = Paint() //0xff22d47e
     ..color = Color(0xff22d47e) //画笔颜色
     ..strokeCap = StrokeCap.butt //画笔笔触类型
     // ..isAntiAlias = true //是否启动抗锯齿
