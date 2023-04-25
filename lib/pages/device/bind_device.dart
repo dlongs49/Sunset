@@ -34,14 +34,15 @@ class _BindDeviceState extends State<BindDevice> with TickerProviderStateMixin {
     flutterBlue.stopScan();
     try {
       print("连接中...");
-      await device.connect(autoConnect: true, timeout: Duration(seconds: 100));
+      await device.connect();
       print("连接成功");
-      List<BluetoothService> services = await device.discoverServices();
-      services.forEach((el) {
-        print(el);
-        var value = el.uuid.toString();
-        print(">>>>$value");
-      });
+      // List<BluetoothService> services =  device.discoverServices();
+      // print("服务>>$services");
+      // services.forEach((el) {
+      //   print(el);
+      //   var value = el.uuid.toString();
+      //   print(">>>>$value");
+      // });
     } catch (e) {
       print("异常");
       print(e);

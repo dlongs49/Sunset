@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sunset/pages/device/bind_device.dart';
 /* 底部导航对应的页面 */
 import 'package:sunset/pages/nav_page/home.dart'; // 首页
@@ -13,6 +14,9 @@ import 'package:sunset/pages/nav_page/my.dart'; // 我的
 
 // 路由文件
 import 'package:sunset/routes/index.dart';
+import 'package:sunset/utils/api/sign_req.dart';
+
+import 'components/toast.dart';
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
@@ -38,11 +42,69 @@ class _AppState extends State<App> with AutomaticKeepAliveClientMixin {
   @override
   void changeNavBar(int index) {
     if (index == 2) {
-      Navigator.pushNamed(context, "bindDevice", arguments: {"base": "root"});
+      perBlue();
     } else {
       setState(() {
         currentIndex = index;
       });
+    }
+  }
+
+  // 申请蓝牙权限
+  void perBlue() async {
+    // 有token限制
+    if (uinfo["uid"] == null) {
+      showIsLogDialog(context);
+      return;
+    }
+    // 蓝牙权限
+    Permission permission = Permission.bluetooth;
+    PermissionStatus status = await permission.status;
+    if (status.isGranted) {
+      print("申请通过>>");
+      Navigator.pushNamed(context, "bindDevice", arguments: {"base": "root"});
+    } else if (status.isDenied) {
+      PermissionStatus state = await permission.request();
+      print("申请拒绝>>");
+      if (state.isPermanentlyDenied) {
+        print("  >>永久拒绝2");
+        await openAppSettings();
+      }
+      if (state.isGranted) {
+        print(">>申请通过2");
+        Navigator.pushNamed(context, "bindDevice", arguments: {"base": "root"});
+      }
+    } else if (status.isPermanentlyDenied) {
+      print("永久拒绝>>");
+      // 转至系统设置
+      await openAppSettings();
+    } else {
+      toast("未知错误");
+      print("未知");
+    }
+  }
+
+  void initState() {
+    getUInfo();
+  }
+
+  Sign sign = new Sign();
+
+  Map uinfo = new Map();
+
+  // 个人信息
+  void getUInfo() async {
+    try {
+      Map res = await sign.getUInfo();
+      if (res["code"] == 200) {
+        print("app个人信息");
+        uinfo = res["data"];
+        if (mounted) {
+          setState(() {});
+        }
+      }
+    } catch (e) {
+      print("app未登录>>$e");
     }
   }
 

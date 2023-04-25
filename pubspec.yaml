@@ -21,8 +21,8 @@ dependencies:
   fluttertoast: ^7.1.8  # 提示插件
   flutter_pickers: ^2.1.9 # 选择器插件 类似于前端的select等选择器
   image_picker: ^0.8.4 # 图片选择，拍摄图片
-  flutter_qr_reader: ^1.0.5
-  flutter_blue: ^0.8.0
+  flutter_qr_reader: ^1.0.5 # 二维码识别
+  flutter_blue: ^0.8.0 # 蓝牙
   url_launcher: ^6.0.0 #跳转浏览器
   permission_handler: ^8.0.0 # 权限申请
   dio: ^4.0.0 # 网络请求
@@ -32,9 +32,7 @@ dependencies:
   date_format: ^2.0.7 # 格式化日期
   m_loading: ^0.0.2 # 下拉加载londing
   easy_refresh: ^3.2.0 # 下拉刷新，上拉加载
-  provider: ^6.0.0
-  #camera: ^0.5.8
-#scan: ^1.6.0
+  provider: ^6.0.0 # 状态管理
 dev_dependencies:
   flutter_test:
     sdk: flutter
