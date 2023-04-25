@@ -31,7 +31,7 @@ class _ThemeSkinState extends State<ThemeSkin> {
   }
   void getSkinStorage()async{
      var index = await getStorage('skin_index');
-     activeIndex = index;
+     activeIndex = index != null ? index : 0;
      if (mounted) {
        setState(() {});
      }

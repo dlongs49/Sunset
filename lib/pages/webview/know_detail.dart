@@ -120,11 +120,11 @@ class _KnowDetailState extends State<KnowDetail> {
                         Icon(IconData(0xe603, fontFamily: "sunfont"),
                             size: 24,
                             color: Color(
-                                item['islike'] ? 0xff22d47e : 0xff999999)),
+                                item['islike'] ? skinColor : 0xff999999)),
                         Text("收藏 ${item['like_num']}",
                             style: TextStyle(
                                 color: Color(
-                                    item['islike'] ? 0xff22d47e : 0xff999999),
+                                    item['islike'] ? skinColor : 0xff999999),
                                 fontSize: 14))
                       ],
                     ),
