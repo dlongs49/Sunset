@@ -10,10 +10,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_pickers/pickers.dart';
 import 'package:flutter_pickers/style/picker_style.dart';
 import 'package:flutter_pickers/time_picker/model/date_mode.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/local_data/info.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/api/upload_req.dart';
 import 'package:sunset/utils/request.dart';
@@ -33,13 +35,13 @@ class _MyInfoState extends State<MyInfo> {
   List sexList = ["女", "男"];
 
   // 重写选择器的样式
-  PickerStyle customPickStyle() {
+  PickerStyle customPickStyle(skinColor) {
     // 确定按钮样式
     Widget _commitButton = Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
       margin: const EdgeInsets.only(right: 22),
       child:
-          Text('确定', style: TextStyle(fontSize: 14, color: Color(0xff22d47e))),
+          Text('确定', style: TextStyle(fontSize: 14, color: Color(skinColor))),
     );
     return PickerStyle(
       commitButton: _commitButton,
@@ -50,7 +52,7 @@ class _MyInfoState extends State<MyInfo> {
     getUInfo();
   }
 
-  void showNickDialog(BuildContext context) {
+  void showNickDialog(BuildContext context,skinColor) {
     final width = MediaQueryData.fromWindow(window).size.width;
     showDialog(
         context: context,
@@ -79,7 +81,7 @@ class _MyInfoState extends State<MyInfo> {
                           borderRadius: BorderRadius.circular(8),
                           color: Color(0xffefefef),
                           child: TextField(
-                              cursorColor: Color(0xff22d47e),
+                              cursorColor: Color(skinColor),
                               autofocus: true,
                               style: TextStyle(fontSize: 16),
                               inputFormatters: [
@@ -128,7 +130,7 @@ class _MyInfoState extends State<MyInfo> {
                                     horizontal: 15, vertical: 10),
                                 child: Text("确定",
                                     style: TextStyle(
-                                        color: Color(0xff22d47e),
+                                        color: Color(skinColor),
                                         fontSize: 16)),
                               ),
                               onTap: () => handleNickDialog(context),
@@ -210,10 +212,10 @@ class _MyInfoState extends State<MyInfo> {
   }
 
   // 选择出生日期
-  void changeBirth(BuildContext context) {
+  void changeBirth(BuildContext context,skinColor) {
     Pickers.showDatePicker(context,
         mode: DateMode.YMD,
-        pickerStyle: customPickStyle(),
+        pickerStyle: customPickStyle(skinColor),
         onConfirm: (params) {
           // 月数补零
           final month = params.month! < 10 ? "0${params.month}" : params.month;
@@ -319,6 +321,7 @@ class _MyInfoState extends State<MyInfo> {
 
   @override
   Widget build(BuildContext context) {
+    final skinColor = Provider.of<Global>(context).color;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -395,7 +398,7 @@ class _MyInfoState extends State<MyInfo> {
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w400))),
-                                onTap: () => showNickDialog(context)),
+                                onTap: () => showNickDialog(context,skinColor)),
                             SizedBox(width: 5),
                             Icon(IconData(0xeb8a, fontFamily: "sunfont"),
                                 size: 13, color: Color(0xffbababa))
@@ -452,7 +455,7 @@ class _MyInfoState extends State<MyInfo> {
                                         horizontal: 26, vertical: 5),
                                     decoration: BoxDecoration(
                                       color: Color(uinfo["sex"] == index
-                                          ? 0xff22d47e
+                                          ? skinColor
                                           : 0xffe8e8f2),
                                       borderRadius: index == 0
                                           ? BorderRadius.only(
@@ -495,7 +498,7 @@ class _MyInfoState extends State<MyInfo> {
                                 onTap: () {
                                   Pickers.showSinglePicker(context,
                                       data: stature,
-                                      pickerStyle: customPickStyle(),
+                                      pickerStyle: customPickStyle(skinColor),
                                       selectData: int.parse(uinfo["height"]),
                                       onConfirm: (val, i) {
                                         setState(() {
@@ -523,7 +526,7 @@ class _MyInfoState extends State<MyInfo> {
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400,
                                         color: Color(0xffb3b3b3))),
-                                onTap: () => changeBirth(context)),
+                                onTap: () => changeBirth(context,skinColor)),
                             SizedBox(width: 5),
                             Icon(IconData(0xeb8a, fontFamily: "sunfont"),
                                 size: 13, color: Color(0xffbababa))
@@ -544,7 +547,7 @@ class _MyInfoState extends State<MyInfo> {
                                 onTap: () {
                                   Pickers.showSinglePicker(context,
                                       data: weight,
-                                      pickerStyle: customPickStyle(),
+                                      pickerStyle: customPickStyle(skinColor),
                                       selectData: double.parse(uinfo["weight"]),
                                       onConfirm: (val, i) {
                                         setState(() {
@@ -575,7 +578,7 @@ class _MyInfoState extends State<MyInfo> {
                                 onTap: () {
                                   Pickers.showSinglePicker(context,
                                       data: waistLine,
-                                      pickerStyle: customPickStyle(),
+                                      pickerStyle: customPickStyle(skinColor),
                                       selectData: int.parse(uinfo["waistline"]),
                                       onConfirm: (val, i) {
                                         setState(() {

@@ -1,8 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/pages/webview/custom/CustomLinearProgressIndicator.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class Mall extends StatefulWidget {
@@ -18,13 +20,15 @@ class _MallState extends State<Mall> {
 
   @override
   Widget build(BuildContext context) {
+    final skinColor = Provider.of<Global>(context).color;
+
     return Scaffold(
         backgroundColor: Colors.white,
         body: Column(
           children: [
             CustomTabBar(title: "香豆商城", bgColor: null, fontColor: null),
             progress != 1.0
-                ? CustomLinearProgressIndicator(value: progress)
+                ? CustomLinearProgressIndicator(value: progress,valueColor:skinColor)
                 /* 以下是原生的进度条
             LinearProgressIndicator(
                     value: progress,

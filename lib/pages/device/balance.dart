@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:sunset/components/tabbar.dart'; // 弹框插件
+import 'package:provider/provider.dart';
+import 'package:sunset/components/tabbar.dart';
+import 'package:sunset/provider/global.dart'; // 弹框插件
 class Balance extends StatefulWidget {
   const Balance({Key? key}) : super(key: key);
 
@@ -30,19 +32,18 @@ class _BalanceState extends State<Balance> {
   }
   @override
   Widget build(BuildContext context) {
-    double topBarHeight =
-        MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
     double mWidth = MediaQuery.of(context).size.width; // 屏幕宽度
+    final skinColor = Provider.of<Global>(context).color;
     return Scaffold(
         body: Column(
       children: [
         Column(children: [
-          CustomTabBar(title: "操作指南", bgColor: 0xff22d47e, fontColor: 0xffffffff),
+          CustomTabBar(title: "操作指南", bgColor: skinColor, fontColor: 0xffffffff),
           Container(
             width: double.infinity,
             height: 140,
             padding: EdgeInsets.only(bottom: 20),
-            color: Color(0xff22d47e),
+            color: Color(skinColor),
             alignment: Alignment.bottomCenter,
             child: Image.asset("assets/images/tzc.png", width: 70, height: 70),
           ),

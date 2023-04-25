@@ -2,7 +2,9 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/tabbar.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'custom/CustomLinearProgressIndicator.dart';
@@ -31,13 +33,15 @@ class _ShopDetailState extends State<ShopDetail> {
 
   @override
   Widget build(BuildContext context) {
+    final skinColor = Provider.of<Global>(context).color;
+
     return Scaffold(
         backgroundColor: Colors.white,
         body: Column(
           children: [
             CustomTabBar(title: "好物详情", bgColor: null, fontColor: null),
             progress != 1.0
-                ? CustomLinearProgressIndicator(value: progress)
+                ? CustomLinearProgressIndicator(value: progress,valueColor:skinColor)
                 : Container(height: 4),
             Expanded(
                 child: Container(

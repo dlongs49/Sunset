@@ -4,8 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/tools.dart';
 
@@ -189,6 +191,7 @@ class _ForgetPwdState extends State<ForgetPwd> {
 
   @override
   Widget build(BuildContext context) {
+    final skinColor = Provider.of<Global>(context).color;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -224,7 +227,7 @@ class _ForgetPwdState extends State<ForgetPwd> {
                                       child: Container(
                                           child: TextField(
                                               controller: PhoneController,
-                                              cursorColor: Color(0xff22d47e),
+                                              cursorColor: Color(skinColor),
                                               autofocus: false,
                                               style: TextStyle(fontSize: 16),
                                               // 下一步
@@ -280,7 +283,7 @@ class _ForgetPwdState extends State<ForgetPwd> {
                                       child: Container(
                                           child: TextField(
                                               controller: CodeController,
-                                              cursorColor: Color(0xff22d47e),
+                                              cursorColor: Color(skinColor),
                                               autofocus: false,
                                               style: TextStyle(fontSize: 16),
                                               // 下一步
@@ -327,7 +330,7 @@ class _ForgetPwdState extends State<ForgetPwd> {
                                                   style: TextStyle(
                                                       fontSize: 16,
                                                       color:
-                                                          Color(0xff22d47e)))),
+                                                          Color(skinColor)))),
                                           onTap: onCode,
                                         )
                                       : Container(
@@ -347,7 +350,7 @@ class _ForgetPwdState extends State<ForgetPwd> {
                               child: Ink(
                                   decoration: BoxDecoration(
                                       color: Color(isPhone && isCode
-                                          ? 0xff22d47e
+                                          ? skinColor
                                           : 0xffebebeb),
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(50))),
@@ -392,7 +395,7 @@ class _ForgetPwdState extends State<ForgetPwd> {
                           Expanded(
                               child: Container(
                                   child: TextField(
-                                      cursorColor: Color(0xff22d47e),
+                                      cursorColor: Color(skinColor),
                                       autofocus: false,
                                       style: TextStyle(fontSize: 16),
                                       obscureText: isPwd1_obs,
@@ -437,7 +440,7 @@ class _ForgetPwdState extends State<ForgetPwd> {
                           Expanded(
                               child: Container(
                                   child: TextField(
-                                      cursorColor: Color(0xff22d47e),
+                                      cursorColor: Color(skinColor),
                                       autofocus: false,
                                       style: TextStyle(fontSize: 16),
                                       obscureText: isPwd2_obs,
@@ -475,7 +478,7 @@ class _ForgetPwdState extends State<ForgetPwd> {
                       child: Ink(
                           decoration: BoxDecoration(
                               color: Color(isPwd1Value && isPwd2Value
-                                  ? 0xff22d47e
+                                  ? skinColor
                                   : 0xffebebeb),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(50))),

@@ -5,9 +5,11 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/refresh/refresh_footer_ex.dart';
 import 'package:sunset/components/refresh/refresh_header_ex.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/api/trends_req.dart';
 import 'package:sunset/utils/request.dart';
@@ -190,6 +192,7 @@ class _NewTrendsState extends State<NewTrends> with TickerProviderStateMixin,Aut
   }
   @override
   Widget build(BuildContext context) {
+    final skinColor = Provider.of<Global>(context).color;
     return  Stack(children: [
       EasyRefresh(
           header: RefreshHeaderEx(),
@@ -265,7 +268,7 @@ class _NewTrendsState extends State<NewTrends> with TickerProviderStateMixin,Aut
                                       decoration: BoxDecoration(
                                           border: Border.all(
                                               width: 1.0,
-                                              color: Color(0xff22d47e)),
+                                              color: Color(skinColor)),
                                           borderRadius:
                                           BorderRadius.circular(22)),
                                       child: Row(
@@ -276,11 +279,11 @@ class _NewTrendsState extends State<NewTrends> with TickerProviderStateMixin,Aut
                                               IconData(0xeaf3,
                                                   fontFamily: 'sunfont'),
                                               size: 10,
-                                              color: Color(0xff22d47e)),
+                                              color: Color(skinColor)),
                                           Text("关注",
                                               style: TextStyle(
                                                   fontSize: 12,
-                                                  color: Color(0xff22d47e)))
+                                                  color: Color(skinColor)))
                                         ],
                                       ),
                                     ),
@@ -350,7 +353,7 @@ class _NewTrendsState extends State<NewTrends> with TickerProviderStateMixin,Aut
                                         borderRadius: BorderRadius.circular(12)),
                                     child: Text("#运动就是坚持#",
                                         style: TextStyle(
-                                            color: Color(0xff22d47e),
+                                            color: Color(skinColor),
                                             fontSize: 12))),
                                 Row(
                                   mainAxisAlignment:
@@ -369,14 +372,14 @@ class _NewTrendsState extends State<NewTrends> with TickerProviderStateMixin,Aut
                                                     fontFamily: 'sunfont'),
                                                 size: 18,
                                                 color: Color(list[index]["isstar"]
-                                                    ? 0xff22d47e
+                                                    ? skinColor
                                                     : 0xffbbbbbb)),
                                             SizedBox(width: 6),
                                             Text("赞",
                                                 style: TextStyle(
                                                     color: Color(list[index]
                                                     ["isstar"]
-                                                        ? 0xff22d47e
+                                                        ? skinColor
                                                         : 0xffbbbbbb),
                                                     height: 1.5,
                                                     fontSize: 14)),
@@ -391,7 +394,7 @@ class _NewTrendsState extends State<NewTrends> with TickerProviderStateMixin,Aut
                                                   style: TextStyle(
                                                       color: Color(list[index]
                                                       ["isstar"]
-                                                          ? 0xff22d47e
+                                                          ? skinColor
                                                           : 0xffbbbbbb),
                                                       height: 1.7,
                                                       fontSize: 14)),
@@ -468,7 +471,7 @@ class _NewTrendsState extends State<NewTrends> with TickerProviderStateMixin,Aut
                                                               "：",
                                                           style: TextStyle(
                                                               color: Color(
-                                                                  0xff22d47e),
+                                                                  skinColor),
                                                               fontSize: 13),
                                                           children: <
                                                               TextSpan>[
@@ -512,7 +515,7 @@ class _NewTrendsState extends State<NewTrends> with TickerProviderStateMixin,Aut
                       width: 70,
                       height: 70,
                       decoration: BoxDecoration(
-                          color: Color(0xff22d47e),
+                          color: Color(skinColor),
                           borderRadius: BorderRadius.circular(70),
                           boxShadow: [
                             BoxShadow(

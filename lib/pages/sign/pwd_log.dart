@@ -5,8 +5,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/pages/sign/phone_log.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/tools.dart';
 
@@ -128,6 +130,7 @@ class _PwdLoginState extends State<PwdLogin> {
   Widget build(BuildContext context) {
     double topBarHeight =
         MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
+    final skinColor = Provider.of<Global>(context).color;
     return Scaffold(
       resizeToAvoidBottomInset: false, // 解决键盘弹起容器溢出bug
       backgroundColor: Colors.white,
@@ -159,7 +162,7 @@ class _PwdLoginState extends State<PwdLogin> {
                     child: InkWell(
                         child: Text("手机登录",
                             style: TextStyle(
-                                color: Color(0xff22d47e), fontSize: 14)),
+                                color: Color(skinColor), fontSize: 14)),
                         onTap: () => toPhoneLog(context)),
                   )
                 ],
@@ -194,7 +197,7 @@ class _PwdLoginState extends State<PwdLogin> {
                             child: Container(
                                 child: TextField(
                                     controller: PhoneController,
-                                    cursorColor: Color(0xff22d47e),
+                                    cursorColor: Color(skinColor),
                                     autofocus: false,
                                     style: TextStyle(fontSize: 16),
                                     // 下一步
@@ -244,7 +247,7 @@ class _PwdLoginState extends State<PwdLogin> {
                         Expanded(
                             child: Container(
                                 child: TextField(
-                                    cursorColor: Color(0xff22d47e),
+                                    cursorColor: Color(skinColor),
                                     autofocus: false,
                                     style: TextStyle(fontSize: 16),
                                     obscureText: isShowPwd,
@@ -292,7 +295,7 @@ class _PwdLoginState extends State<PwdLogin> {
                               IconData(isCheck ? 0xe645 : 0xe614,
                                   fontFamily: 'sunfont'),
                               size: 16,
-                              color: Color(isCheck ? 0xff22d47e : 0xffb4b3b3),
+                              color: Color(isCheck ? skinColor : 0xffb4b3b3),
                             ),
                             onTap: handleCheck),
                         SizedBox(width: 5),
@@ -307,7 +310,7 @@ class _PwdLoginState extends State<PwdLogin> {
                             TextSpan(
                                 text: '《用户协议》',
                                 style: TextStyle(
-                                    color: Color(0xff22d47e), fontSize: 14),
+                                    color: Color(skinColor), fontSize: 14),
                                 recognizer: useragreeall
                                   ..onTap = () {
                                     toast("《用户协议》");
@@ -319,7 +322,7 @@ class _PwdLoginState extends State<PwdLogin> {
                             TextSpan(
                                 text: '《隐私政策》',
                                 style: TextStyle(
-                                    color: Color(0xff22d47e), fontSize: 14),
+                                    color: Color(skinColor), fontSize: 14),
                                 recognizer: privacypolicy
                                   ..onTap = () {
                                     toast("《隐私政策》");
@@ -334,7 +337,7 @@ class _PwdLoginState extends State<PwdLogin> {
                     child: Ink(
                         decoration: BoxDecoration(
                             color: Color(isPhone && isPwd && isCheck
-                                ? 0xff22d47e
+                                ? skinColor
                                 : 0xffebebeb),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(50))),
@@ -369,7 +372,7 @@ class _PwdLoginState extends State<PwdLogin> {
                           child: Text("忘记密码?",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  color: Color(0xff22d47e), fontSize: 14)),
+                                  color: Color(skinColor), fontSize: 14)),
                           onTap: () => toPage('forgetPwd')),
                       SizedBox(width: 20),
                       Container(
@@ -384,7 +387,7 @@ class _PwdLoginState extends State<PwdLogin> {
                           child: Text("随便看看",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  color: Color(0xff22d47e), fontSize: 14)),
+                                  color: Color(skinColor), fontSize: 14)),
                           onTap: () => toLook(context))
                     ],
                   )

@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/provider/global.dart';
+import 'package:sunset/utils/tools.dart';
 
 class ThemeSkin extends StatefulWidget {
   const ThemeSkin({Key? key}) : super(key: key);
@@ -24,12 +25,26 @@ class _ThemeSkinState extends State<ThemeSkin> {
     0xff456da1
   ];
 
+  void initState() {
+    super.initState();
+    getSkinStorage();
+  }
+  void getSkinStorage()async{
+     var index = await getStorage('skin_index');
+     activeIndex = index;
+     if (mounted) {
+       setState(() {});
+     }
+
+  }
   // 选中的主题索引
   int activeIndex = 0;
 
   // 主题色切换
-  void handleSkin(int index) {
+  void handleSkin(int index) async {
     activeIndex = index;
+    await setStorage("skin", list[index]);
+    await setStorage("skin_index", index);
     if (mounted) {
       setState(() {});
     }
@@ -57,27 +72,22 @@ class _ThemeSkinState extends State<ThemeSkin> {
                           crossAxisSpacing: 26, // 交叉轴每行间距
                           childAspectRatio: 1, // item的宽高比
                         ),
-                        itemBuilder: (ctx, i) =>
-                            InkWell(
-                                child: Container(
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                        color: Color(list[i]),
-                                        borderRadius: BorderRadius.circular(
-                                            14)),
-                                    child: Visibility(
-                                        visible: i == activeIndex
-                                            ? true
-                                            : false,
-                                        child: Icon(
-                                            IconData(
-                                                0xe645, fontFamily: 'sunfont'),
-                                            color: Colors.white,
-                                            size: 26))),
-                                onTap: () {
-                                  handleSkin(i);
-                                  prof.handleTheme(list[i]);
-                                }))))
+                        itemBuilder: (ctx, i) => InkWell(
+                            child: Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                    color: Color(list[i]),
+                                    borderRadius: BorderRadius.circular(14)),
+                                child: Visibility(
+                                    visible: i == activeIndex ? true : false,
+                                    child: Icon(
+                                        IconData(0xe645, fontFamily: 'sunfont'),
+                                        color: Colors.white,
+                                        size: 26))),
+                            onTap: () {
+                              handleSkin(i);
+                              prof.handleTheme(list[i]);
+                            }))))
           ],
         ));
   }

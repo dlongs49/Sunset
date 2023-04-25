@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/trends_req.dart';
 import 'package:sunset/utils/api/upload_req.dart';
 
@@ -28,11 +30,11 @@ class _PubTrendsState extends State<PubTrends> {
   @override
   void initState() {
     super.initState();
-    imgWidgetList.add(uImgWidget());
+    imgWidgetList.add(uImgWidget(0xff22d47e));
   }
 
   // 上传图片 Widget
-  Widget uImgWidget() {
+  Widget uImgWidget(skinColor) {
     return Container(
       width: 120,
       height: 120,
@@ -43,7 +45,7 @@ class _PubTrendsState extends State<PubTrends> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(Icons.photo_camera, size: 46, color: Color(0xff22d47e)),
+              Icon(Icons.photo_camera, size: 46, color: Color(skinColor)),
               SizedBox(height: 4),
               Text("上传图片", style: TextStyle(fontSize: 14))
             ],
@@ -235,6 +237,8 @@ class _PubTrendsState extends State<PubTrends> {
   Widget build(BuildContext context) {
     double topBarHeight =
         MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
+    final skinColor = Provider.of<Global>(context).color;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -278,7 +282,7 @@ class _PubTrendsState extends State<PubTrends> {
                               style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w800,
-                                  color: Color(0xff22d47e)))),
+                                  color: Color(skinColor)))),
                       onTap: () => saveProfile(context))
                 ],
               ),
@@ -312,7 +316,7 @@ class _PubTrendsState extends State<PubTrends> {
                         top: BorderSide(width: 1, color: Color(0xfff5f5f5)))),
                 child: TextField(
                     // 光标颜色
-                    cursorColor: Color(0xff22d47e),
+                    cursorColor: Color(skinColor),
                     // 取消自动获取焦点
                     autofocus: false,
                     maxLines: 6,

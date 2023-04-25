@@ -12,7 +12,7 @@ class CustomLinearProgressIndicator extends StatelessWidget {
       {Key? key,
       required this.value,
       this.backgroundColor = Colors.white,
-      this.valueColor = 0xff22d47e, // 这里的颜色值 0xff 固定 ff应该代表透明度， 22da7e 为十进制的颜色值
+      this.valueColor, // 这里的颜色值 0xff 固定 ff应该代表透明度， 22da7e 为十进制的颜色值
       this.height = 3,
       this.borderRadius = 3})
       : super(key: key);

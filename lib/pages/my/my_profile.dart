@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/tools.dart';
 
@@ -70,6 +72,7 @@ class _MyProfileState extends State<MyProfile> {
   Widget build(BuildContext context) {
     double topBarHeight =
         MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
+    final skinColor = Provider.of<Global>(context).color;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -113,10 +116,10 @@ class _MyProfileState extends State<MyProfile> {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(30),
                               border: Border.all(
-                                  width: 1, color: Color(0xff22d47e))),
+                                  width: 1, color: Color(skinColor))),
                           child: Text("保存",
                               style: TextStyle(
-                                  fontSize: 14, color: Color(0xff22d47e)))),
+                                  fontSize: 14, color: Color(skinColor)))),
                       onTap: () => saveProfile(context))
                 ],
               ),
@@ -129,7 +132,7 @@ class _MyProfileState extends State<MyProfile> {
                   color: Color(0xffeeeff3),
                   borderRadius: BorderRadius.circular(12)),
               child: TextField(
-                  cursorColor: Color(0xff22d47e),
+                  cursorColor: Color(skinColor),
                   // 光标颜色
                   autofocus: false,
                   // 取消自动获取焦点

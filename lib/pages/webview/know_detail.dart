@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/know_req.dart';
 import 'package:sunset/utils/tools.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -80,13 +82,14 @@ class _KnowDetailState extends State<KnowDetail> {
 
   @override
   Widget build(BuildContext context) {
+    final skinColor = Provider.of<Global>(context).color;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
         children: [
           CustomTabBar(title: "文章详情", bgColor: null, fontColor: null),
           progress != 1.0
-              ? CustomLinearProgressIndicator(value: progress)
+              ? CustomLinearProgressIndicator(value: progress,valueColor:skinColor)
               : Container(height: 4),
           Expanded(
               child: Container(

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/tabbar.dart';
+import 'package:sunset/provider/global.dart';
 
 class BindDevice extends StatefulWidget {
   final arguments; // 路由带的参数
@@ -85,7 +87,7 @@ class _BindDeviceState extends State<BindDevice> with TickerProviderStateMixin {
   late final Animation<double> opAnimation =
       Tween<double>(begin: 0, end: 1).animate(controllAnimate);
 
-  Widget initDevice() {
+  Widget initDevice(skinColor) {
     return Column(
       children: [
         Align(
@@ -127,7 +129,7 @@ class _BindDeviceState extends State<BindDevice> with TickerProviderStateMixin {
                     width: 200,
                     height: 200,
                     decoration: BoxDecoration(
-                        color: Color(0xff22d47e),
+                        color: Color(skinColor),
                         borderRadius: BorderRadius.circular(200)),
                   )),
               Positioned(
@@ -135,7 +137,7 @@ class _BindDeviceState extends State<BindDevice> with TickerProviderStateMixin {
                 width: 140,
                 height: 140,
                 decoration: BoxDecoration(
-                    color: Color(0xff22d47e),
+                    color: Color(skinColor),
                     borderRadius: BorderRadius.circular(200)),
                 child: Icon(IconData(0xe61c, fontFamily: 'sunfont'),
                     size: 45, color: Colors.white),
@@ -209,13 +211,14 @@ class _BindDeviceState extends State<BindDevice> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     // dynamic obj = ModalRoute.of(context)!.settings.arguments;
+    final skinColor = Provider.of<Global>(context).color;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
         children: [
           CustomTabBar(title: "请上秤", bgColor: null, fontColor: null, arg: null),
           SizedBox(height: 80),
-          Expanded(child: initDevice())
+          Expanded(child: initDevice(skinColor))
         ],
       ),
     );

@@ -1,10 +1,12 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/refresh/refresh_footer_ex.dart';
 import 'package:sunset/components/refresh/refresh_header_ex.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/know_req.dart';
 import 'package:sunset/utils/request.dart';
 
@@ -144,6 +146,7 @@ class _KnowListState extends State<KnowList> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final skinColor = Provider.of<Global>(context).color;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -170,7 +173,7 @@ class _KnowListState extends State<KnowList> with TickerProviderStateMixin {
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: Color(activeBar == index
-                                        ? 0xff22d47e
+                                        ? skinColor
                                         : 0xff000000)))),
                         onTap: () => handleNav(index),
                       );
@@ -184,7 +187,7 @@ class _KnowListState extends State<KnowList> with TickerProviderStateMixin {
                           width: lineWidth,
                           height: 4,
                           decoration: BoxDecoration(
-                              color: Color(0xff22d47e),
+                              color: Color(skinColor),
                               borderRadius: BorderRadius.circular(4)),
                         )))
               ],

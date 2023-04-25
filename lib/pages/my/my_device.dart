@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/tabbar.dart';
+import 'package:sunset/provider/global.dart';
 
 class MyDevice extends StatefulWidget {
   const MyDevice({Key? key, arguments}) : super(key: key);
@@ -61,6 +63,7 @@ class _MyDeviceState extends State<MyDevice> {
 
   @override
   Widget build(BuildContext context) {
+    final skinColor = Provider.of<Global>(context).color;
     return Scaffold(
         body: Column(
       children: [
@@ -112,18 +115,18 @@ class _MyDeviceState extends State<MyDevice> {
                                         horizontal: 10, vertical: 5),
                                     decoration: BoxDecoration(
                                         color: Color(list[i]["state"] == 1
-                                            ? 0xff22d47e
+                                            ? skinColor
                                             : 0xffffffff),
                                         borderRadius: BorderRadius.circular(6),
                                         border: Border.all(
                                             width: 1.0,
-                                            color: Color(0xff22d47e))),
+                                            color: Color(skinColor))),
                                     child: Text(
                                         list[i]["state"] == 1 ? "已绑定" : "未绑定",
                                         style: TextStyle(
                                             color: Color(list[i]["state"] == 1
                                                 ? 0xffffffff
-                                                : 0xff22d47e),
+                                                : skinColor),
                                             fontSize: 10)),
                                   ),
                                   SizedBox(width: 4),

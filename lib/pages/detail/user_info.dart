@@ -5,9 +5,11 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/refresh/refresh_footer_ex.dart';
 import 'package:sunset/components/refresh/refresh_header_ex.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/trends_req.dart';
 import 'package:sunset/utils/request.dart';
 import 'package:sunset/utils/tools.dart';
@@ -302,6 +304,7 @@ class _UserInfoState extends State<UserInfo> {
   @override
   Widget build(BuildContext context) {
     double mWidth = MediaQuery.of(context).size.width; // 屏幕宽度
+    final skinColor = Provider.of<Global>(context).color;
     return Scaffold(
         backgroundColor: Colors.white,
         body: Container(
@@ -604,7 +607,7 @@ class _UserInfoState extends State<UserInfo> {
                               margin: EdgeInsets.symmetric(vertical: 20),
                               child: Text("Ta的动态",
                                   style: TextStyle(
-                                      color: Color(0xff22d47e),
+                                      color: Color(skinColor),
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600))),
                           SizedBox(height: 15),
@@ -756,7 +759,7 @@ class _UserInfoState extends State<UserInfo> {
                                                           12)),
                                               child: Text("#运动就是坚持#",
                                                   style: TextStyle(
-                                                      color: Color(0xff22d47e),
+                                                      color: Color(skinColor),
                                                       fontSize: 12))),
                                           Row(
                                             mainAxisAlignment:
@@ -781,7 +784,7 @@ class _UserInfoState extends State<UserInfo> {
                                                           color: Color(list[
                                                                       index]
                                                                   ["isstar"]
-                                                              ? 0xff22d47e
+                                                              ? skinColor
                                                               : 0xffbbbbbb)),
                                                       SizedBox(width: 6),
                                                       Text("赞",
@@ -789,7 +792,7 @@ class _UserInfoState extends State<UserInfo> {
                                                               color: Color(list[
                                                                           index]
                                                                       ["isstar"]
-                                                                  ? 0xff22d47e
+                                                                  ? skinColor
                                                                   : 0xffbbbbbb),
                                                               height: 1.5,
                                                               fontSize: 14)),
@@ -811,7 +814,7 @@ class _UserInfoState extends State<UserInfo> {
                                                               style: TextStyle(
                                                                   color: Color(list[index]
                                                                           ["isstar"]
-                                                                      ? 0xff22d47e
+                                                                      ? skinColor
                                                                       : 0xffbbbbbb),
                                                                   height: 1.7,
                                                                   fontSize: 14)))
@@ -914,7 +917,7 @@ class _UserInfoState extends State<UserInfo> {
                                                                             "：",
                                                                         style: TextStyle(
                                                                             color: Color(
-                                                                                0xff22d47e),
+                                                                                skinColor),
                                                                             fontSize:
                                                                                 13),
                                                                         children: <

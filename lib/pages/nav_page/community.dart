@@ -3,10 +3,12 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/pages/nav_page/commun_view/follower_trends.dart';
 import 'package:sunset/pages/nav_page/commun_view/new_trends.dart';
 import 'package:sunset/pages/nav_page/commun_view/star_trends.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/request.dart';
 
@@ -129,6 +131,7 @@ class _CommunityState extends State<Community>
   Widget build(BuildContext context) {
     double topBarHeight =
         MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
+    final skinColor = Provider.of<Global>(context).color;
     return Scaffold(
       body: Column(
         mainAxisSize: MainAxisSize.max,
@@ -215,7 +218,7 @@ class _CommunityState extends State<Community>
                                               height: 6,
                                               // margin: EdgeInsets.only(top: 4),
                                               decoration: BoxDecoration(
-                                                  color: Color(0xff22d47e),
+                                                  color: Color(skinColor),
                                                   borderRadius:
                                                       BorderRadius.circular(4)),
                                             )))

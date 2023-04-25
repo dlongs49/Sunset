@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/trends_req.dart';
 import 'package:sunset/utils/request.dart';
 
@@ -73,6 +75,7 @@ class _MyFollowState extends State<MyFollow> {
   }
   @override
   Widget build(BuildContext context) {
+    final skinColor = Provider.of<Global>(context).color;
     return Scaffold(
         backgroundColor: Colors.white,
         body: Column(children: [
@@ -140,7 +143,7 @@ class _MyFollowState extends State<MyFollow> {
                                             width: 1,
                                             color: Color(!list[index]
                                                     ["isfollow"]
-                                                ? 0xff22d47e
+                                                ? skinColor
                                                 : 0xffcccccc))),
                                     child: Row(
                                       mainAxisAlignment:
@@ -151,7 +154,7 @@ class _MyFollowState extends State<MyFollow> {
                                                 IconData(0xeaf3,
                                                     fontFamily: 'sunfont'),
                                                 size: 10,
-                                                color: Color(0xff22d47e))
+                                                color: Color(skinColor))
                                             : Container(),
                                         Text(
                                             !list[index]["isfollow"]
@@ -161,7 +164,7 @@ class _MyFollowState extends State<MyFollow> {
                                                 fontSize: 14,
                                                 color: Color(!list[index]
                                                         ["isfollow"]
-                                                    ? 0xff22d47e
+                                                    ? skinColor
                                                     : 0xffb1b1b1)))
                                       ],
                                     ),

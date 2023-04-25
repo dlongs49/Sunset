@@ -6,11 +6,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:sunset/components/loading.dart';
-import 'package:sunset/components/no_more.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/refresh/refresh_footer_ex.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/api/trends_req.dart';
 import 'package:sunset/utils/request.dart';
@@ -250,6 +250,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
 
   @override
   Widget build(BuildContext context) {
+    final skinColor = Provider.of<Global>(context).color;
     return Scaffold(
         backgroundColor: Colors.white,
         body: Column(
@@ -315,7 +316,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                             border: Border.all(
                                                 width: 1.0,
                                                 color: Color(!detail["isfollow"]
-                                                    ? 0xff22d47e
+                                                    ? skinColor
                                                     : 0xffdddddd)),
                                             borderRadius:
                                                 BorderRadius.circular(22)),
@@ -328,7 +329,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                                     IconData(0xeaf3,
                                                         fontFamily: 'sunfont'),
                                                     size: 10,
-                                                    color: Color(0xff22d47e))
+                                                    color: Color(skinColor))
                                                 : Container(),
                                             Text(
                                                 !detail["isfollow"]
@@ -338,7 +339,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                                     fontSize: 12,
                                                     color: Color(
                                                         !detail["isfollow"]
-                                                            ? 0xff22d47e
+                                                            ? skinColor
                                                             : 0xffdddddd)))
                                           ],
                                         ),
@@ -517,7 +518,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                                                       : "0",
                                                                   style: TextStyle(
                                                                       color: Color(commentList[index]["isstar"]
-                                                                          ? 0xff22d47e
+                                                                          ? skinColor
                                                                           : 0xffbbbbbb),
                                                                       fontSize:
                                                                       14))),
@@ -536,7 +537,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
                                                               index]
                                                               [
                                                               "isstar"]
-                                                                  ? 0xff22d47e
+                                                                  ? skinColor
                                                                   : 0xffbbbbbb)),
                                                         ],
                                                       ),
@@ -686,7 +687,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
                         controller: ContentController,
                         cursorHeight: 16,
                         // 光标颜色
-                        cursorColor: Color(0xff22d47e),
+                        cursorColor: Color(skinColor),
                         // 取消自动获取焦点
                         autofocus: false,
                         maxLines: 1,
@@ -714,7 +715,7 @@ class _DynamicDetailState extends State<DynamicDetail> {
                         padding:
                             EdgeInsets.symmetric(vertical: 3, horizontal: 26),
                         decoration: BoxDecoration(
-                          color: Color(0xff22d47e),
+                          color: Color(skinColor),
                           borderRadius: BorderRadius.circular(30),
                         ),
                         alignment: Alignment(0, 0),

@@ -155,21 +155,19 @@ class _MyState extends State<My> {
   Widget build(BuildContext context) {
     double topBarHeight =
         MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
-    final prof = Provider.of<Global>(context);
-    print(">>>${prof.color}");
-    int skinTheme = prof.color;
+    final skinColor = Provider.of<Global>(context).color;
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
         Column(children: [
           Container(
             height: topBarHeight == 0 ? 34 : topBarHeight,
-            color: Color(prof.color),
+            color: Color(skinColor),
           ),
           Container(
               padding: EdgeInsets.only(left: 15, right: 15),
               height: 46.0,
-              color: Color(0xff22d47e),
+              color: Color(skinColor),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,7 +233,7 @@ class _MyState extends State<My> {
                         child: Container(
                       width: double.infinity,
                       height: 130,
-                      color: Color(0xff22d47e),
+                      color: Color(skinColor),
                       child: CustomPaint(
                         painter: new arcBg(),
                       ),
@@ -515,7 +513,7 @@ class _MyState extends State<My> {
 
 // 弧形 【百度大神】
 class arcBg extends CustomPainter {
-  Paint _paint = Paint() //0xff22d47e
+  Paint _paint = Paint()
     ..color = Color(0xff22d47e) //画笔颜色
     ..strokeCap = StrokeCap.butt //画笔笔触类型
     // ..isAntiAlias = true //是否启动抗锯齿

@@ -1,10 +1,12 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/refresh/refresh_footer_ex.dart';
 import 'package:sunset/components/refresh/refresh_header_ex.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/know_req.dart';
 import 'package:sunset/utils/request.dart';
 

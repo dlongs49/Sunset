@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/local_data/home.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/api/home_req.dart';
 import 'package:sunset/utils/request.dart';
@@ -151,13 +153,13 @@ class _HomeState extends State<Home> {
   }
 
   // 体秤信息
-  Widget balanceInfo() {
+  Widget balanceInfo(skinColor) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(left: 10, right: 10),
       height: 176,
       decoration: BoxDecoration(
-          color: Color.fromRGBO(34, 212, 126, 1.0),
+          color: Color(skinColor),
           borderRadius: BorderRadius.only(
               topRight: Radius.circular(10), topLeft: Radius.circular(10))),
       child: Column(
@@ -792,6 +794,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     double topBarHeight = MediaQueryData.fromWindow(window).padding.top;
+    final skinColor = Provider.of<Global>(context).color;
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -866,7 +869,7 @@ class _HomeState extends State<Home> {
                       children: [
                         Column(
                           children: [
-                            balanceInfo(),
+                            balanceInfo(skinColor),
                             Container(
                               width: double.infinity,
                               padding: EdgeInsets.only(left: 15, right: 15),
@@ -884,8 +887,7 @@ class _HomeState extends State<Home> {
                                       decoration: BoxDecoration(
                                           border: Border.all(
                                               width: 2,
-                                              color: Color.fromRGBO(
-                                                  46, 202, 129, 1)),
+                                              color: Color(skinColor)),
                                           borderRadius:
                                               BorderRadius.circular(50)),
                                       child: Icon(
@@ -987,7 +989,7 @@ class _HomeState extends State<Home> {
                                     height: 3,
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(6),
-                                        color: Color(0xff6dce87)),
+                                        color: Color(skinColor)),
                                   ))
                             ],
                           )
@@ -1026,7 +1028,7 @@ class _HomeState extends State<Home> {
                                       margin: EdgeInsets.only(top: 10),
                                       decoration: BoxDecoration(
                                           color:
-                                              Color.fromRGBO(34, 212, 126, 1),
+                                              Color(skinColor),
                                           borderRadius:
                                               BorderRadius.circular(16)),
                                       child: Align(

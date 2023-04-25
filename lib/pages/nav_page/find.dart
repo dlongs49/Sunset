@@ -1,11 +1,8 @@
 import 'dart:ui';
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
 import 'package:sunset/components/toast.dart';
-import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/home_req.dart';
 import 'package:sunset/utils/request.dart';
 import 'package:url_launcher/url_launcher.dart';

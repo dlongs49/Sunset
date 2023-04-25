@@ -2,8 +2,10 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/tools.dart';
 
 class Setting extends StatefulWidget {
@@ -79,7 +81,7 @@ class _SettingState extends State<Setting> {
   }
 
   // 退出登录 widget
-  void showOutLogDialog(BuildContext context) {
+  void showOutLogDialog(BuildContext context,skinColor) {
     final width = MediaQueryData.fromWindow(window).size.width;
     showDialog(
         context: context,
@@ -135,7 +137,7 @@ class _SettingState extends State<Setting> {
                                     horizontal: 15, vertical: 10),
                                 child: Text("确定",
                                     style: TextStyle(
-                                        color: Color(0xff22d47e),
+                                        color: Color(skinColor),
                                         fontSize: 16)),
                               ),
                               onTap: handleOutSign,
@@ -150,6 +152,7 @@ class _SettingState extends State<Setting> {
 
   @override
   Widget build(BuildContext context) {
+    final skinColor = Provider.of<Global>(context).color;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -184,7 +187,7 @@ class _SettingState extends State<Setting> {
                                     ? CupertinoSwitch(
                                         value: isSwitch,
                                         activeColor: Color(0xffdfdfdf),
-                                        trackColor: Color(0xff22d47e),
+                                        trackColor: Color(skinColor),
                                         onChanged: (value) {
                                           setState(() {
                                             isSwitch = value;
@@ -275,7 +278,7 @@ class _SettingState extends State<Setting> {
                                   style: TextStyle(
                                       color: Color(0xffff0000), fontSize: 20)),
                             ),
-                            onTap: () => showOutLogDialog(context)),
+                            onTap: () => showOutLogDialog(context,skinColor)),
                       )
                     : Container()
               ])),

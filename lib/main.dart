@@ -3,6 +3,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,19 +11,24 @@ import 'package:sunset/provider/global.dart';
 import 'package:sunset/routes/index.dart';
 
 void main() {
-  // WidgetsFlutterBinding.ensureInitialized();
-  runApp(
-     // MyApp());
-      ListenableProvider<Global>(create: (_) => Global(), child: MyApp()));
-  //透明沉浸式状态栏
-  // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-  //   statusBarColor: Colors.transparent,
-  // ));
+  WidgetsFlutterBinding.ensureInitialized();
+  // MyApp());
+  // 强制竖屏
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(ListenableProvider<Global>(create: (_) => Global(), child: MyApp()));
+    //透明沉浸式状态栏
+    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    //   statusBarColor: Colors.transparent,
+    // ));
+  });
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final pr = Provider.of<Global>(context);
+    pr.getTheme();
     return CupertinoApp(
       title: 'Sunset',
       builder: BotToastInit(),
@@ -38,7 +44,7 @@ class MyApp extends StatelessWidget {
       supportedLocales: [
         const Locale('zh', 'CN'), //设置语言为中文
       ],
-      // 开放环境下移除右上角 debug 标志
+      // 开发环境下移除右上角 debug 标志
       debugShowCheckedModeBanner: false,
 
       /*

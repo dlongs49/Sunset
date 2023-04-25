@@ -3,8 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/tabbar.dart';
 import 'package:sunset/components/toast.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/tools.dart';
 
@@ -84,6 +86,7 @@ class _SetPwdState extends State<SetPwd> {
 
   @override
   Widget build(BuildContext context) {
+    final skinColor = Provider.of<Global>(context).color;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -102,7 +105,7 @@ class _SetPwdState extends State<SetPwd> {
                     Expanded(
                         child: Container(
                             child: TextField(
-                                cursorColor: Color(0xff22d47e),
+                                cursorColor: Color(skinColor),
                                 autofocus: false,
                                 style: TextStyle(fontSize: 16),
                                 // 下一步
@@ -150,7 +153,7 @@ class _SetPwdState extends State<SetPwd> {
                     Expanded(
                         child: Container(
                             child: TextField(
-                                cursorColor: Color(0xff22d47e),
+                                cursorColor: Color(skinColor),
                                 autofocus: false,
                                 style: TextStyle(fontSize: 16),
                                 // 下一步
@@ -192,7 +195,7 @@ class _SetPwdState extends State<SetPwd> {
                 child: Ink(
                     decoration: BoxDecoration(
                         color: Color(isPwd1Value && isPwd2Value
-                            ? 0xff22d47e
+                            ? skinColor
                             : 0xffebebeb),
                         borderRadius: BorderRadius.all(Radius.circular(50))),
                     child: InkWell(

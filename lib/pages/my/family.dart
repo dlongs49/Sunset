@@ -2,7 +2,9 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/tabbar.dart';
+import 'package:sunset/provider/global.dart';
 
 class Family extends StatefulWidget {
   const Family({Key? key}) : super(key: key);
@@ -18,9 +20,8 @@ class _FamilyState extends State<Family> {
 
   @override
   Widget build(BuildContext context) {
-    double topBarHeight =
-        MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
     double mWidth = MediaQuery.of(context).size.width; // 屏幕宽度
+    final skinColor = Provider.of<Global>(context).color;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -79,7 +80,7 @@ class _FamilyState extends State<Family> {
                       alignment: Alignment(0, 0),
                       // 子元素水平垂直居中
                       decoration: BoxDecoration(
-                          color: Color(0xff22d47e),
+                          color: Color(skinColor),
                           borderRadius: BorderRadius.circular(30)),
                       child: Text("添加家庭成员",
                           style: TextStyle(

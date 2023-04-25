@@ -5,8 +5,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:sunset/components/toast.dart';
 import 'package:sunset/pages/sign/pwd_log.dart';
+import 'package:sunset/provider/global.dart';
 import 'package:sunset/utils/api/sign_req.dart';
 import 'package:sunset/utils/tools.dart';
 
@@ -163,6 +165,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
   Widget build(BuildContext context) {
     double topBarHeight =
         MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
+    final skinColor = Provider.of<Global>(context).color;
     return Scaffold(
       resizeToAvoidBottomInset: false, // 解决键盘弹起容器溢出bug
       backgroundColor: Colors.white,
@@ -225,7 +228,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
                             child: Container(
                                 child: TextField(
                                     controller: PhoneController,
-                                    cursorColor: Color(0xff22d47e),
+                                    cursorColor: Color(skinColor),
                                     autofocus: false,
                                     style: TextStyle(fontSize: 16),
                                     // 下一步
@@ -272,7 +275,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
                         Expanded(
                             child: Container(
                                 child: TextField(
-                                    cursorColor: Color(0xff22d47e),
+                                    cursorColor: Color(skinColor),
                                     autofocus: false,
                                     style: TextStyle(fontSize: 16),
                                     // 下一步
@@ -312,7 +315,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
                                     child: Text("获取验证码",
                                         style: TextStyle(
                                             fontSize: 16,
-                                            color: Color(0xff22d47e)))),
+                                            color: Color(skinColor)))),
                                 onTap: onCode,
                               )
                             : Container(
@@ -339,7 +342,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
                                 IconData(isCheck ? 0xe645 : 0xe614,
                                     fontFamily: 'sunfont'),
                                 size: 16,
-                                color: Color(isCheck ? 0xff22d47e : 0xffb4b3b3),
+                                color: Color(isCheck ? skinColor : 0xffb4b3b3),
                               ),
                             ),
                             onTap: handleCheck),
@@ -355,7 +358,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
                             TextSpan(
                                 text: '《用户协议》',
                                 style: TextStyle(
-                                    color: Color(0xff22d47e), fontSize: 14),
+                                    color: Color(skinColor), fontSize: 14),
                                 recognizer: useragreeall
                                   ..onTap = () {
                                     toast("《用户协议》");
@@ -367,7 +370,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
                             TextSpan(
                                 text: '《隐私政策》',
                                 style: TextStyle(
-                                    color: Color(0xff22d47e), fontSize: 14),
+                                    color: Color(skinColor), fontSize: 14),
                                 recognizer: privacypolicy
                                   ..onTap = () {
                                     toast("《隐私政策》");
@@ -382,7 +385,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
                     child: Ink(
                         decoration: BoxDecoration(
                             color: Color(isPhone && isCode && isCheck
-                                ? 0xff22d47e
+                                ? skinColor
                                 : 0xffebebeb),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(50))),
@@ -415,7 +418,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
                           child: Text("随便看看",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  color: Color(0xff22d47e), fontSize: 15)),
+                                  color: Color(skinColor), fontSize: 15)),
                           onTap: () => toLook(context)))
                 ],
               ))
