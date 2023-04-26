@@ -49,12 +49,16 @@ class _HomeState extends State<Home> {
   void getUInfo() async {
     try {
       Map res = await sign.getUInfo();
-      print("个人信息>>> ${res["data"]["nickname"]}");
       if (res["code"] == 200) {
+        print("个人信息>>> ${res["data"]["nickname"]}");
         uinfo = res["data"];
-        if (mounted) {
-          setState(() {});
-        }
+        isShows = true;
+      } else {
+        uinfo = {};
+        blIsShow = isShows= false;
+      }
+      if (mounted) {
+        setState(() {});
       }
     } catch (e) {
       print("未登录>>$e");
@@ -152,9 +156,20 @@ class _HomeState extends State<Home> {
     Navigator.pushNamed(context, "shopDetail", arguments: {"url": url});
   }
 
+  final GlobalKey balanceKey = GlobalKey();
+  bool blIsShow = true;
+  bool isShows = false;
+
+  void handleIsShow() {
+    setState(() {
+      blIsShow = !blIsShow;
+    });
+  }
+
   // 体秤信息
   Widget balanceInfo(skinColor) {
     return Container(
+      key: balanceKey,
       width: double.infinity,
       padding: EdgeInsets.only(left: 10, right: 10),
       height: 176,
@@ -174,58 +189,62 @@ class _HomeState extends State<Home> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                        width: 86,
-                        height: 42,
-                        child: Stack(
-                          children: [
-                            Container(
-                              height: 42,
-                              child: Text("87",
-                                  strutStyle: StrutStyle(
-                                    leading: 0,
-                                    height: 3.6,
-                                    forceStrutHeight: true, // 关键属性 强制改为文字高度
-                                  ),
-                                  style: TextStyle(
-                                      fontSize: 55,
-                                      fontFamily: 'GenMonBold',
-                                      color: Colors.white)),
-                            ),
-                            Positioned(
-                                top: 3,
-                                right: 3,
-                                child: Text("公斤",
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        color: Color(0xfff3f3f3)))),
-                            Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: Text(".10",
-                                    strutStyle: StrutStyle(
-                                      leading: 0,
-                                      forceStrutHeight: true, // 关键属性 强制改为文字高度
-                                    ),
-                                    style: TextStyle(
-                                        fontSize: 24,
-                                        fontFamily: 'GenMonBold',
-                                        color: Colors.white)))
-                          ],
-                        )),
-                    // Container(
-                    //     width: 86,
-                    //     height: 42,
-                    //     child:Align(child:
-                    //     Text("**",
-                    //       strutStyle: StrutStyle(
-                    //         leading: 0,
-                    //         height: 5.6,
-                    //         forceStrutHeight: true, // 关键属性 强制改为文字高度
-                    //       ),
-                    //       style: TextStyle(fontSize: 70,color: Colors.white),)
-                    //     )),
-                    Text("5天前(03月10日 19:49)",
+                    blIsShow
+                        ? Container(
+                            width: 86,
+                            height: 42,
+                            child: Stack(
+                              children: [
+                                Container(
+                                  height: 42,
+                                  child: Text("87",
+                                      strutStyle: StrutStyle(
+                                        leading: 0,
+                                        height: 3.6,
+                                        forceStrutHeight: true, // 关键属性 强制改为文字高度
+                                      ),
+                                      style: TextStyle(
+                                          fontSize: 55,
+                                          fontFamily: 'GenMonBold',
+                                          color: Colors.white)),
+                                ),
+                                Positioned(
+                                    top: 3,
+                                    right: 3,
+                                    child: Text("公斤",
+                                        style: TextStyle(
+                                            fontSize: 10,
+                                            color: Color(0xfff3f3f3)))),
+                                Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: Text(".10",
+                                        strutStyle: StrutStyle(
+                                          leading: 0,
+                                          forceStrutHeight:
+                                              true, // 关键属性 强制改为文字高度
+                                        ),
+                                        style: TextStyle(
+                                            fontSize: 24,
+                                            fontFamily: 'GenMonBold',
+                                            color: Colors.white)))
+                              ],
+                            ))
+                        : Container(
+                            width: 86,
+                            height: 42,
+                            child: Align(
+                                child: Text(
+                              "**",
+                              strutStyle: StrutStyle(
+                                leading: 0,
+                                height: 4.6,
+                                forceStrutHeight: true, // 关键属性 强制改为文字高度
+                              ),
+                              style:
+                                  TextStyle(fontSize: 70, color: Colors.white),
+                            ))),
+                    Text(uinfo["uid"] != null ? "5天前(03月10日 19:49)" : "暂无数据",
                         style:
                             TextStyle(fontSize: 10, color: Color(0xffeeeeee)))
                   ],
@@ -238,30 +257,50 @@ class _HomeState extends State<Home> {
                       Positioned(
                           top: 22,
                           child: Icon(IconData(0xec8d, fontFamily: 'sunfont'),
-                              color: Color(0xd8ffffff), size: 12)),
+                              color: Color(blIsShow ? 0xd8ffffff : skinColor),
+                              size: 12)),
                       Container(
                           margin: EdgeInsets.only(left: 14),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.end,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text("0.96",
-                                      style: TextStyle(
-                                          fontSize: 26,
-                                          fontFamily: 'GenMonBold',
-                                          height: 0.1,
-                                          color: Color(0xffffffff))),
-                                  Text("公斤",
-                                      style: TextStyle(
-                                          fontSize: 10,
-                                          color: Color(0xffffffff)))
-                                ],
-                              ),
+                              blIsShow
+                                  ? Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Text("0.96",
+                                            style: TextStyle(
+                                                fontSize: 26,
+                                                fontFamily: 'GenMonBold',
+                                                height: 0.1,
+                                                color: Color(0xffffffff))),
+                                        Text("公斤",
+                                            style: TextStyle(
+                                                fontSize: 10,
+                                                color: Color(0xffffffff)))
+                                      ],
+                                    )
+                                  : Container(
+                                      width: 86,
+                                      alignment: Alignment.bottomLeft,
+                                      child: Text(
+                                        "**",
+                                        strutStyle: StrutStyle(
+                                          leading: 0,
+                                          height: 0,
+                                          forceStrutHeight:
+                                              true, // 关键属性 强制改为文字高度
+                                        ),
+                                        style: TextStyle(
+                                            fontSize: 40, color: Colors.white),
+                                      )),
                               SizedBox(height: 8),
-                              Text("与2022.09.12 09:12 相比",
+                              Text(
+                                  uinfo["uid"] != null
+                                      ? "与2022.09.12 09:12 相比"
+                                      : "暂无相比数据",
                                   style: TextStyle(
                                       fontSize: 10, color: Color(0xffeeeeee)))
                             ],
@@ -271,7 +310,7 @@ class _HomeState extends State<Home> {
               Container(
                   height: 60,
                   margin: EdgeInsets.only(right: 10),
-                  child: Column(
+                  child:isShows ? Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Container(
@@ -284,20 +323,23 @@ class _HomeState extends State<Home> {
                               size: 12, color: Colors.white),
                         ),
                         SizedBox(height: 6),
-                        Container(
-                          width: 26,
-                          height: 26,
-                          decoration: BoxDecoration(
-                              color: Color(0x40ffffff),
-                              borderRadius: BorderRadius.circular(26)),
-                          child: Align(
-                            child: Icon(IconData(0xe66b, fontFamily: 'sunfont'),
-                                //0xe624
-                                size: 14,
-                                color: Colors.white),
-                          ),
-                        )
-                      ]))
+                         InkWell(
+                                child: Container(
+                                  width: 26,
+                                  height: 26,
+                                  decoration: BoxDecoration(
+                                      color: Color(0x40ffffff),
+                                      borderRadius: BorderRadius.circular(26)),
+                                  child: Align(
+                                    child: Icon(
+                                        IconData(blIsShow ? 0xe66b : 0xe624,
+                                            fontFamily: 'sunfont'),
+                                        size: 14,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                                onTap: handleIsShow)
+                      ]) : Container())
             ],
           ),
           Container(
@@ -333,48 +375,58 @@ class _HomeState extends State<Home> {
                                               color: Colors.white,
                                               fontSize: 12,
                                               fontWeight: FontWeight.w600)),
-                                      Container(
-                                        margin: EdgeInsets.only(left: 5),
-                                        padding: EdgeInsets.only(
-                                            left: 6,
-                                            right: 6,
-                                            top: 2,
-                                            bottom: 1),
-                                        decoration: BoxDecoration(
-                                            color: Color(0xffffffff),
-                                            borderRadius:
-                                                BorderRadius.circular(2)),
-                                        child: Align(
-                                            child: Text(item["level"],
-                                                style: TextStyle(
-                                                    fontSize: 9,
-                                                    color: Color(0xffe75d39)))),
-                                      )
+                                      blIsShow
+                                          ? Container(
+                                              margin: EdgeInsets.only(left: 5),
+                                              padding: EdgeInsets.only(
+                                                  left: 6,
+                                                  right: 6,
+                                                  top: 2,
+                                                  bottom: 1),
+                                              decoration: BoxDecoration(
+                                                  color: Color(0xffffffff),
+                                                  borderRadius:
+                                                      BorderRadius.circular(2)),
+                                              child: Align(
+                                                  child: Text(item["level"],
+                                                      style: TextStyle(
+                                                          fontSize: 9,
+                                                          color: Color(
+                                                              0xffe75d39)))),
+                                            )
+                                          : Container()
                                     ]),
                                     SizedBox(height: 6),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Text(item["num"],
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12)),
-                                        SizedBox(width: 5),
-                                        Icon(
-                                            IconData(
-                                                item["upOrDown"] == 1
-                                                    ? 0xec8d
-                                                    : 0xe630,
-                                                fontFamily: 'sunfont'),
-                                            size: 10,
-                                            color: Color(0xabffffff)),
-                                        Text(item["changeValue"],
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12))
-                                      ],
-                                    )
+                                    blIsShow
+                                        ? Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Text(item["num"],
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 12)),
+                                              SizedBox(width: 5),
+                                              Icon(
+                                                  IconData(
+                                                      item["upOrDown"] == 1
+                                                          ? 0xec8d
+                                                          : 0xe630,
+                                                      fontFamily: 'sunfont'),
+                                                  size: 10,
+                                                  color: Color(0xabffffff)),
+                                              Text(item["changeValue"],
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 12))
+                                            ],
+                                          )
+                                        : Container(
+                                            alignment: Alignment.center,
+                                            child: Text("***",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12)))
                                   ]));
                         }).toList())),
                 Container(
@@ -1027,8 +1079,7 @@ class _HomeState extends State<Home> {
                                       width: 100,
                                       margin: EdgeInsets.only(top: 10),
                                       decoration: BoxDecoration(
-                                          color:
-                                              Color(skinColor),
+                                          color: Color(skinColor),
                                           borderRadius:
                                               BorderRadius.circular(16)),
                                       child: Align(
