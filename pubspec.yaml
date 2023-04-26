@@ -33,6 +33,7 @@ dependencies:
   m_loading: ^0.0.2 # 下拉加载londing
   easy_refresh: ^3.2.0 # 下拉刷新，上拉加载
   provider: ^6.0.0 # 状态管理
+  flutter_blue_elves: ^0.1.9
 dev_dependencies:
   flutter_test:
     sdk: flutter
