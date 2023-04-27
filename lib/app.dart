@@ -85,6 +85,7 @@ class _AppState extends State<App> with AutomaticKeepAliveClientMixin {
   }
 
   void initState() {
+    super.initState();
     getUInfo();
   }
 

@@ -139,13 +139,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.8.0"
-  flutter_blue_elves:
-    dependency: "direct main"
-    description:
-      name: flutter_blue_elves
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.1.9"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
