@@ -150,7 +150,6 @@ class _MyState extends State<My> {
   void dispose() {
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     double topBarHeight =
@@ -235,7 +234,7 @@ class _MyState extends State<My> {
                       height: 130,
                       color: Color(skinColor),
                       child: CustomPaint(
-                        painter: new arcBg(),
+                        painter: new arcBg(skinColor),
                       ),
                     )),
                     Container(
@@ -513,8 +512,10 @@ class _MyState extends State<My> {
 
 // 弧形 【百度大神】
 class arcBg extends CustomPainter {
+  int arcColor;
+  arcBg(this.arcColor);
   Paint _paint = Paint()
-    ..color = Color(0xff22d47e) //画笔颜色
+    ..color = Color(0xff22d47e) //画笔颜色 0xff22d47e
     ..strokeCap = StrokeCap.butt //画笔笔触类型
     // ..isAntiAlias = true //是否启动抗锯齿
     // ..blendMode = BlendMode.exclusion //颜色混合模式
@@ -523,7 +524,8 @@ class arcBg extends CustomPainter {
     //     BlendMode.exclusion) //颜色渲染模式，一般是矩阵效果来改变的,但是flutter中只能使用颜色混合模式
     // ..maskFilter = MaskFilter.blur(BlurStyle.inner, 3.0) //模糊遮罩效果，flutter中只有这个
     ..filterQuality = FilterQuality.high //颜色渲染模式的质量
-    ..strokeWidth = 0.0; //
+    ..strokeWidth = 0.0;
+
 
   @override
   void paint(Canvas canvas, Size size) {
