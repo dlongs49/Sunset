@@ -197,7 +197,7 @@ class _HomeState extends State<Home> {
                               children: [
                                 Container(
                                   height: 42,
-                                  child: Text("87",
+                                  child: Text("45",
                                       strutStyle: StrutStyle(
                                         leading: 0,
                                         height: 3.6,
