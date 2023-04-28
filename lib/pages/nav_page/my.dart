@@ -155,6 +155,7 @@ class _MyState extends State<My> {
     double topBarHeight =
         MediaQueryData.fromWindow(window).padding.top; // 沉浸栏高度
     final skinColor = Provider.of<Global>(context).color;
+    arcBg.arcColor = skinColor;
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -234,7 +235,7 @@ class _MyState extends State<My> {
                       height: 130,
                       color: Color(skinColor),
                       child: CustomPaint(
-                        painter: new arcBg(skinColor),
+                        painter: arcBg(),
                       ),
                     )),
                     Container(
@@ -512,10 +513,9 @@ class _MyState extends State<My> {
 
 // 弧形 【百度大神】
 class arcBg extends CustomPainter {
-  int arcColor;
-  arcBg(this.arcColor);
+  static int arcColor = 0xff22d47e;
   Paint _paint = Paint()
-    ..color = Color(0xff22d47e) //画笔颜色 0xff22d47e
+    ..color = Color(arcColor) //画笔颜色 0xff22d47e
     ..strokeCap = StrokeCap.butt //画笔笔触类型
     // ..isAntiAlias = true //是否启动抗锯齿
     // ..blendMode = BlendMode.exclusion //颜色混合模式
