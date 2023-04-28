@@ -60,27 +60,48 @@ class _AppState extends State<App> with AutomaticKeepAliveClientMixin {
     // 蓝牙权限
     Permission permission = Permission.bluetooth;
     PermissionStatus status = await permission.status;
-    if (status.isGranted) {
+    // 蓝牙权限【附近设备】 有些机型不弹起授权
+    Permission permission__ = Permission.bluetoothScan;
+    PermissionStatus status__ = await permission__.status;
+    // 蓝牙权限【连接】
+    Permission permission__c = Permission.bluetoothConnect;
+    PermissionStatus status__c = await permission__.status;
+    // 定位权限
+    Permission permission_ = Permission.location;
+    PermissionStatus status_ = await permission_.status;
+
+    if (status.isGranted &&
+        status_.isGranted &&
+        status__.isGranted &&
+        status__c.isGranted) {
       print("申请通过>>");
       Navigator.pushNamed(context, "bindDevice", arguments: {"base": "root"});
-    } else if (status.isDenied) {
+    } else if (status.isDenied || status_.isDenied) {
       PermissionStatus state = await permission.request();
+      PermissionStatus state_ = await permission_.request();
+      PermissionStatus state__ = await permission__.request();
+      PermissionStatus state__c = await permission__c.request();
       print("申请拒绝>>");
-      if (state.isPermanentlyDenied) {
+      if (state.isPermanentlyDenied ||
+          state_.isPermanentlyDenied ||
+          state__.isPermanentlyDenied ||
+          state__c.isPermanentlyDenied) {
         print("  >>永久拒绝2");
         await openAppSettings();
       }
-      if (state.isGranted) {
+      if (state.isGranted && state_.isGranted && state.isGranted) {
         print(">>申请通过2");
         Navigator.pushNamed(context, "bindDevice", arguments: {"base": "root"});
       }
-    } else if (status.isPermanentlyDenied) {
+    } else if (status.isPermanentlyDenied ||
+        status_.isPermanentlyDenied ||
+        status__.isPermanentlyDenied ||
+        status__c.isPermanentlyDenied) {
       print("永久拒绝>>");
       // 转至系统设置
       await openAppSettings();
     } else {
       toast("未知错误");
-      print("未知");
     }
   }
 

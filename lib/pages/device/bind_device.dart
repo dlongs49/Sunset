@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:sunset/components/tabbar.dart';
+import 'package:sunset/components/toast.dart';
 import 'package:sunset/provider/global.dart';
+import 'package:sunset/utils/api/sign_req.dart';
+import 'package:sunset/utils/request.dart';
 
 class BindDevice extends StatefulWidget {
   final arguments; // 路由带的参数
@@ -22,12 +26,63 @@ class _BindDeviceState extends State<BindDevice> with TickerProviderStateMixin {
   _BindDeviceState({this.arguments});
 
   FlutterBlue flutterBlue = FlutterBlue.instance;
-  String Id = '123';
 
   @override
   void initState() {
-    print(">> ${arguments}");
+    super.initState();
+    getUInfo();
     initBlue();
+  }
+
+  Sign sign = new Sign();
+  Map uinfo = {"nickname": "Sunset", "avator": ""};
+
+  // 个人信息
+  void getUInfo() async {
+    try {
+      Map res = await sign.getUInfo();
+      if (res["code"] == 200) {
+        uinfo = res["data"];
+        uinfo["avator"] = baseUrl + res["data"]["avator"];
+        if (mounted) {
+          setState(() {});
+        }
+      }
+    } catch (e) {}
+  }
+
+  // 蓝牙是否开启回调转异步
+  Future getBlueState() async {
+    Completer completer = Completer();
+    flutterBlue.state.listen((state) {
+      completer.complete(state);
+    });
+    return completer.future;
+  }
+
+  // 蓝牙初始化【蓝牙连接不上体重秤，找了一大圈的解决方案不知道啥原因，应该是设备不允许对接蓝牙】
+  void initBlue() async {
+    final state = await getBlueState();
+    if (state == BluetoothState.off) {
+      print('蓝牙为关闭状态');
+      toast("蓝牙处于关闭状态，先开启蓝牙！");
+      return;
+    }
+    flutterBlue.startScan(timeout: Duration(seconds: 1000));
+
+    flutterBlue.scanResults.listen((results) async {
+      for (final r in results) {
+        var obj = r.device;
+        print("蓝牙设备>>${obj.id} -- ${obj.name}");
+        // Bb-AM-D6-0  10:96:1A:6C:B6:50 体脂秤的 蓝牙地址
+        if (obj.name == "Bb-AM-D6-0") {
+          print('符合特征 >>>>${r.device}');
+          this.connectBlue(obj);
+          //符合特征值，停止扫描蓝牙
+          flutterBlue.stopScan();
+        }
+      }
+    });
   }
 
   connectBlue(device) async {
@@ -36,49 +91,17 @@ class _BindDeviceState extends State<BindDevice> with TickerProviderStateMixin {
       print("连接中...");
       await device.connect();
       print("连接成功");
-      // List<BluetoothService> services =  device.discoverServices();
-      // print("服务>>$services");
-      // services.forEach((el) {
-      //   print(el);
-      //   var value = el.uuid.toString();
-      //   print(">>>>$value");
-      // });
+      List<BluetoothService> services =  device.discoverServices();
+      print("服务>>$services");
+      services.forEach((el) {
+        print(el);
+        var value = el.uuid.toString();
+        print(">>>>$value");
+      });
     } catch (e) {
       print("异常");
       print(e);
     }
-
-  }
-
-  void initBlue() {
-    flutterBlue.startScan(timeout: Duration(seconds: 10));
-    Map device = {};
-    flutterBlue.scanResults.listen((results) async {
-      print('蓝牙扫描开始>>');
-      for (ScanResult r in results) {
-        print(r.device);
-        var obj = r.device;
-        // Bb-AM-D6-0  10:96:1A:6C:B6:50
-        print(obj.name);
-        if (obj.name == "Bb-AM-D6-0") {
-          print('符合特征 >>>>${r.device}');
-          this.connectBlue(obj);
-          // 符合特征值，停止扫描蓝牙
-          // flutterBlue.stopScan();
-        }
-      }
-    });
-
-    // if(r.device.name == "AIMA-06639D"){
-    //   print('开始连接');
-    //   await device.connect();
-    //   print('连接成功');
-    // }
-    // List<BluetoothService> services = await device.discoverServices();
-    // services.forEach((service) {
-    //   print('SERVICE>> ${service}');
-    // });
-    // flutterBlue.stopScan();
   }
 
   // 淡入淡出动画
@@ -87,20 +110,29 @@ class _BindDeviceState extends State<BindDevice> with TickerProviderStateMixin {
         ..repeat(reverse: true);
   late final Animation<double> opAnimation =
       Tween<double>(begin: 0, end: 1).animate(controllAnimate);
-
+  @override
+  void dispose(){
+    controllAnimate.dispose();
+    super.dispose();
+  }
   Widget initDevice(skinColor) {
     return Column(
       children: [
         Align(
-          child: Image.asset(
-            "assets/images/3044.jpg",
-            width: 60,
-            height: 60,
-          ),
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(70),
+              child: Image.network(uinfo["avator"],
+                  width: 60,
+                  height: 60,
+                  fit: BoxFit.cover,
+                  errorBuilder: (ctx, err, stackTrace) => Image.asset(
+                      'assets/images/sunset.png',
+                      width: 60,
+                      height: 60))),
         ),
         SizedBox(height: 20),
         Align(
-          child: Text("冰消叶散",
+          child: Text(uinfo["nickname"],
               style: TextStyle(color: Color(0xffb8b8b8), fontSize: 12)),
         ),
         SizedBox(height: 40),
