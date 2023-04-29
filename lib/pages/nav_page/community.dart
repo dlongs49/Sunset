@@ -236,7 +236,7 @@ class _CommunityState extends State<Community>
                                       IconData(0xe60a, fontFamily: 'sunfont'),
                                       color: Colors.black,
                                       size: 20.0)),
-                              Positioned(
+                            false?  Positioned(
                                   top: 3,
                                   right: 4,
                                   child: Container(
@@ -248,7 +248,7 @@ class _CommunityState extends State<Community>
                                     child: Text("2",
                                         style: TextStyle(
                                             fontSize: 8, color: Colors.white)),
-                                  ))
+                                  )) : Container()
                             ],
                           ),
                         )

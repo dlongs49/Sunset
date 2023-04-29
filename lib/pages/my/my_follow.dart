@@ -35,7 +35,6 @@ class _MyFollowState extends State<MyFollow> {
     try {
       Map res = await trendsReq.getFollowList(pageMap);
       if (res["code"] == 200) {
-        print(">>>>$res");
         var lists = res["data"]["list"].map((el) {
           el["isfollow"] = true;
           return el;
