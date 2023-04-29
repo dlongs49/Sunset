@@ -55,7 +55,7 @@ class _HomeState extends State<Home> {
         isShows = true;
       } else {
         uinfo = {};
-        blIsShow = isShows= false;
+        blIsShow = isShows = false;
       }
       if (mounted) {
         setState(() {});
@@ -310,36 +310,41 @@ class _HomeState extends State<Home> {
               Container(
                   height: 60,
                   margin: EdgeInsets.only(right: 10),
-                  child:isShows ? Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          width: 26,
-                          height: 26,
-                          decoration: BoxDecoration(
-                              color: Color(0x40ffffff),
-                              borderRadius: BorderRadius.circular(26)),
-                          child: Icon(IconData(0xe629, fontFamily: 'sunfont'),
-                              size: 12, color: Colors.white),
-                        ),
-                        SizedBox(height: 6),
-                         InkWell(
-                                child: Container(
-                                  width: 26,
-                                  height: 26,
-                                  decoration: BoxDecoration(
-                                      color: Color(0x40ffffff),
-                                      borderRadius: BorderRadius.circular(26)),
-                                  child: Align(
-                                    child: Icon(
-                                        IconData(blIsShow ? 0xe66b : 0xe624,
-                                            fontFamily: 'sunfont'),
-                                        size: 14,
-                                        color: Colors.white),
+                  child: isShows
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                              Container(
+                                width: 26,
+                                height: 26,
+                                decoration: BoxDecoration(
+                                    color: Color(0x40ffffff),
+                                    borderRadius: BorderRadius.circular(26)),
+                                child: Icon(
+                                    IconData(0xe629, fontFamily: 'sunfont'),
+                                    size: 12,
+                                    color: Colors.white),
+                              ),
+                              SizedBox(height: 6),
+                              InkWell(
+                                  child: Container(
+                                    width: 26,
+                                    height: 26,
+                                    decoration: BoxDecoration(
+                                        color: Color(0x40ffffff),
+                                        borderRadius:
+                                            BorderRadius.circular(26)),
+                                    child: Align(
+                                      child: Icon(
+                                          IconData(blIsShow ? 0xe66b : 0xe624,
+                                              fontFamily: 'sunfont'),
+                                          size: 14,
+                                          color: Colors.white),
+                                    ),
                                   ),
-                                ),
-                                onTap: handleIsShow)
-                      ]) : Container())
+                                  onTap: handleIsShow)
+                            ])
+                      : Container())
             ],
           ),
           Container(
@@ -1198,7 +1203,13 @@ class _HomeState extends State<Home> {
                                             Container(
                                               width: 150,
                                               height: 90,
-                                              color: Colors.grey[350],
+                                              child:ClipRRect(
+                                                borderRadius: BorderRadius.circular(6),
+                                                child: Image.network(
+                                                  "https://image.findlinked.cn/xiangrui/2023-01-11/fc00cecd-50f5-4e94-a28d-a2d558069a3a.jpg",
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
                                             )
                                           ],
                                         ),
