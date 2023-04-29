@@ -29,19 +29,19 @@ class _PhoneLoginState extends State<PhoneLogin> {
   void initState() {
     super.initState();
     CodeController = TextEditingController.fromValue(TextEditingValue(
-        text: "1234",
+        text: "",
         selection: TextSelection.fromPosition(
             TextPosition(affinity: TextAffinity.downstream, offset: 4))));
     PhoneController = TextEditingController.fromValue(TextEditingValue(
-        text: "13096954409",
+        text: "13099999999",
         selection: TextSelection.fromPosition(
             TextPosition(affinity: TextAffinity.downstream, offset: 4))));
   }
 
-  String phone = '13096954409';
-  String verCode = '123456';
+  String phone = '13099999999';
+  String verCode = '';
 
-  bool isPhone = false;
+  bool isPhone = true; // false
   bool isCode = false;
 
   // 输入值
