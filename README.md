@@ -1,6 +1,10 @@
 # Sunset
 
 Sunri体重秤的翻版App
+
+GIF演示：
+
+![](https://i.postimg.cc/fR5cPdtN/sunset.gifs)
 # 版本号
 - Flutter ^2.8.0
 - Dart ^2.15.0
@@ -23,9 +27,6 @@ Sunset数据来源 [sunset-server](https://github.com/dlongs49/sunset-server)
 - 二维码扫描
 - ......
 
-GIF演示：
-
-![](https://i.postimg.cc/Hnp3vCHK/sunset.gif)
 
 
 # 打包
