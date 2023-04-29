@@ -13,7 +13,9 @@ Sunri体重秤的翻版App
 
 # 说明
 
-Sunset数据来源 [sunset-server](https://github.com/dlongs49/sunset-server)
+Sunset数据来源:
+[gitee](https://gitee.com/dlongs49/sunset-server)
+[github](https://github.com/dlongs49/sunset-server)
 
 功能：
 
