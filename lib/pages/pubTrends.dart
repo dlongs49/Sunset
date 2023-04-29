@@ -30,7 +30,6 @@ class _PubTrendsState extends State<PubTrends> {
   @override
   void initState() {
     super.initState();
-    imgWidgetList.add(uImgWidget(0xff22d47e));
   }
 
   // 上传图片 Widget
@@ -57,17 +56,15 @@ class _PubTrendsState extends State<PubTrends> {
   // 删除图片
   void delWidget(int index) {
     imgWidgetList.removeAt(index);
-    setState(() {});
-    print(imgWidgetList.length);
-      // imgWidgetList.insert(imgWidgetList.length,uImgWidget());
-    if (imgWidgetList.length  == 5) {
+    if (mounted) {
+      setState(() {});
     }
   }
 
-  List<Widget> imgWidgetList = [];
+  List imgWidgetList = [];
 
   // 图片列表 Widget
-  Widget imgWidget(String value, int i) {
+  Widget imgWidget(String value, int index) {
     return Container(
         decoration: BoxDecoration(
             color: Color(0xfff3f3f3), borderRadius: BorderRadius.circular(8)),
@@ -93,7 +90,7 @@ class _PubTrendsState extends State<PubTrends> {
                         scale: 0.5,
                       ),
                     ),
-                    onTap: () => delWidget(i)))
+                    onTap: () => delWidget(index)))
           ],
         ));
   }
@@ -145,6 +142,7 @@ class _PubTrendsState extends State<PubTrends> {
           ],
         ));
   }
+
   // 待上传的图
   List<MultipartFile> mf = [];
 
@@ -187,11 +185,13 @@ class _PubTrendsState extends State<PubTrends> {
             final imageBytes = await file.readAsBytes();
             String base64Img = base64Encode(imageBytes);
 
-            imgWidgetList.insert(0, imgWidget(base64Img, i));
+            imgWidgetList.insert(0, base64Img);
             if (imgWidgetList.length > 6) {
               imgWidgetList.removeAt(imgWidgetList.length - 1);
             }
-            setState(() {});
+            if (mounted) {
+              setState(() {});
+            }
           }
         }
       }
@@ -203,6 +203,10 @@ class _PubTrendsState extends State<PubTrends> {
 
   // 拍照 相册选择项
   void onHeadImg(BuildContext context) {
+    if (imgWidgetList.length >= 5) {
+      toast("最多上传5张图片");
+      return;
+    }
     showModalBottomSheet(
         context: context,
         isScrollControlled: false, // 是否滚动
@@ -214,7 +218,11 @@ class _PubTrendsState extends State<PubTrends> {
 
   // 发布动态
   void saveProfile(context) async {
-    print(map["text"]);
+    if(map["text"] == null){
+      toast("文字不能为空");
+      return;
+    }
+    var l = loading();
     try {
       // 转换为 FormData
       FormData formData = new FormData.fromMap({"file": mf});
@@ -222,10 +230,11 @@ class _PubTrendsState extends State<PubTrends> {
       Map imgRes = await uploadReq.uploadImages(formData);
       map["images"] = imgRes["data"];
       Map res = await trendsReq.publishTrends(map);
+      l();
       if (res["code"] == 200) {
         FocusManager.instance.primaryFocus?.unfocus(); // 收起键盘
-        // Navigator.pop(context);
-      }else{
+        Navigator.pop(context);
+      } else {
         toast("发布失败！");
       }
     } catch (e) {
@@ -293,22 +302,29 @@ class _PubTrendsState extends State<PubTrends> {
             margin: EdgeInsets.symmetric(horizontal: 15),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              GridView(
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
-                  physics: BouncingScrollPhysics(),
-                  // IOS的回弹属性
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3, // 主轴一行的数量
-                    mainAxisSpacing: 10, // 主轴每行间距
-                    crossAxisSpacing: 10, // 交叉轴每行间距
-                    childAspectRatio: 1, // item的宽高比
-                  ),
-                  children: imgWidgetList.asMap().entries.map((entry) {
-                    int index = entry.key;
-                    Widget widget = entry.value;
-                    return widget;
-                  }).toList()),
+              GridView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                physics: BouncingScrollPhysics(),
+                // IOS的回弹属性
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3, // 主轴一行的数量
+                  mainAxisSpacing: 10, // 主轴每行间距
+                  crossAxisSpacing: 10, // 交叉轴每行间距
+                  childAspectRatio: 1, // item的宽高比
+                ),
+                itemCount: imgWidgetList.length + 1,
+                itemBuilder: (ctx, index) {
+                  return index == 0
+                      ? uImgWidget(0xff22d47e)
+                      : imgWidget(imgWidgetList[index - 1], index - 1);
+                },
+                // children: imgWidgetList.asMap().entries.map((entry) {
+                //   int index = entry.key;
+                //   Widget widget = entry.value;
+                //   return widget;
+                // }).toList()
+              ),
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 8, vertical: 20),
                 decoration: BoxDecoration(
