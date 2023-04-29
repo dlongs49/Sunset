@@ -25,14 +25,7 @@ Sunset数据来源 [sunset-server](https://github.com/dlongs49/sunset-server)
 
 GIF演示：
 
-![](https://i.postimg.cc/Hnp3vCHK/sunset.gif)
-
-
-
-```html
-<iframe height=500 width=500 src="https://i0.hdslb.com/bfs/archive/39047c5cca133d93beb3b5a99713ff6eb589341c.gif">
-```
-
+<iframe height=400 width=100  src="https://i.postimg.cc/Hnp3vCHK/sunset.gif"/>
 
 
 # 打包
