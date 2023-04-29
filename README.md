@@ -2,9 +2,8 @@
 
 Sunri体重秤的翻版App
 
-GIF演示：
+[GIF演示](https://i.postimg.cc/fR5cPdtN/sunset.gif)
 
-![](https://i.postimg.cc/fR5cPdtN/sunset.gifs)
 # 版本号
 - Flutter ^2.8.0
 - Dart ^2.15.0
