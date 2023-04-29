@@ -29,6 +29,12 @@ GIF演示：
 
 
 
+```html
+<iframe height=500 width=500 src="https://i0.hdslb.com/bfs/archive/39047c5cca133d93beb3b5a99713ff6eb589341c.gif">
+```
+
+
+
 # 打包
 
  `flutter build apk --no-tree-shake-icons --no-sound-null-safety`
